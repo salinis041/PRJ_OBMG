@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Care Team</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            OBMG
+        </div>
+
+        <div class="header-right">
+            <span>Patient Management</span>
+        </div>
+    </header>
+
+
+    <!-- Patient information -->
+    <section class="patient-header">
+
+        <div>
+            <div class="patient-label">
+                PATIENT
+            </div>
+
+            <h2>John </h2>
+        </div>
+
+    </section>
+
+
+    <!-- Navigation tabs -->
+    <nav class="tabs">
+
+        <a href="#">Overview</a>
+        <a href="#">Demographics</a>
+        <a href="#">Charts</a>
+
+        <a href="#" class="active">
+            Care Team
+        </a>
+
+        <a href="#">Appointments</a>
+        <a href="#">Correspondence</a>
+        <a href="#">Tasks</a>
+        <a href="#">Referrals</a>
+
+    </nav>
+
+
+    <!-- Main content -->
+    <main class="content">
+
+        <div class="page-title">
+            <div>
+                <h1>Care Team</h1>
+
+            </div>
+
+            <button class="add-button">
+                + Add Care Team
+            </button>
+        </div>
+
+
+        <!-- Search -->
+        <div class="search-area">
+
+            <input
+                type="text"
+                placeholder="Search care team..."
+            >
+
+            <button>
+                Search
+            </button>
+
+        </div>
+
+
+        <!-- Care team table -->
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Specialty</th>
+                        <th>Relationship</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for member in care_team %}
+
+                    <tr>
+
+                        <td>
+                            {{ member.name }}
+                        </td>
+
+                        <td>
+                            {{ member.specialty }}
+                        </td>
+
+                        <td>
+                            {{ member.relationship }}
+                        </td>
+
+                        <td>
+                            <span class="status">
+                                {{ member.status }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <button class="action-button">
+                                View
+                            </button>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

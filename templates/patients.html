@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patients</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo">
+        ∞
+    </div>
+
+    <nav class="main-nav">
+        <a href="#">Home</a>
+        <a href="#" class="selected">Patients</a>
+        <a href="#">Tasks</a>
+        <a href="#">Messages</a>
+        <a href="#">Cases</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+    </nav>
+
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+
+</header>
+
+
+<!-- ================= PAGE ================= -->
+
+<div class="page-container">
+
+    <!-- Page title -->
+
+    <div class="page-heading">
+
+        <div class="page-title">
+            <span class="patient-icon">♟</span>
+            <span>Patients</span>
+        </div>
+
+    </div>
+
+
+    <!-- ================= FILTERS ================= -->
+
+    <div class="filter-bar">
+
+        <div class="date-field">
+            <label>FROM</label>
+            <input type="date" value="2026-08-31">
+        </div>
+
+        <div class="date-field">
+            <label>TO</label>
+            <input type="date" value="2026-09-01">
+        </div>
+
+        <div class="select-field">
+            <label>ENCOUNTER</label>
+            <select>
+                <option>Emergency</option>
+                <option>All</option>
+                <option>Inpatient</option>
+                <option>Outpatient</option>
+            </select>
+        </div>
+
+        <div class="search-field">
+            <label>SEARCH</label>
+            <input
+                type="text"
+                placeholder="Name, MRN, or Account"
+            >
+        </div>
+
+        <div class="search-field">
+            <label>PAYER NAME</label>
+            <input type="text">
+        </div>
+
+        <div class="select-field">
+            <label>CURRENT CAMPUS</label>
+            <select>
+                <option>Jackson Street Hospital Campus</option>
+                <option>All Campuses</option>
+            </select>
+        </div>
+
+        <button class="search-button">
+            🔍
+        </button>
+
+    </div>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="patient-table-wrapper">
+
+        <table class="patient-table">
+
+            <thead>
+
+            <tr>
+                <th>INFO</th>
+                <th>NAME</th>
+                <th>DOB</th>
+                <th>MRN #</th>
+                <th>ACCT #</th>
+                <th>ENCOUNTER</th>
+                <th>FACILITY</th>
+                <th>ED / DISCHARGE</th>
+                <th>TASKS</th>
+                <th>PCP</th>
+                <th>PAYER</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+{% for patient in patients %}
+
+<tr>
+
+    <td>
+        <button class="expand-button">...</button>
+    </td>
+
+    <td class="patient-name">
+        {{ patient.LastName }}, {{ patient.FirstName }}
+    </td>
+
+    <td>
+        {{ patient.BirthDate }}
+    </td>
+
+    <td>
+        {{ patient.MedicalRecordNumber }}
+    </td>
+
+    <td>
+        {{ patient.AccountNumber }}
+    </td>
+
+    <td>
+        <span class="encounter">
+            {{ patient.PatientType }}
+        </span>
+    </td>
+
+    <td>
+        {{ patient.ServicingFacility }}
+    </td>
+
+    <td>
+        {{ patient.DischargeDateTimeDisplay }}
+    </td>
+
+    <td>
+        <span class="task-indicator">
+            0
+        </span>
+    </td>
+
+    <td>
+        {{ patient.PCP }}
+    </td>
+
+    <td>
+        {{ patient.PAYOR }}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
