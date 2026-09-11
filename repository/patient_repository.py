@@ -1,4 +1,5 @@
 from database.connection import get_connection
+import pyodbc
 
 
 def get_patients():
@@ -36,5 +37,14 @@ def get_patients():
 
         return patients
 
+    except pyodbc.Error as e:
+        print(f"Database error while fetching patients: {e}")
+        raise
+
+    except Exception as e:
+        print(f"Unexpected error while fetching patients: {e}")
+        raise
+
     finally:
-        connection.close()
+        if connection:
+            connection.close()
