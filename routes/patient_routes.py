@@ -13,8 +13,10 @@ patient_routes = Blueprint(
 def patients():
 
     patients = get_patient_list()
-
+    #print(patients)
     return render_template(
         "patients.html",
         patients=patients
     )
+
+

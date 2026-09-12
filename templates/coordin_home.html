@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patients</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style_coordin.css') }}">
+
+
+</head>
+<body>
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo">
+        ∞
+    </div>
+
+    <nav class="main-nav">
+        <a href="/home" class="selected">Home</a>
+        <a href="/patient" >Patients</a>
+        <a href="#">Tasks</a>
+        <a href="#">Messages</a>
+        <a href="#">Cases</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+    </nav>
+
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+
+</header>
+<!-- ================= PAGE ================= -->
+
+<div class="page-container">
+
+    <!-- Page title -->
+
+    <div class="container" style="text-align: center;display: flex;justify-content: center;align-items: center;flex-direction: column;">
+
+        <div class="patient-details">
+            <h2 class="text-center">Welcome Back, Name</h2>
+
+        </div>
+        <div class="patient-details">
+        Where would you like to begin?
+
+        </div>
+
+    </div>
+   <div class="row patient-header">
+
+    <!-- Patient Information -->
+    <div class="col-md-6 left-section">
+
+        <div class="patient-info">
+             <div class="page-title" style="margin-bottom: 10px;margin-top:10px;">
+            <div class="patient-icon">♟</div>
+            <div>Recently Viewed Patients</div>
+        </div>
+            {% for patient in patients %}
+            <div style="margin-bottom: 10px;background-color: gainsboro;">
+            <div class="patient-name">
+                 {{ patient.Patname }}
+
+            </div>
+
+            <div class="patient-details">
+                DOB {{ patient.BirthDate }} |
+                Age {{ patient.Age }} |
+                {{ patient.Gender }}
+            </div>
+             </div>
+ {% endfor %}
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="col-md-6 navigation-column">
+
+        <a href="/patient" style="text-decoration:none; color:inherit;"><div class="page-title">
+            <span class="patient-icon" >♟</span>
+                <span>Patients</span>
+        </div></a>
+
+        <div class="page-title">
+           <span class="message-icon">✉</span>
+            <span>Messages</span>
+        </div>
+
+        <div class="page-title">
+            <span class="fax-icon">♟</span>
+            <span>Faxes</span>
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+</body>
+</html>
