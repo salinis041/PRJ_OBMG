@@ -67,19 +67,19 @@
             <div class="patient-icon">♟</div>
             <div>Recently Viewed Patients</div>
         </div>
-            {% for patient in patients %}
+            {% for pa in patts %}
             <div style="margin-bottom: 10px;background-color: gainsboro;">
-            <div class="patient-name">
-                 {{ patient.Patname }}
+            <div class="patient-name" onclick="openPatient({{pa.AccountNumber}})">
+                 {{ pa.Patname }}
 
             </div>
 
             <div class="patient-details">
-                DOB {{ patient.BirthDate }} |
-                Age {{ patient.Age }} |
-                {{ patient.Gender }}
+                DOB {{ pa.BirthDate }} |
+                Age {{ pa.Age }} |
+                {{ pa.Gender }}
             </div>
-             </div>
+            </div>
  {% endfor %}
         </div>
 
@@ -107,6 +107,12 @@
 
 </div>
 </div>
-
+<script>
+function openPatient(visit_id) {
+    window.location.href = `/CoordinatorMain/${visit_id}`;
+}
+</script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>

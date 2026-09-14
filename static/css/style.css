@@ -310,3 +310,17 @@ body {
 
     font-size: 10px;
 }
+.custom-line {
+  border: none;             /* Remove default border style */
+  height: 2px;              /* Thickness of the line */
+  background-color: #333;   /* Color of the line */
+   /*width: 50%;               Width of the line (e.g., half the screen) */
+  margin: 3px auto;        /* Adds space above/below and centers it */
+}
+.line-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Keeps them vertically centered on the line */
+  width: 100%;        /* Ensures the container takes up the full width */
+  font-size: small;
+}
