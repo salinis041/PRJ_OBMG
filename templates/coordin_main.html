@@ -111,28 +111,6 @@
                  <span>{{ pv.Room }}</span>  <span>ROOM#</span>
                   </div>
               <hr class="custom-line">
-
-<!--         <h6>Patient Information</h6>-->
-
-<!--            <div class="mt-3">-->
-<!--                <strong>Patient Name</strong>-->
-<!--                <div class="text-muted">John Smith</div>-->
-<!--            </div>-->
-
-<!--            <div class="mt-3">-->
-<!--                <strong>DOB</strong>-->
-<!--                <div class="text-muted">01/01/1980</div>-->
-<!--            </div>-->
-
-<!--            <div class="mt-3">-->
-<!--                <strong>Age</strong>-->
-<!--                <div class="text-muted">46</div>-->
-<!--            </div>-->
-
-<!--            <div class="mt-3">-->
-<!--                <strong>Gender</strong>-->
-<!--                <div class="text-muted">Male</div>-->
-<!--            </div>-->
         </div>
         <div>
 
@@ -983,18 +961,191 @@
         </div>
 
     </div>
+        </div>
     <div class="tab-pane fade" id="chart">
         <h3>Welcome</h3>
         <p>Chart content goes here.</p>
     </div>
+        <!--team care-->
     <div class="tab-pane fade" id="care">
-        <h3>Welcome</h3>
-        <p>Care Team content goes here.</p>
+        <h6>Care Team</h6>
+<!--        <p>Care Team content goes here.</p>-->
+         <!-- ================= TABLE ================= -->
+
+    <div class="patient-table-wrapper">
+
+        <table class="patient-table" style="min-width:800px!important">
+
+            <thead>
+
+            <tr>
+                <th>PCP</th>
+                <th>NAME</th>
+                <th>SPECIALTY</th>
+                <th>OFFICE #</th>
+                <th>RELATIONSHIPS</th>
+                <th>ENROLLMENT</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+<tr>
+
+     <td>
+
+    </td>
+    <td class="patient-name">
+        ALICE JOHN
+    </td>
+    <td>
+        Family Practice
+    </td>
+
+    <td>
+        (281)3412334
+    </td>
+
+    <td>
+        <div><span class="language-icon" >🆕  New</span></div>
+        <div><span class="language-icon" >🚫 Not Affiliated</span></div>
+    </td>
+
+    <td>
+        Enrolled
+    </td>
+    <td>
+       <span class="language-icon" >✉️ Invited</span>
+    </td>
+
+    <td>
+        <button class="expand-button">...</button>
+    </td>
+
+
+
+</tr>
+ <tr>
+
+     <td>
+
+    </td>
+    <td class="patient-name">
+        ALEX JHON
+    </td>
+    <td>
+        Office User
+    </td>
+
+    <td>
+        (281)3412456
+    </td>
+
+    <td>
+        <div><span class="language-icon" >🆕  New</span></div>
+        <div><span class="language-icon" >🚫 Not Affiliated</span></div>
+    </td>
+
+    <td>
+        Enrolled
+    </td>
+    <td>
+       <span class="language-icon" >✉️ Invited</span>
+    </td>
+
+    <td>
+        <button class="expand-button">...</button>
+    </td>
+
+
+
+</tr>
+
+
+
+</tbody>
+
+        </table>
+
     </div>
+
+    </div>
+        <!--team care-->
     <div class="tab-pane fade" id="appoint">
-        <h3>Welcome</h3>
-        <p>Appointment content goes here.</p>
+        <h6>Appointments</h6>
+         <!-- ================= TABLE ================= -->
+
+    <div class="patient-table-wrapper">
+
+        <table class="patient-table" style="min-width:800px!important">
+
+            <thead>
+
+            <tr>
+                <th>WHEN</th>
+                <th>PROVIDER</th>
+                <th>SPECIALTY</th>
+                <th>TYPE</th>
+                <th>PHONE</th>
+                <th>APPNT TYPE</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+<tr>
+
+     <td>
+      09/08/2026
+    </td>
+    <td>
+        ALICE JOHN
+    </td>
+    <td>
+        Family Practice
+    </td>
+
+    <td>
+        PCP
+    </td>
+
+    <td>
+        (281)3412334
+    </td>
+    <td>
+
+    </td>
+
+    <td>
+        Pending No Answer
+    </td>
+
+
+    <td>
+        <button class="expand-button">...</button>
+    </td>
+
+
+
+</tr>
+
+
+
+
+</tbody>
+
+        </table>
+
     </div>
+
+    </div>
+        <!--appmnt-->
     </div>
     </div>
     </div>
@@ -1003,21 +1154,51 @@
             border-left:1px solid #ddd;
             padding:15px;
             overflow-y:auto;">
-        Right
+        <!-- Expand / Collapse Section -->
+        <div class="border rounded mb-2">
+            <!-- Clickable Header -->
+            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#workQ" aria-expanded="false" aria-controls="patientList">
+                <span class="arrow me-2">▶</span> Work Queues
+                 </div>
+            <!-- Content --> <div class="collapse" id="workQ" style="margin-left: 40px;" >
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action"> Work 1 </a>
+                <a href="#" class="list-group-item list-group-item-action"> Work2 2 </a>
+                 </div> </div> </div>
+         <div class="border rounded mb-2">
+            <!-- Clickable Header -->
+            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#Encount" aria-expanded="false" aria-controls="patientList">
+                <span class="arrow me-2">▶</span> Encounter Task
+                 </div>
+            <!-- Content --> <div class="collapse" id="Encount" style="margin-left: 40px;" >
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action"> Task 1 </a>
+                <a href="#" class="list-group-item list-group-item-action"> Task 2 </a>
+                 </div> </div> </div>
+        <div class="border rounded mb-2">
+            <!-- Clickable Header -->
+            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#gen" aria-expanded="false" aria-controls="patientList">
+                <span class="arrow me-2">▶</span> General Task
+                 </div>
+            <!-- Content --> <div class="collapse" id="gen" style="margin-left: 40px;" >
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action"> Task 1 </a>
+                <a href="#" class="list-group-item list-group-item-action"> Task 2 </a>
+                 </div> </div> </div>
     </div>
     </div>
-<!--     <footer style="-->
-<!--    height:50px;-->
-<!--    background:#f8f9fa;-->
-<!--    border-top:1px solid #ddd;-->
-<!--    display:flex;-->
-<!--    align-items:center;-->
-<!--    justify-content:center;-->
-<!--    font-size:14px;-->
-<!--    color:#666;-->
-<!--">-->
-<!--    © 2026 Your Company. All Rights Reserved.-->
-<!--</footer>-->
+     <footer style="
+    height:50px;
+    background:#f8f9fa;
+    border-top:1px solid #ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    color:#666;
+">
+    © 2026 Your Company. All Rights Reserved.
+</footer>
 {% endfor %}
 
 
