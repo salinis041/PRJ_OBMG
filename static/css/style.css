@@ -311,7 +311,248 @@ body {
     font-size: 10px;
 }
 .custom-line {
-  border: none;             /* Remove default border style */
+  borde/* =====================================================
+   DEMOGRAPHICS PAGE
+===================================================== */
+
+.demographics-page {
+    width: 100%;
+    padding-bottom: 30px;
+    color: #4d5960;
+}
+
+
+/* Page title */
+
+.demo-page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+.demo-page-title h5 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #46545b;
+}
+
+.demo-print-button {
+    border: 1px solid #cbd1d4;
+
+    background: white;
+
+    border-radius: 3px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    color: #56636a;
+
+    cursor: pointer;
+}
+
+
+/* Card */
+
+.demo-card {
+    background: white;
+
+    border: 1px solid #d2d8db;
+
+    border-radius: 2px;
+
+    margin-bottom: 10px;
+
+    box-shadow: 0 1px 1px rgba(0,0,0,.03);
+}
+
+
+/* Card header */
+
+.demo-card-header {
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 10px;
+
+    background: #edf2f4;
+
+    border-bottom: 1px solid #d4dadd;
+
+    font-size: 11px;
+
+    color: #526068;
+}
+
+.demo-edit {
+    border: none;
+
+    background: transparent;
+
+    color: #087ea4;
+
+    font-size: 10px;
+
+    cursor: pointer;
+}
+
+
+/* Grid */
+
+.demo-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    column-gap: 20px;
+
+    row-gap: 0;
+
+    padding: 4px 10px;
+}
+
+
+/* Field */
+
+.demo-field {
+    min-height: 38px;
+
+    padding: 6px 3px;
+
+    border-bottom: 1px solid #edf0f1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    min-width: 0;
+}
+
+.demo-field label,
+.demo-wide-field label,
+.provider-grid label {
+    font-size: 8px;
+
+    color: #89959b;
+
+    font-weight: bold;
+
+    margin-bottom: 3px;
+}
+
+.demo-field span,
+.demo-wide-field span,
+.provider-grid span {
+    font-size: 11px;
+
+    color: #4f5c63;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* Wide field */
+
+.demo-wide-field {
+    padding: 7px 13px;
+
+    border-top: 1px solid #edf0f1;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* Sub heading */
+
+.demo-sub-header {
+    padding: 6px 12px;
+
+    background: #f6f8f9;
+
+    border-top: 1px solid #dfe3e5;
+
+    border-bottom: 1px solid #e2e6e8;
+
+    font-size: 9px;
+
+    font-weight: bold;
+
+    color: #68767d;
+}
+
+
+/* Providers */
+
+.provider-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 0;
+
+    padding: 5px 10px;
+}
+
+.provider-grid > div {
+    min-height: 45px;
+
+    padding: 7px;
+
+    border-right: 1px solid #edf0f1;
+
+    border-bottom: 1px solid #edf0f1;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.provider-grid > div:nth-child(3n) {
+    border-right: none;
+}
+
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+
+    .demo-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .provider-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .demo-grid,
+    .provider-grid {
+        grid-template-columns: 1fr;
+    }
+
+}r: none;             /* Remove default border style */
   height: 2px;              /* Thickness of the line */
   background-color: #333;   /* Color of the line */
    /*width: 50%;               Width of the line (e.g., half the screen) */
@@ -323,4 +564,303 @@ body {
   align-items: center; /* Keeps them vertically centered on the line */
   width: 100%;        /* Ensures the container takes up the full width */
   font-size: small;
+}
+/* =========================================================
+   PATIENT DEMOGRAPHICS
+   ========================================================= */
+
+.demographics-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 22px 40px 22px;
+    background: #f7f8f9;
+    color: #394950;
+}
+
+
+/* PAGE TITLE
+--------------------------------------------------------- */
+
+.demo-page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+}
+
+.demo-page-title h5 {
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 24px;
+
+    font-weight: 600;
+
+    color: #263b46;
+}
+
+
+/* PRINT BUTTON
+--------------------------------------------------------- */
+
+.demo-print-button {
+    border: 1px solid #bfc9ce;
+
+    background: #ffffff;
+
+    color: #3f5058;
+
+    border-radius: 3px;
+
+    padding: 5px 12px;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.demo-print-button:hover {
+    background: #f1f4f5;
+}
+
+
+/* CARD
+--------------------------------------------------------- */
+
+.demo-card {
+    width: 100%;
+
+    margin-bottom: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #d2dade;
+
+    border-radius: 3px;
+
+    overflow: hidden;
+}
+
+
+/* CARD HEADER
+--------------------------------------------------------- */
+
+.demo-card-header {
+    min-height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 13px;
+
+    background: #edf2f4;
+
+    border-bottom: 1px solid #d3dadd;
+
+    color: #394c55;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.demo-edit {
+    border: 0;
+
+    background: transparent;
+
+    color: #087fa5;
+
+    font-size: 12px;
+
+    padding: 4px 7px;
+
+    cursor: pointer;
+}
+
+.demo-edit:hover {
+    text-decoration: underline;
+}
+
+
+/* THREE COLUMN GRID
+--------------------------------------------------------- */
+
+.demo-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    column-gap: 28px;
+
+    row-gap: 0;
+
+    padding: 4px 13px;
+}
+
+
+/* FIELD
+--------------------------------------------------------- */
+
+.demo-field {
+    min-width: 0;
+
+    min-height: 48px;
+
+    padding: 7px 3px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-bottom: 1px solid #edf0f1;
+}
+
+
+/* LABEL */
+
+.demo-field label,
+.demo-wide-field label,
+.provider-grid label {
+    display: block;
+
+    margin: 0 0 4px 0;
+
+    color: #89969c;
+
+    font-size: 9px;
+
+    line-height: 12px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+/* VALUE */
+
+.demo-field span,
+.demo-wide-field span,
+.provider-grid span {
+    display: block;
+
+    color: #3d4d54;
+
+    font-size: 12px;
+
+    line-height: 17px;
+
+    min-height: 17px;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* WIDE FIELD
+--------------------------------------------------------- */
+
+.demo-wide-field {
+    padding: 9px 16px 12px;
+
+    border-top: 1px solid #edf0f1;
+}
+
+
+/* SUB SECTION HEADER
+--------------------------------------------------------- */
+
+.demo-sub-header {
+    padding: 8px 14px;
+
+    background: #f5f7f8;
+
+    border-top: 1px solid #dce2e4;
+
+    border-bottom: 1px solid #dce2e4;
+
+    color: #617078;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+/* PROVIDERS
+--------------------------------------------------------- */
+
+.provider-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    padding: 5px 13px;
+}
+
+.provider-grid > div {
+    min-height: 52px;
+
+    padding: 8px 10px;
+
+    border-right: 1px solid #edf0f1;
+
+    border-bottom: 1px solid #edf0f1;
+}
+
+.provider-grid > div:last-child {
+    border-right: 0;
+}
+
+
+/* RIGHT/LEFT SIDEBAR SHOULD NOT AFFECT DEMOGRAPHICS
+--------------------------------------------------------- */
+
+#demograh {
+    width: 100%;
+}
+
+#demograh .demographics-page {
+    width: 100%;
+}
+
+
+/* RESPONSIVE
+--------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+
+    .demo-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .provider-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .demographics-page {
+        padding: 12px;
+    }
+
+    .demo-grid,
+    .provider-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .demo-page-title h5 {
+        font-size: 16px;
+    }
 }
