@@ -225,8 +225,763 @@
         <p>Home content goes here.</p>
     </div>
     <div class="tab-pane fade" id="demograh">
-        <h3>Welcome</h3>
-        <p>Demographics content goes here.</p>
+
+    <div class="demographics-page">
+
+        <!-- =========================================
+             TITLE
+        ========================================== -->
+
+        <div class="demo-page-title">
+
+            <h5>Patient Demographics</h5>
+
+            <button class="demo-print-button">
+                🖨 Print
+            </button>
+
+        </div>
+
+
+        <!-- =========================================
+             ENCOUNTER INFO
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Encounter Info
+                </strong>
+
+                <button class="demo-edit">
+                    ✎ Edit
+                </button>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PATIENT
+                    </label>
+
+                    <span>
+                        {{ pv.Patname }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        FACILITY
+                    </label>
+
+                    <span>
+                        {{ pv.ServicingFacility or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        MRN
+                    </label>
+
+                    <span>
+                        {{ pv.MedicalRecordNumber or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ACCOUNT #
+                    </label>
+
+                    <span>
+                        {{ pv.AccountNumber or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ADMIT DATE
+                    </label>
+
+                    <span>
+                        {{ pv.AdmitDateTimeDisplay or pv.AdmitDateTime or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        DISCHARGE DATE
+                    </label>
+
+                    <span>
+                        {{ pv.DischargeDateTimeDisplay or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ROOM
+                    </label>
+
+                    <span>
+                        {{ pv.Room or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PATIENT TYPE
+                    </label>
+
+                    <span>
+                        {{ pv.PatientType or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ADMIT SOURCE
+                    </label>
+
+                    <span>
+                        {{ pv.AdmitSource or '-' }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="demo-wide-field">
+
+                <label>
+                    ADMIT REASON
+                </label>
+
+                <span>
+                    {{ pv.AdmitReason or '-' }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             PATIENT DEMOGRAPHICS
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Patient Demographics
+                </strong>
+
+                <button class="demo-edit">
+                    ✎ Edit
+                </button>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        NAME
+                    </label>
+
+                    <span>
+                        {{ pv.Patname }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        GENDER
+                    </label>
+
+                    <span>
+                        {{ pv.Gender or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        DATE OF BIRTH
+                    </label>
+
+                    <span>
+                        {{ pv.BirthDate or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        AGE
+                    </label>
+
+                    <span>
+                        {{ pv.Age or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        MARITAL STATUS
+                    </label>
+
+                    <span>
+                        {{ pv.MaritalStatus or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        RACE
+                    </label>
+
+                    <span>
+                        {{ pv.Race or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        RELIGION
+                    </label>
+
+                    <span>
+                        {{ pv.Religion or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PRIMARY LANGUAGE
+                    </label>
+
+                    <span>
+                        {{ pv.PrimaryLang or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ALIAS
+                    </label>
+
+                    <span>
+                        {{ pv.Alias or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        MOTHER'S NAME
+                    </label>
+
+                    <span>
+                        {{ pv.MothersName or '-' }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- CONTACT -->
+
+            <div class="demo-sub-header">
+                Contact
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        HOME PHONE
+                    </label>
+
+                    <span>
+                        {{ pv.HomePhone or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        WORK PHONE
+                    </label>
+
+                    <span>
+                        {{ pv.WorkPhone or '-' }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ADDRESS -->
+
+            <div class="demo-sub-header">
+                Address
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ADDRESS 1
+                    </label>
+
+                    <span>
+                        {{ pv.Address1 or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ADDRESS 2
+                    </label>
+
+                    <span>
+                        {{ pv.Address2 or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        CITY
+                    </label>
+
+                    <span>
+                        {{ pv.City or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        STATE
+                    </label>
+
+                    <span>
+                        {{ pv.State or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ZIP
+                    </label>
+
+                    <span>
+                        {{ pv.Zip or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        COUNTRY
+                    </label>
+
+                    <span>
+                        {{ pv.Country or '-' }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             GUARANTOR
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Guarantor Demographics
+                </strong>
+
+                <button class="demo-edit">
+                    ✎ Edit
+                </button>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        GUARANTOR
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        RELATIONSHIP
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PHONE
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        ADDRESS
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             PRIMARY INSURANCE
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Primary Insurance
+                </strong>
+
+                <button class="demo-edit">
+                    ✎ Edit
+                </button>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PAYER
+                    </label>
+
+                    <span>
+                        {{ pv.PAYOR or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        FINANCIAL CLASS
+                    </label>
+
+                    <span>
+                        {{ pv.FinancialClass or '-' }}
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        INSURANCE
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        MEMBER ID
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             SECONDARY INSURANCE
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Secondary Insurance
+                </strong>
+
+                <button class="demo-edit">
+                    ✎ Edit
+                </button>
+
+            </div>
+
+
+            <div class="demo-grid">
+
+
+                <div class="demo-field">
+
+                    <label>
+                        PAYER
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="demo-field">
+
+                    <label>
+                        MEMBER ID
+                    </label>
+
+                    <span>
+                        -
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================================
+             PROVIDERS
+        ========================================== -->
+
+        <div class="demo-card">
+
+            <div class="demo-card-header">
+
+                <strong>
+                    Patient Care Providers
+                </strong>
+
+            </div>
+
+
+            <div class="provider-grid">
+
+
+                <div>
+
+                    <label>
+                        ATTENDING
+                    </label>
+
+                    <span>
+                        {{ pv.AttendingPhysicianLastName or '' }},
+                        {{ pv.AttendingPhysicianFirstName or '' }}
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        REFERRING
+                    </label>
+
+                    <span>
+                        {{ pv.ReferringPhysicianLastName or '' }},
+                        {{ pv.ReferringPhysicianFirstName or '' }}
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        CONSULTING
+                    </label>
+
+                    <span>
+                        {{ pv.ConsultingPhysicianLastName or '' }},
+                        {{ pv.ConsultingPhysicianFirstName or '' }}
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        PCP
+                    </label>
+
+                    <span>
+                        {{ pv.PCP or '-' }}
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
     </div>
     <div class="tab-pane fade" id="chart">
         <h3>Welcome</h3>
