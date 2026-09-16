@@ -1,5 +1,4 @@
 from database.connection import get_connection
-import pyodbc
 
 
 def get_patients():
@@ -37,14 +36,76 @@ def get_patients():
 
         return patients
 
-    except pyodbc.Error as e:
-        print(f"Database error while fetching patients: {e}")
-        raise
+    finally:
+        connection.close()
 
-    except Exception as e:
-        print(f"Unexpected error while fetching patients: {e}")
-        raise
+
+def get_coorpathome():
+    query = """
+        SELECT
+            PatID,
+            LastName+' '+FirstName as Patname,
+            convert(varchar(10),BirthDate,101) as BirthDate,
+            convert(varchar(3),DATEDIFF(month, BirthDate, GETDATE()) / 12) AS Age ,
+            case when Gender='M' then 'Male' when Gender='F' then 'Female' else 'Other' end as Gender,
+            MedicalRecordNumber,
+            AccountNumber
+
+
+        FROM PatientVisits
+        ORDER BY AdmitDateTime DESC
+    """
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute(query)
+
+        columns = [column[0] for column in cursor.description]
+
+        patcordinate = [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+        return patcordinate
 
     finally:
-        if connection:
-            connection.close()
+        connection.close()
+def get_patientVisit(visit_id):
+    query = """
+        SELECT
+            PatID,
+            LastName+' '+FirstName as Patname,
+            convert(varchar(10),BirthDate,101) as BirthDate,
+            convert(varchar(3),DATEDIFF(month, BirthDate, GETDATE()) / 12) AS Age ,
+            case when Gender='M' then 'Male' when Gender='F' then 'Female' else 'Other' end as Gender,
+            MedicalRecordNumber,
+            AccountNumber,[Address1],[City]
+      ,[State]
+      ,[Zip],[Room],[ServicingFacility],[HomePhone],[PrimaryLang]
+      ,[AdmitReason]
+
+
+        FROM PatientVisits
+        where AccountNumber=?
+    """
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute(query,visit_id)
+
+        columns = [column[0] for column in cursor.description]
+
+        patcordinate = [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+        return patcordinate
+
+    finally:
+        connection.close()

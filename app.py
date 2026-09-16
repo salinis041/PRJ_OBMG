@@ -1,14 +1,15 @@
 from flask import Flask
 from dotenv import load_dotenv
 
-from routes.patient_routes import patient_routes
+#from routes.patient_routes import patient_routes
+from routes.coordinator_routes import coodinator_routes
 
 
 load_dotenv()
 
 app = Flask(__name__)
 
-app.register_blueprint(patient_routes)
+app.register_blueprint(coodinator_routes)
 
 
 if __name__ == "__main__":
