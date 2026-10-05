@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Added Details</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/style.css'
+          ) }}">
+
+</head>
+
+<body>
+
+<div class="available-details-page">
+
+    <div class="available-details-header">
+
+        <div>
+
+            <h1>
+                Added Details
+            </h1>
+
+            <p>
+                Patient records added to the application
+            </p>
+
+        </div>
+
+        <div>
+
+            <a
+                href="{{ url_for(
+                    'available_details_routes.available_details'
+                ) }}"
+                class="back-button"
+            >
+                Available Details
+            </a>
+
+            <a
+                href="{{ url_for(
+                    'coodinator_routes.home'
+                ) }}"
+                class="back-button"
+            >
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="details-summary">
+
+        Total added records:
+
+        <strong>
+            {{ details|length }}
+        </strong>
+
+    </div>
+
+
+    <div class="available-details-table-container">
+
+        <table class="available-details-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ACCOUNT #</th>
+
+                    <th>PATIENT</th>
+
+                    <th>MRN</th>
+
+                    <th>DOB</th>
+
+                    <th>GENDER</th>
+
+                    <th>FACILITY</th>
+
+                    <th>ATTENDING PHYSICIAN</th>
+
+                    <th>ADMIT DATE</th>
+
+                    <th>PATIENT TYPE</th>
+
+                    <th>ADDED DATE</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for detail in details %}
+
+                    <tr>
+
+                        <td>
+                            {{ detail["AccountNumber"] }}
+                        </td>
+
+                        <td>
+
+                            {{ detail["PatientFirstName"] }}
+                            {{ detail["PatientMiddleName"] }}
+                            {{ detail["PatientLastName"] }}
+
+                        </td>
+
+                        <td>
+                            {{ detail["MedicalRecordNumber"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["PatientDOB"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["PatientGender"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["Facility"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["AttendingPhysician"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["AdmitDate"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["PatientType"] }}
+                        </td>
+
+                        <td>
+                            {{ detail["CreatedDate"] }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="no-records"
+                        >
+                            No records have been added yet.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

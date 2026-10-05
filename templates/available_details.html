@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Available Details</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="available-details-page">
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="available-details-header">
+
+        <div>
+
+            <h2>
+                Available Details
+            </h2>
+
+            <p>
+                Patient records available from the remote database
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         TABS
+    ========================================== -->
+
+    <div class="details-tabs">
+
+        <a
+            href="{{ url_for(
+                'available_details_routes.available_details'
+            ) }}"
+            class="details-tab active">
+
+            Available Details
+
+        </a>
+
+
+        <a
+            href="{{ url_for(
+                'added_details_routes.added_details'
+            ) }}"
+            class="details-tab">
+
+            Added Details
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================================
+         SEARCH
+    ========================================== -->
+
+    <div class="details-search-panel">
+
+    <form
+        method="GET"
+        action="{{ url_for(
+            'available_details_routes.available_details'
+        ) }}"
+        id="searchForm"
+        class="details-search-form">
+
+
+        <div class="search-field">
+
+            <label for="searchInput">
+                Search
+            </label>
+
+            <input
+                type="text"
+                id="searchInput"
+                name="search"
+                value="{{ search }}"
+                placeholder="Account, MRN or patient name..."
+                autocomplete="off">
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="search-button">
+
+            Search
+
+        </button>
+
+
+        {% if search %}
+
+            <a
+                href="{{ url_for(
+                    'available_details_routes.available_details'
+                ) }}"
+                class="clear-button">
+
+                Clear
+
+            </a>
+
+        {% endif %}
+
+
+    </form>
+
+</div>
+
+
+    <!-- =========================================
+         SUMMARY + ADD BUTTON
+    ========================================== -->
+
+    <div class="details-summary">
+
+        <div>
+
+            {% if total_records > 0 %}
+
+                Showing
+                <strong>{{ start_record }}</strong>
+                -
+                <strong>{{ end_record }}</strong>
+                of
+                <strong>{{ total_records }}</strong>
+                records
+
+            {% else %}
+
+                No records found.
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ADD VISIBLE RECORDS -->
+
+        <div class="add-visible-container">
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'available_details_routes.add_available_detail'
+                ) }}"
+                id="addVisibleForm">
+
+
+                <!--
+                    IMPORTANT:
+
+                    Only Visit IDs from the CURRENT PAGE
+                    are submitted.
+
+                    If there are 50 records on this page,
+                    50 Visit IDs are submitted.
+
+                    Page 2 is NOT submitted.
+                -->
+
+                {% for detail in details %}
+
+                    <input
+                        type="hidden"
+                        name="visit_ids"
+                        value="{{ detail['Visit ID'] }}">
+
+                {% endfor %}
+
+
+                <input
+                    type="hidden"
+                    name="search"
+                    value="{{ search }}">
+
+
+                <input
+                    type="hidden"
+                    name="page"
+                    value="{{ page }}">
+
+
+                <button
+                    type="submit"
+                    class="add-detail-button"
+                    {% if not details %}
+                        disabled
+                    {% endif %}>
+
+                    Add Visible Records
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         TABLE
+    ========================================== -->
+
+    <div class="details-table-container">
+
+        <table class="available-details-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ACCOUNT #
+                    </th>
+
+
+                    <th>
+                        PATIENT
+                    </th>
+
+
+                    <th>
+                        MRN
+                    </th>
+
+
+                    <th>
+                        DOB
+                    </th>
+
+
+                    <th>
+                        FACILITY
+                    </th>
+
+
+                    <th>
+                        ATTENDING PHYSICIAN
+                    </th>
+
+
+                    <th>
+                        ADMIT DATE
+                    </th>
+
+
+                    <th>
+                        PATIENT TYPE
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for detail in details %}
+
+                <tr>
+
+
+                    <td>
+
+                        {{ detail['Account Number'] or '' }}
+
+                    </td>
+
+
+                    <td class="patient-name">
+
+                        {{ detail['Pat First Nm'] or '' }}
+
+                        {{ detail['Pat Middle Nm'] or '' }}
+
+                        {{ detail['Pat Last Nm'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Med Rec Nbr'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Pat DOB'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Facility'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Phys Name Attending'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Admit Date'] or '' }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ detail['Patient Type'] or '' }}
+
+                    </td>
+
+
+                </tr>
+
+
+                {% else %}
+
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="no-results">
+
+                        No records found.
+
+                    </td>
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+
+        </table>
+
+    </div>
+
+
+    <!-- =========================================
+         PAGINATION
+    ========================================== -->
+
+    {% if total_pages > 1 %}
+
+    <div class="details-pagination">
+
+
+        {% if page > 1 %}
+
+            <a
+                href="{{ url_for(
+                    'available_details_routes.available_details',
+                    page=page-1,
+                    search=search
+                ) }}">
+
+                Previous
+
+            </a>
+
+        {% endif %}
+
+
+        {% for page_number in page_numbers %}
+
+
+            {% if page_number == page %}
+
+                <span class="current-page">
+
+                    {{ page_number }}
+
+                </span>
+
+
+            {% else %}
+
+                <a
+                    href="{{ url_for(
+                        'available_details_routes.available_details',
+                        page=page_number,
+                        search=search
+                    ) }}">
+
+                    {{ page_number }}
+
+                </a>
+
+            {% endif %}
+
+
+        {% endfor %}
+
+
+        {% if page < total_pages %}
+
+            <a
+                href="{{ url_for(
+                    'available_details_routes.available_details',
+                    page=page+1,
+                    search=search
+                ) }}">
+
+                Next
+
+            </a>
+
+        {% endif %}
+
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+
+/*
+ * LIVE SEARCH
+ *
+ * Wait 500 milliseconds after the user stops typing.
+ */
+let searchTimer;
+
+
+const searchInput =
+    document.getElementById("searchInput");
+
+
+searchInput.addEventListener(
+    "input",
+    function () {
+
+
+        clearTimeout(searchTimer);
+
+
+        const searchValue =
+            this.value.trim();
+
+
+        searchTimer = setTimeout(
+            function () {
+
+
+                const url =
+                    new URL(
+                        window.location.href
+                    );
+
+
+                if (searchValue.length > 0) {
+
+                    url.searchParams.set(
+                        "search",
+                        searchValue
+                    );
+
+                }
+                else {
+
+                    url.searchParams.delete(
+                        "search"
+                    );
+
+                }
+
+
+                /*
+                 * New search always starts
+                 * at page 1.
+                 */
+                url.searchParams.set(
+                    "page",
+                    "1"
+                );
+
+
+                window.location.href =
+                    url.toString();
+
+
+            },
+            500
+        );
+
+
+    }
+);
+
+
+/*
+ * Add Visible Records confirmation.
+ */
+const addForm =
+    document.getElementById(
+        "addVisibleForm"
+    );
+
+
+if (addForm) {
+
+
+    addForm.addEventListener(
+        "submit",
+        function (event) {
+
+
+            const visitIds =
+                this.querySelectorAll(
+                    'input[name="visit_ids"]'
+                );
+
+
+            if (visitIds.length === 0) {
+
+                event.preventDefault();
+
+                alert(
+                    "There are no visible records to add."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Add " +
+                    visitIds.length +
+                    " visible record(s)?"
+                );
+
+
+            if (!confirmed) {
+
+                event.preventDefault();
+
+            }
+
+
+        }
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

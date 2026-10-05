@@ -864,3 +864,396 @@ body {
         font-size: 16px;
     }
 }
+/* =====================================================
+   AVAILABLE DETAILS PAGE
+===================================================== */
+
+.available-details-page {
+    padding: 20px;
+
+    background: #f6f8f9;
+
+    min-height: 100vh;
+
+    color: #43545c;
+}
+
+
+/* HEADER */
+
+.available-details-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.available-details-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    color: #29414c;
+}
+
+.available-details-header p {
+    margin: 5px 0 0;
+
+    font-size: 12px;
+
+    color: #7a898f;
+}
+
+
+/* BACK */
+
+.back-button {
+    padding: 7px 14px;
+
+    border: 1px solid #c8d1d5;
+
+    border-radius: 3px;
+
+    background: white;
+
+    color: #087ea3;
+
+    text-decoration: none;
+
+    font-size: 12px;
+}
+
+
+/* SEARCH */
+
+.details-search-panel {
+    padding: 15px;
+
+    background: white;
+
+    border: 1px solid #d5dde0;
+
+    border-radius: 3px;
+
+    margin-bottom: 12px;
+}
+
+.details-search-panel form {
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 10px;
+}
+
+.search-field {
+    width: 350px;
+}
+
+.search-field label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    color: #687980;
+}
+
+.search-field input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 8px 10px;
+
+    border: 1px solid #cbd4d8;
+
+    border-radius: 3px;
+
+    font-size: 12px;
+}
+
+.search-button {
+    padding: 8px 18px;
+
+    border: 1px solid #087a9e;
+
+    border-radius: 3px;
+
+    background: #087fa5;
+
+    color: white;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.clear-button {
+    padding: 8px 12px;
+
+    color: #087fa5;
+
+    font-size: 12px;
+
+    text-decoration: none;
+}
+
+
+/* SUMMARY */
+
+.details-summary {
+    margin: 10px 0;
+
+    font-size: 11px;
+
+    color: #718087;
+}
+
+
+/* TABLE */
+
+.details-table-container {
+    background: white;
+
+    border: 1px solid #d3dbde;
+
+    overflow-x: auto;
+}
+
+.available-details-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 11px;
+}
+
+.available-details-table th {
+    padding: 9px 8px;
+
+    background: #edf2f4;
+
+    border-bottom: 1px solid #cfd8dc;
+
+    color: #53636a;
+
+    text-align: left;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.available-details-table td {
+    padding: 9px 8px;
+
+    border-bottom: 1px solid #edf0f1;
+
+    color: #4c5c63;
+
+    white-space: nowrap;
+}
+
+.available-details-table tbody tr:hover {
+    background: #f7fbfc;
+}
+
+.patient-name {
+    font-weight: 600;
+
+    color: #294b58 !important;
+}
+
+
+/* ADD BUTTON */
+
+.add-detail-button {
+    padding: 5px 12px;
+
+    border: 1px solid #1683a5;
+
+    border-radius: 3px;
+
+    background: white;
+
+    color: #087da2;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.add-detail-button:hover {
+    background: #087fa5;
+
+    color: white;
+}
+
+
+/* NO RESULTS */
+
+.no-results {
+    padding: 30px !important;
+
+    text-align: center;
+
+    color: #89969b !important;
+}
+
+
+/* PAGINATION */
+
+.details-pagination {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 15px;
+}
+
+.details-pagination a,
+.details-pagination span {
+    padding: 6px 10px;
+
+    border: 1px solid #ccd5d8;
+
+    border-radius: 3px;
+
+    background: white;
+
+    color: #087da2;
+
+    text-decoration: none;
+
+    font-size: 11px;
+}
+
+.details-pagination .current-page {
+    background: #087fa5;
+
+    border-color: #087fa5;
+
+    color: white;
+}
+/* =====================================================
+   AVAILABLE / ADDED DETAILS TABS
+===================================================== */
+
+.details-tabs {
+    display: flex;
+
+    align-items: center;
+
+    gap: 0;
+
+    margin-bottom: 12px;
+
+    border-bottom: 1px solid #d5dde0;
+}
+
+
+.details-tab {
+    display: inline-block;
+
+    padding: 9px 18px;
+
+    border: 1px solid #d5dde0;
+
+    border-bottom: none;
+
+    background: #eef2f4;
+
+    color: #52636b;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    margin-right: 3px;
+
+    border-radius: 3px 3px 0 0;
+}
+
+
+.details-tab:hover {
+    background: #e4edef;
+
+    color: #087da2;
+}
+
+
+.details-tab.active {
+    background: white;
+
+    color: #087da2;
+
+    font-weight: 600;
+
+    border-top: 2px solid #087fa5;
+}
+
+
+/* =====================================================
+   ADD VISIBLE RECORDS
+===================================================== */
+
+.add-visible-container {
+    margin-left: auto;
+}
+
+
+.details-summary {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin: 10px 0;
+}
+
+
+.add-detail-button {
+    padding: 7px 14px;
+
+    border: 1px solid #1683a5;
+
+    border-radius: 3px;
+
+    background: #087fa5;
+
+    color: white;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+
+.add-detail-button:hover {
+    background: #066b8b;
+}
+
+
+.add-detail-button:disabled {
+    background: #b8c2c6;
+
+    border-color: #b8c2c6;
+
+    cursor: not-allowed;
+}
