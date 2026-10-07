@@ -1219,12 +1219,23 @@ body {
 
 .details-summary {
     display: flex;
-
     align-items: center;
+    gap: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 8px 0;
+    padding: 0 3px;
+    font-size: 12px;
+    color: #687780;
+}
 
-    justify-content: space-between;
+.details-summary strong {
+    font-weight: 600;
+    color: #34495e;
+}
 
-    margin: 10px 0;
+.details-summary span {
+    white-space: nowrap;
 }
 
 
@@ -1256,4 +1267,495 @@ body {
     border-color: #b8c2c6;
 
     cursor: not-allowed;
+}
+/* =====================================================
+   DETAILS MODE SELECTOR
+===================================================== */
+
+.details-mode-selector {
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    margin: 15px 0;
+
+    padding: 10px 0;
+}
+
+
+.mode-option {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 13px;
+
+    color: #344b56;
+
+    cursor: pointer;
+}
+
+
+.mode-option input[type="radio"] {
+    margin: 0;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   ADD / PLUS BUTTON
+===================================================== */
+
+.action-cell {
+    width: 60px;
+
+    text-align: center;
+}
+
+
+.add-patient-form {
+    margin: 0;
+}
+
+
+.add-plus-button {
+    width: 26px;
+
+    height: 26px;
+
+    padding: 0;
+
+    border: 1px solid #087fa5;
+
+    border-radius: 50%;
+
+    background: #087fa5;
+
+    color: white;
+
+    font-size: 18px;
+
+    line-height: 22px;
+
+    cursor: pointer;
+}
+
+
+.add-plus-button:hover {
+    background: #066b8b;
+
+    border-color: #066b8b;
+}
+.details-confirmation {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #d9e2e6;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.details-confirmation h2 {
+    margin-top: 0;
+    color: #344b56;
+}
+
+.details-confirmation p {
+    color: #52666f;
+    font-size: 14px;
+    margin: 12px 0;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.confirmation-actions form {
+    margin: 0;
+}
+
+.confirmation-actions .search-button,
+.confirmation-actions .clear-button {
+    display: inline-block;
+    width: auto;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+/* =========================
+   PAGE 6 - SEARCH BUTTON
+   ========================= */
+
+.search-button {
+    width: auto;
+    min-width: 68px;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+
+    padding: 8px 18px;
+
+    border: 1px solid #087a9e;
+    border-radius: 3px;
+    background: #087fa5;
+    color: white;
+
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   PAGE 6 - AVAILABLE DETAILS FINAL LAYOUT
+   ========================================================= */
+
+.available-details-page {
+    min-height: calc(100vh - 48px);
+    padding: 18px 24px 30px;
+    background: #f5f7f8;
+    color: #3f5058;
+}
+
+.available-details-page > h1 {
+    margin: 0 0 14px;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 600;
+    color: #29414c;
+}
+
+.details-mode-selector {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    min-height: 48px;
+    padding: 0 14px;
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid #d5dde0;
+    border-radius: 4px;
+}
+
+.mode-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    color: #40535c;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mode-option input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #087fa5;
+}
+
+.census-search-panel,
+.details-search-panel {
+    display: flex;
+    align-items: center;
+    min-height: 58px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #d5dde0;
+    border-radius: 4px;
+}
+
+.progressive-search-field,
+.details-search-panel .search-field input {
+    height: 34px;
+    width: min(520px, 100%);
+    padding: 0 11px;
+    border: 1px solid #c8d2d6;
+    border-radius: 4px;
+    background: #fff;
+    color: #344850;
+    font-size: 12px;
+    outline: none;
+}
+
+.progressive-search-field:focus,
+.details-search-panel .search-field input:focus {
+    border-color: #087fa5;
+    box-shadow: 0 0 0 2px rgba(8,127,165,.10);
+}
+
+.search-status {
+    margin-left: 10px;
+    color: #7b898f;
+    font-size: 11px;
+}
+
+.details-summary {
+    min-height: 28px;
+    margin: 0;
+    padding: 6px 2px;
+    color: #718087;
+    font-size: 11px;
+}
+
+.details-table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid #d3dbde;
+    border-radius: 4px;
+}
+
+.available-details-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.available-details-table th {
+    height: 36px;
+    padding: 0 10px;
+    background: #e9eef0;
+    border-right: 1px solid #d5dcdf;
+    border-bottom: 1px solid #cdd6da;
+    color: #56666d;
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.available-details-table th:last-child {
+    border-right: 0;
+    width: 52px;
+}
+
+.available-details-table td {
+    height: 40px;
+    padding: 0 10px;
+    border-right: 1px solid #edf0f1;
+    border-bottom: 1px solid #e4e8e9;
+    color: #4b5b62;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.available-details-table tbody tr:nth-child(even) {
+    background: #fbfcfc;
+}
+
+.available-details-table tbody tr:hover {
+    background: #f0f8fa;
+}
+
+.available-details-table td.patient-name {
+    color: #176d88 !important;
+    font-weight: 600;
+}
+
+.action-cell {
+    width: 52px;
+    text-align: center;
+}
+
+.add-patient-form {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.add-plus-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 1px solid #087fa5;
+    border-radius: 50%;
+    background: #087fa5;
+    color: #fff;
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .12s ease, transform .12s ease;
+}
+
+.add-plus-button:hover {
+    background: #066b8b;
+    transform: scale(1.04);
+}
+
+.no-results {
+    padding: 38px 20px;
+    text-align: center;
+    color: #87949a !important;
+    font-size: 12px;
+}
+
+.details-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-top: 13px;
+}
+
+.details-pagination a,
+.details-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 9px;
+    border: 1px solid #ccd5d8;
+    border-radius: 4px;
+    background: #fff;
+    color: #087da2;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.details-pagination a:hover {
+    background: #eef7f9;
+}
+
+.details-pagination .current-page {
+    border-color: #087fa5;
+    background: #087fa5;
+    color: #fff;
+}
+
+.details-search-panel .search-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: min(620px, 100%);
+}
+
+.details-search-panel .search-field input {
+    flex: 1 1 auto;
+    width: auto;
+}
+
+.search-button {
+    flex: 0 0 auto;
+    height: 34px;
+    min-width: 76px;
+    padding: 0 17px;
+    border: 1px solid #087a9e;
+    border-radius: 4px;
+    background: #087fa5;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.search-button:hover {
+    background: #066b8b;
+}
+
+.details-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(28, 43, 50, .42);
+}
+
+.details-modal {
+    width: min(430px, 100%);
+    padding: 22px 22px 18px;
+    background: #fff;
+    border: 1px solid #d5dde0;
+    border-radius: 6px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.18);
+}
+
+.details-modal h2 {
+    margin: 0 0 10px;
+    color: #29414c;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.details-modal p {
+    margin: 0;
+    color: #5d6c72;
+    font-size: 12px;
+    line-height: 19px;
+}
+
+.details-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.modal-secondary-button,
+.modal-primary-button {
+    min-width: 76px;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-secondary-button {
+    border: 1px solid #cbd5d9;
+    background: #fff;
+    color: #52636a;
+}
+
+.modal-primary-button {
+    border: 1px solid #087a9e;
+    background: #087fa5;
+    color: #fff;
+}
+
+.modal-secondary-button:hover {
+    background: #f3f5f6;
+}
+
+.modal-primary-button:hover {
+    background: #066b8b;
+}
+
+@media (max-width: 800px) {
+    .available-details-page {
+        padding: 14px 12px 24px;
+    }
+
+    .details-mode-selector {
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .census-search-panel,
+    .details-search-panel {
+        align-items: stretch;
+    }
+
+    .details-search-panel .search-field {
+        width: 100%;
+    }
 }

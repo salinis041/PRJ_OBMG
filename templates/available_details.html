@@ -5,13 +5,17 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Available Details</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 
 </head>
 
@@ -20,478 +24,1011 @@
 
 <div class="available-details-page">
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
+    <!-- =====================================================
+         PAGE TITLE
+         ===================================================== -->
 
-    <div class="available-details-header">
 
-        <div>
 
-            <h2>
-                Available Details
-            </h2>
 
-            <p>
-                Patient records available from the remote database
-            </p>
+    <!-- =====================================================
+         MODE SELECTOR
+         ===================================================== -->
 
-        </div>
+    <div class="details-mode-selector">
+
+        <label
+            class="mode-option"
+            for="mode-census"
+        >
+
+            <input
+                type="radio"
+                name="details-mode"
+                value="census"
+                id="mode-census"
+                {% if mode == "census" %}checked{% endif %}
+            >
+
+            <span>Current Census</span>
+
+        </label>
+
+
+        <label
+            class="mode-option"
+            for="mode-visit"
+        >
+
+            <input
+                type="radio"
+                name="details-mode"
+                value="visit"
+                id="mode-visit"
+                {% if mode == "visit" %}checked{% endif %}
+            >
+
+            <span>Search by Visit ID</span>
+
+        </label>
 
     </div>
 
 
-    <!-- =========================================
-         TABS
-    ========================================== -->
+    <!-- =====================================================
+         CURRENT CENSUS MODE
+         ===================================================== -->
 
-    <div class="details-tabs">
+    {% if mode == "census" %}
 
-        <a
-            href="{{ url_for(
-                'available_details_routes.available_details'
-            ) }}"
-            class="details-tab active">
+    <div
+        id="census-section"
+        class="census-section"
+    >
 
-            Available Details
+        <!-- =================================================
+             CENSUS SEARCH
+             ================================================= -->
 
-        </a>
-
-
-        <a
-            href="{{ url_for(
-                'added_details_routes.added_details'
-            ) }}"
-            class="details-tab">
-
-            Added Details
-
-        </a>
-
-    </div>
-
-
-    <!-- =========================================
-         SEARCH
-    ========================================== -->
-
-    <div class="details-search-panel">
-
-    <form
-        method="GET"
-        action="{{ url_for(
-            'available_details_routes.available_details'
-        ) }}"
-        id="searchForm"
-        class="details-search-form">
-
-
-        <div class="search-field">
-
-            <label for="searchInput">
-                Search
-            </label>
+        <div class="census-search-panel">
 
             <input
                 type="text"
-                id="searchInput"
-                name="search"
-                value="{{ search }}"
-                placeholder="Account, MRN or patient name..."
-                autocomplete="off">
+                id="census-search"
+                class="progressive-search-field"
+                placeholder="Search Account #, MRN, patient, facility..."
+                value="{{ search or '' }}"
+                autocomplete="off"
+            >
+
+            <span
+                id="search-status"
+                class="search-status"
+            ></span>
 
         </div>
 
 
-        <button
-            type="submit"
-            class="search-button">
+        <!-- =================================================
+             SUMMARY
+             ================================================= -->
 
-            Search
-
-        </button>
-
-
-        {% if search %}
-
-            <a
-                href="{{ url_for(
-                    'available_details_routes.available_details'
-                ) }}"
-                class="clear-button">
-
-                Clear
-
-            </a>
-
-        {% endif %}
-
-
-    </form>
-
-</div>
-
-
-    <!-- =========================================
-         SUMMARY + ADD BUTTON
-    ========================================== -->
-
-    <div class="details-summary">
-
-        <div>
+        <div class="details-summary">
 
             {% if total_records > 0 %}
 
-                Showing
-                <strong>{{ start_record }}</strong>
-                -
-                <strong>{{ end_record }}</strong>
-                of
-                <strong>{{ total_records }}</strong>
-                records
+                <span>Showing</span>
+
+                <strong>
+                    {{ start_record }}
+                </strong>
+
+                <span>–</span>
+
+                <strong>
+                    {{ end_record }}
+                </strong>
+
+                <span>of</span>
+
+                <strong>
+                    {{ total_records }}
+                </strong>
 
             {% else %}
 
-                No records found.
+                <span>No records found.</span>
 
             {% endif %}
 
         </div>
 
 
-        <!-- ADD VISIBLE RECORDS -->
+        <!-- =================================================
+             TABLE
+             ================================================= -->
 
-        <div class="add-visible-container">
+        <div class="details-table-container">
 
-            <form
-                method="POST"
-                action="{{ url_for(
-                    'available_details_routes.add_available_detail'
-                ) }}"
-                id="addVisibleForm">
+            {% if details %}
+
+            <table class="available-details-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ACCOUNT #</th>
+
+                        <th>MED REC NBR</th>
+
+                        <th>PATIENT NAME</th>
+
+                        <th>DOB</th>
+
+                        <th>FACILITY</th>
+
+                        <th>PHYS NAME ATTENDING</th>
+
+                        <th>ADMIT DATE</th>
+
+                        <th>PATIENT TYPE</th>
+
+                        <th></th>
+
+                    </tr>
+
+                </thead>
 
 
-                <!--
-                    IMPORTANT:
-
-                    Only Visit IDs from the CURRENT PAGE
-                    are submitted.
-
-                    If there are 50 records on this page,
-                    50 Visit IDs are submitted.
-
-                    Page 2 is NOT submitted.
-                -->
+                <tbody>
 
                 {% for detail in details %}
 
-                    <input
-                        type="hidden"
-                        name="visit_ids"
-                        value="{{ detail['Visit ID'] }}">
+                    <tr>
+
+                        <td>
+                            {{ detail["Account Number"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ detail["Med Rec Nbr"] or "" }}
+                        </td>
+
+
+                        <td class="patient-name">
+
+                            {{ detail["Pat Last Nm"] or "" }}
+
+                            {% if
+                                detail["Pat Last Nm"]
+                                and
+                                detail["Pat First Nm"]
+                            %}
+                                ,
+                            {% endif %}
+
+                            {{ detail["Pat First Nm"] or "" }}
+
+                            {% if detail["Pat Middle Nm"] %}
+                                {{ detail["Pat Middle Nm"] }}
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ detail["Pat DOB"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ detail["Facility"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ detail["Phys Name Attending"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ detail["Admit Date"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ detail["Patient Type"] or "" }}
+                        </td>
+
+
+                        <td class="action-cell">
+
+                            <form
+                                class="add-patient-form"
+                                method="POST"
+                                action="{{ url_for(
+                                    'available_details_routes.add_available_detail'
+                                ) }}"
+                            >
+
+                                <!--
+                                    IMPORTANT:
+                                    Page 6 sends ACCOUNT NUMBER,
+                                    which is vst_ext_id.
+                                -->
+
+                                <input
+                                    type="hidden"
+                                    name="visit_id"
+                                    value="{{ detail['Account Number'] }}"
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    class="add-plus-button"
+                                    title="Add"
+                                >
+                                    +
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
 
                 {% endfor %}
 
+                </tbody>
 
-                <input
-                    type="hidden"
-                    name="search"
-                    value="{{ search }}">
+            </table>
 
+            {% else %}
 
-                <input
-                    type="hidden"
-                    name="page"
-                    value="{{ page }}">
+                <div class="no-results">
+                    No current census records found.
+                </div>
 
-
-                <button
-                    type="submit"
-                    class="add-detail-button"
-                    {% if not details %}
-                        disabled
-                    {% endif %}>
-
-                    Add Visible Records
-
-                </button>
-
-
-            </form>
+            {% endif %}
 
         </div>
 
-    </div>
 
+        <!-- =================================================
+             PAGINATION
+             ================================================= -->
 
-    <!-- =========================================
-         TABLE
-    ========================================== -->
+        {% if total_pages > 1 %}
 
-    <div class="details-table-container">
+        <div class="details-pagination">
 
-        <table class="available-details-table">
-
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        ACCOUNT #
-                    </th>
-
-
-                    <th>
-                        PATIENT
-                    </th>
-
-
-                    <th>
-                        MRN
-                    </th>
-
-
-                    <th>
-                        DOB
-                    </th>
-
-
-                    <th>
-                        FACILITY
-                    </th>
-
-
-                    <th>
-                        ATTENDING PHYSICIAN
-                    </th>
-
-
-                    <th>
-                        ADMIT DATE
-                    </th>
-
-
-                    <th>
-                        PATIENT TYPE
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-
-                {% for detail in details %}
-
-                <tr>
-
-
-                    <td>
-
-                        {{ detail['Account Number'] or '' }}
-
-                    </td>
-
-
-                    <td class="patient-name">
-
-                        {{ detail['Pat First Nm'] or '' }}
-
-                        {{ detail['Pat Middle Nm'] or '' }}
-
-                        {{ detail['Pat Last Nm'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Med Rec Nbr'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Pat DOB'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Facility'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Phys Name Attending'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Admit Date'] or '' }}
-
-                    </td>
-
-
-                    <td>
-
-                        {{ detail['Patient Type'] or '' }}
-
-                    </td>
-
-
-                </tr>
-
-
-                {% else %}
-
-
-                <tr>
-
-                    <td
-                        colspan="8"
-                        class="no-results">
-
-                        No records found.
-
-                    </td>
-
-                </tr>
-
-
-                {% endfor %}
-
-
-            </tbody>
-
-
-        </table>
-
-    </div>
-
-
-    <!-- =========================================
-         PAGINATION
-    ========================================== -->
-
-    {% if total_pages > 1 %}
-
-    <div class="details-pagination">
-
-
-        {% if page > 1 %}
-
-            <a
-                href="{{ url_for(
-                    'available_details_routes.available_details',
-                    page=page-1,
-                    search=search
-                ) }}">
-
-                Previous
-
-            </a>
-
-        {% endif %}
-
-
-        {% for page_number in page_numbers %}
-
-
-            {% if page_number == page %}
-
-                <span class="current-page">
-
-                    {{ page_number }}
-
-                </span>
-
-
-            {% else %}
+            {% if page > 1 %}
 
                 <a
                     href="{{ url_for(
                         'available_details_routes.available_details',
-                        page=page_number,
-                        search=search
-                    ) }}">
-
-                    {{ page_number }}
-
+                        mode='census',
+                        page=page-1,
+                        q=search
+                    ) }}"
+                >
+                    Previous
                 </a>
 
             {% endif %}
 
 
-        {% endfor %}
+            {% for page_number in page_numbers %}
+
+                {% if page_number == page %}
+
+                    <span class="current-page">
+                        {{ page_number }}
+                    </span>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for(
+                            'available_details_routes.available_details',
+                            mode='census',
+                            page=page_number,
+                            q=search
+                        ) }}"
+                    >
+                        {{ page_number }}
+                    </a>
+
+                {% endif %}
+
+            {% endfor %}
 
 
-        {% if page < total_pages %}
+            {% if page < total_pages %}
 
-            <a
-                href="{{ url_for(
-                    'available_details_routes.available_details',
-                    page=page+1,
-                    search=search
-                ) }}">
+                <a
+                    href="{{ url_for(
+                        'available_details_routes.available_details',
+                        mode='census',
+                        page=page+1,
+                        q=search
+                    ) }}"
+                >
+                    Next
+                </a>
 
-                Next
+            {% endif %}
 
-            </a>
+        </div>
 
         {% endif %}
-
 
     </div>
 
     {% endif %}
 
 
+    <!-- =====================================================
+         SEARCH BY VISIT ID / ACCOUNT NUMBER
+         ===================================================== -->
+
+    {% if mode == "visit" %}
+
+    <div
+        id="visit-section"
+        class="visit-section"
+    >
+
+        <div class="details-search-panel">
+
+            <form
+                method="GET"
+                action="{{ url_for(
+                    'available_details_routes.available_details'
+                ) }}"
+                class="search-field"
+            >
+
+                <input
+                    type="hidden"
+                    name="mode"
+                    value="visit"
+                >
+
+
+                <input
+                    type="text"
+                    name="visit_id"
+                    placeholder="Enter Account #"
+                    value="{{ visit_id or '' }}"
+                    autocomplete="off"
+                >
+
+
+                <button
+                    type="submit"
+                    class="search-button"
+                >
+                    Search
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH RESULT
+             ================================================= -->
+
+        {% if visit %}
+
+        <div class="details-table-container">
+
+            <table class="available-details-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ACCOUNT #</th>
+
+                        <th>MED REC NBR</th>
+
+                        <th>PATIENT NAME</th>
+
+                        <th>DOB</th>
+
+                        <th>FACILITY</th>
+
+                        <th>PHYS NAME ATTENDING</th>
+
+                        <th>ADMIT DATE</th>
+
+                        <th>PATIENT TYPE</th>
+
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            {{ visit["Account Number"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ visit["Med Rec Nbr"] or "" }}
+                        </td>
+
+
+                        <td class="patient-name">
+
+                            {{ visit["Pat Last Nm"] or "" }}
+
+                            {% if
+                                visit["Pat Last Nm"]
+                                and
+                                visit["Pat First Nm"]
+                            %}
+                                ,
+                            {% endif %}
+
+                            {{ visit["Pat First Nm"] or "" }}
+
+                            {% if visit["Pat Middle Nm"] %}
+                                {{ visit["Pat Middle Nm"] }}
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ visit["Pat DOB"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ visit["Facility"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ visit["Phys Name Attending"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ visit["Admit Date"] or "" }}
+                        </td>
+
+
+                        <td>
+                            {{ visit["Patient Type"] or "" }}
+                        </td>
+
+
+                        <td class="action-cell">
+
+                            <form
+                                class="add-patient-form"
+                                method="POST"
+                                action="{{ url_for(
+                                    'available_details_routes.add_available_detail'
+                                ) }}"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="visit_id"
+                                    value="{{ visit['Account Number'] }}"
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    class="add-plus-button"
+                                    title="Add"
+                                >
+                                    +
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% elif visit_id %}
+
+        <div class="no-results">
+
+            No visit found for Account #
+            "{{ visit_id }}".
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
 </div>
 
 
-<!-- =========================================
-     JAVASCRIPT
-========================================== -->
+<!-- =========================================================
+     MODAL
+     ========================================================= -->
+
+<div
+    id="details-modal-overlay"
+    class="details-modal-overlay"
+    style="display:none;"
+>
+
+    <div
+        id="details-modal"
+        class="details-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="details-modal-title"
+    >
+
+        <h2 id="details-modal-title">
+            Confirmation
+        </h2>
+
+
+        <p id="details-modal-message"></p>
+
+
+        <div class="details-modal-actions">
+
+            <button
+                type="button"
+                id="modal-cancel-button"
+                class="modal-secondary-button"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="modal-confirm-button"
+                class="modal-primary-button"
+            >
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <script>
 
-
-/*
- * LIVE SEARCH
- *
- * Wait 500 milliseconds after the user stops typing.
- */
-let searchTimer;
-
-
-const searchInput =
-    document.getElementById("searchInput");
-
-
-searchInput.addEventListener(
-    "input",
+document.addEventListener(
+    "DOMContentLoaded",
     function () {
 
+        /*
+         * =====================================================
+         * RADIO BUTTON MODE SWITCHING
+         * =====================================================
+         *
+         * IMPORTANT:
+         * We let Flask render the selected mode.
+         *
+         * Current Census:
+         *     /details?mode=census&page=1
+         *
+         * Search by Visit ID:
+         *     /details?mode=visit
+         *
+         * We do NOT try to hide/show both tables with JavaScript.
+         * Only the correct section is rendered by Flask.
+         */
 
-        clearTimeout(searchTimer);
+
+        const censusMode =
+            document.getElementById(
+                "mode-census"
+            );
 
 
-        const searchValue =
-            this.value.trim();
+        const visitMode =
+            document.getElementById(
+                "mode-visit"
+            );
 
 
-        searchTimer = setTimeout(
+        if (censusMode) {
+
+            censusMode.addEventListener(
+                "change",
+                function () {
+
+                    if (!this.checked) {
+                        return;
+                    }
+
+
+                    /*
+                     * Always create a completely clean
+                     * Current Census URL.
+                     */
+
+                    const url =
+                        new URL(
+                            window.location.href
+                        );
+
+
+                    url.searchParams.delete(
+                        "visit_id"
+                    );
+
+
+                    url.searchParams.delete(
+                        "q"
+                    );
+
+
+                    url.searchParams.set(
+                        "mode",
+                        "census"
+                    );
+
+
+                    url.searchParams.set(
+                        "page",
+                        "1"
+                    );
+
+
+                    window.location.assign(
+                        url.toString()
+                    );
+
+                }
+            );
+
+        }
+
+
+        if (visitMode) {
+
+            visitMode.addEventListener(
+                "change",
+                function () {
+
+                    if (!this.checked) {
+                        return;
+                    }
+
+
+                    /*
+                     * Always create a completely clean
+                     * Visit Search URL.
+                     */
+
+                    const url =
+                        new URL(
+                            window.location.href
+                        );
+
+
+                    url.searchParams.delete(
+                        "page"
+                    );
+
+
+                    url.searchParams.delete(
+                        "q"
+                    );
+
+
+                    url.searchParams.delete(
+                        "visit_id"
+                    );
+
+
+                    url.searchParams.set(
+                        "mode",
+                        "visit"
+                    );
+
+
+                    window.location.assign(
+                        url.toString()
+                    );
+
+                }
+            );
+
+        }
+
+
+        /*
+         * =====================================================
+         * MODAL
+         * =====================================================
+         */
+
+        const modalOverlay =
+            document.getElementById(
+                "details-modal-overlay"
+            );
+
+
+        const modalTitle =
+            document.getElementById(
+                "details-modal-title"
+            );
+
+
+        const modalMessage =
+            document.getElementById(
+                "details-modal-message"
+            );
+
+
+        const modalCancel =
+            document.getElementById(
+                "modal-cancel-button"
+            );
+
+
+        const modalConfirm =
+            document.getElementById(
+                "modal-confirm-button"
+            );
+
+
+        let pendingUpdateVisitId =
+            null;
+
+
+        let modalConfirmAction =
+            null;
+
+
+        function closeModal() {
+
+            modalOverlay.style.display =
+                "none";
+
+
+            pendingUpdateVisitId =
+                null;
+
+
+            modalConfirmAction =
+                null;
+
+        }
+
+
+        function openModal(
+            title,
+            message,
+            confirmText,
+            confirmAction,
+            showCancel
+        ) {
+
+            modalTitle.textContent =
+                title;
+
+
+            modalMessage.textContent =
+                message;
+
+
+            modalConfirm.textContent =
+                confirmText;
+
+
+            modalConfirmAction =
+                confirmAction;
+
+
+            modalCancel.style.display =
+                showCancel
+                    ? ""
+                    : "none";
+
+
+            modalOverlay.style.display =
+                "flex";
+
+        }
+
+
+        modalCancel.addEventListener(
+            "click",
             function () {
+
+                closeModal();
+
+            }
+        );
+
+
+        modalConfirm.addEventListener(
+            "click",
+            async function () {
+
+                if (
+                    typeof modalConfirmAction ===
+                    "function"
+                ) {
+
+                    await modalConfirmAction();
+
+                }
+
+            }
+        );
+
+
+        modalOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    modalOverlay
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * PROGRESSIVE CENSUS SEARCH
+         * =====================================================
+         */
+
+        let searchTimer =
+            null;
+
+
+        let searchRequest =
+            null;
+
+
+        function attachCensusSearch() {
+
+            const censusSearch =
+                document.getElementById(
+                    "census-search"
+                );
+
+
+            if (!censusSearch) {
+                return;
+            }
+
+
+            /*
+             * Prevent duplicate event handlers.
+             */
+
+            if (
+                censusSearch.dataset.searchBound ===
+                "true"
+            ) {
+                return;
+            }
+
+
+            censusSearch.dataset.searchBound =
+                "true";
+
+
+            censusSearch.addEventListener(
+                "input",
+                function () {
+
+                    const searchValue =
+                        this.value.trim();
+
+
+                    clearTimeout(
+                        searchTimer
+                    );
+
+
+                    searchTimer =
+                        setTimeout(
+                            function () {
+
+                                performCensusSearch(
+                                    searchValue
+                                );
+
+                            },
+                            350
+                        );
+
+                }
+            );
+
+        }
+
+
+        async function performCensusSearch(
+            searchValue
+        ) {
+
+            const censusSection =
+                document.getElementById(
+                    "census-section"
+                );
+
+
+            if (!censusSection) {
+                return;
+            }
+
+
+            const searchStatus =
+                document.getElementById(
+                    "search-status"
+                );
+
+
+            if (searchStatus) {
+
+                searchStatus.textContent =
+                    "Searching...";
+
+            }
+
+
+            try {
+
+                /*
+                 * Cancel the previous request if
+                 * the user types/backspaces again
+                 * before it finishes.
+                 */
+
+                if (searchRequest) {
+
+                    searchRequest.abort();
+
+                }
+
+
+                searchRequest =
+                    new AbortController();
 
 
                 const url =
@@ -500,102 +1037,581 @@ searchInput.addEventListener(
                     );
 
 
-                if (searchValue.length > 0) {
-
-                    url.searchParams.set(
-                        "search",
-                        searchValue
-                    );
-
-                }
-                else {
-
-                    url.searchParams.delete(
-                        "search"
-                    );
-
-                }
+                url.searchParams.set(
+                    "mode",
+                    "census"
+                );
 
 
-                /*
-                 * New search always starts
-                 * at page 1.
-                 */
                 url.searchParams.set(
                     "page",
                     "1"
                 );
 
 
-                window.location.href =
-                    url.toString();
-
-
-            },
-            500
-        );
-
-
-    }
-);
-
-
-/*
- * Add Visible Records confirmation.
- */
-const addForm =
-    document.getElementById(
-        "addVisibleForm"
-    );
-
-
-if (addForm) {
-
-
-    addForm.addEventListener(
-        "submit",
-        function (event) {
-
-
-            const visitIds =
-                this.querySelectorAll(
-                    'input[name="visit_ids"]'
+                url.searchParams.delete(
+                    "visit_id"
                 );
 
 
-            if (visitIds.length === 0) {
+                if (searchValue) {
 
-                event.preventDefault();
+                    url.searchParams.set(
+                        "q",
+                        searchValue
+                    );
 
-                alert(
-                    "There are no visible records to add."
+                }
+                else {
+
+                    /*
+                     * Empty search means load the
+                     * complete Current Census again.
+                     */
+
+                    url.searchParams.delete(
+                        "q"
+                    );
+
+                }
+
+
+                const response =
+                    await fetch(
+                        url.toString(),
+                        {
+                            method: "GET",
+                            signal:
+                                searchRequest.signal
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Search request failed."
+                    );
+
+                }
+
+
+                const html =
+                    await response.text();
+
+
+                const parser =
+                    new DOMParser();
+
+
+                const resultDocument =
+                    parser.parseFromString(
+                        html,
+                        "text/html"
+                    );
+
+
+                const newSection =
+                    resultDocument.getElementById(
+                        "census-section"
+                    );
+
+
+                if (!newSection) {
+
+                    throw new Error(
+                        "Search results could not be displayed."
+                    );
+
+                }
+
+
+                censusSection.innerHTML =
+                    newSection.innerHTML;
+
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * Re-attach the search listener because
+                 * replacing innerHTML creates a new
+                 * #census-search element.
+                 */
+
+                attachCensusSearch();
+
+
+                attachAddForms(
+                    censusSection
                 );
+
+
+                const newSearchStatus =
+                    document.getElementById(
+                        "search-status"
+                    );
+
+
+                if (newSearchStatus) {
+
+                    newSearchStatus.textContent =
+                        "";
+
+                }
+
+
+                window.history.replaceState(
+                    {},
+                    "",
+                    url.toString()
+                );
+
+            }
+            catch (error) {
+
+                /*
+                 * AbortError is expected when a
+                 * newer search replaces an older one.
+                 */
+
+                if (
+                    error.name ===
+                    "AbortError"
+                ) {
+
+                    return;
+
+                }
+
+
+                console.error(
+                    error
+                );
+
+
+                const currentSearchStatus =
+                    document.getElementById(
+                        "search-status"
+                    );
+
+
+                if (currentSearchStatus) {
+
+                    currentSearchStatus.textContent =
+                        "Search failed.";
+
+                }
+
+            }
+
+        }
+
+
+        /*
+         * Attach the listener to the
+         * initially rendered textbox.
+         */
+
+        attachCensusSearch();
+
+
+        /*
+         * =====================================================
+         * ADD BUTTONS
+         * =====================================================
+         */
+
+        function attachAddForms(
+            container
+        ) {
+
+            const forms =
+                container.querySelectorAll(
+                    ".add-patient-form"
+                );
+
+
+            forms.forEach(
+                function (form) {
+
+                    /*
+                     * Prevent attaching the handler twice.
+                     */
+
+                    if (
+                        form.dataset.bound ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    form.dataset.bound =
+                        "true";
+
+
+                    form.addEventListener(
+                        "submit",
+                        handleAddSubmit
+                    );
+
+                }
+            );
+
+        }
+
+
+        async function handleAddSubmit(
+            event
+        ) {
+
+            event.preventDefault();
+
+
+            const form =
+                event.currentTarget;
+
+
+            const button =
+                form.querySelector(
+                    ".add-plus-button"
+                );
+
+
+            /*
+             * Prevent double-click / duplicate
+             * requests from the browser.
+             */
+
+            if (
+                button &&
+                button.disabled
+            ) {
 
                 return;
 
             }
 
 
-            const confirmed =
-                confirm(
-                    "Add " +
-                    visitIds.length +
-                    " visible record(s)?"
-                );
+            if (button) {
 
-
-            if (!confirmed) {
-
-                event.preventDefault();
+                button.disabled =
+                    true;
 
             }
 
 
+            const formData =
+                new FormData(form);
+
+
+            const visitId =
+                formData.get(
+                    "visit_id"
+                );
+
+
+            if (!visitId) {
+
+                if (button) {
+                    button.disabled = false;
+                }
+
+
+                openModal(
+                    "Error",
+                    "Account Number is required.",
+                    "Close",
+                    function () {
+
+                        closeModal();
+
+                    },
+                    false
+                );
+
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        form.action,
+                        {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to add the visit."
+                    );
+
+                }
+
+
+                /*
+                 * NEW RECORD
+                 */
+
+                if (data.inserted) {
+
+                    openModal(
+                        "Success",
+                        "The visit was added successfully.",
+                        "Continue",
+                        function () {
+
+                            closeModal();
+
+
+                            if (
+                                data.redirect_url
+                            ) {
+
+                                window.location.assign(
+                                    data.redirect_url
+                                );
+
+                            }
+
+                        },
+                        false
+                    );
+
+
+                    return;
+
+                }
+
+
+                /*
+                 * EXISTING RECORD
+                 */
+
+                if (data.exists) {
+
+                    pendingUpdateVisitId =
+                        data.visit_id;
+
+
+                    openModal(
+                        "Visit Already Exists",
+                        "This visit has already been added. Would you like to update it with the latest information?",
+                        "Update",
+                        confirmUpdate,
+                        true
+                    );
+
+
+                    return;
+
+                }
+
+
+                throw new Error(
+                    data.error ||
+                    "Unable to add the visit."
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    error
+                );
+
+
+                if (button) {
+                    button.disabled = false;
+                }
+
+
+                openModal(
+                    "Error",
+                    error.message ||
+                    "An unexpected error occurred.",
+                    "Close",
+                    function () {
+
+                        closeModal();
+
+                    },
+                    false
+                );
+
+            }
+
         }
-    );
 
-}
 
+        /*
+         * =====================================================
+         * UPDATE EXISTING RECORD
+         * =====================================================
+         */
+
+        async function confirmUpdate() {
+
+            if (!pendingUpdateVisitId) {
+
+                closeModal();
+
+                return;
+
+            }
+
+
+            modalConfirm.disabled =
+                true;
+
+
+            modalCancel.disabled =
+                true;
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "visit_id",
+                    pendingUpdateVisitId
+                );
+
+
+                const response =
+                    await fetch(
+                        "{{ url_for(
+                            'available_details_routes.update_available_detail'
+                        ) }}",
+                        {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to update the visit."
+                    );
+
+                }
+
+
+                if (!data.updated) {
+
+                    throw new Error(
+                        data.error ||
+                        "The visit was not updated."
+                    );
+
+                }
+
+
+                modalConfirm.disabled =
+                    false;
+
+
+                modalCancel.disabled =
+                    false;
+
+
+                openModal(
+                    "Success",
+                    "The visit was updated successfully.",
+                    "Continue",
+                    function () {
+
+                        closeModal();
+
+
+                        if (
+                            data.redirect_url
+                        ) {
+
+                            window.location.assign(
+                                data.redirect_url
+                            );
+
+                        }
+
+                    },
+                    false
+                );
+
+            }
+            catch (error) {
+
+                modalConfirm.disabled =
+                    false;
+
+
+                modalCancel.disabled =
+                    false;
+
+
+                openModal(
+                    "Error",
+                    error.message ||
+                    "An unexpected error occurred.",
+                    "Close",
+                    function () {
+
+                        closeModal();
+
+                    },
+                    false
+                );
+
+            }
+
+        }
+
+
+        /*
+         * =====================================================
+         * INITIALISE ADD BUTTONS
+         * =====================================================
+         */
+
+        attachAddForms(
+            document
+        );
+
+    }
+);
 
 </script>
 
