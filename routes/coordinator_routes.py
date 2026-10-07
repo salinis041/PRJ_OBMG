@@ -76,15 +76,27 @@ def login():
             get_info="NONE"
         )
 
+        user = f"{domain}\\{username}"
+
+        print("======================================")
+        print("AD LOGIN ATTEMPT")
+        print("Server   :", server_address)
+        print("Domain   :", domain)
+        print("User     :", user)
+        print("======================================")
+
         conn = Connection(
             server,
-            user=f"{domain}\\{username}",
+            user=user,
             password=password,
             authentication=NTLM,
-            auto_bind=True
+            auto_bind=False
         )
 
-        if conn.bound:
+        if conn.bind():
+
+            print("AD BIND SUCCESS")
+            print("Result:", conn.result)
 
             conn.unbind()
 
@@ -93,7 +105,11 @@ def login():
                 "message": "Login successful"
             })
 
+        print("AD BIND FAILED")
+        print("Result:", conn.result)
+
         result = conn.result
+
         conn.unbind()
 
         return jsonify({
@@ -103,6 +119,10 @@ def login():
         }), 401
 
     except Exception as e:
+
+        print("AD CONNECTION ERROR")
+        print("Error type:", type(e).__name__)
+        print("Error:", str(e))
 
         return jsonify({
             "success": False,
