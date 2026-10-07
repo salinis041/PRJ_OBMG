@@ -210,3 +210,156 @@ def insert_added_detail(visit_id):
 
     finally:
         connection.close()
+PAGE_SIZE = 50
+def get_added_Visitdetails(page=1, search=None,
+        search2=None):
+
+    offset = (page - 1) * PAGE_SIZE
+    connection = get_connection()
+
+    try:
+
+        cursor = connection.cursor()
+        search_condition = ""
+        parameters = []
+
+        if search:
+            search_condition = """
+                        WHERE (
+                            AccountNumber LIKE ?
+                            OR MedicalRecordNumber LIKE ?
+                            OR FirstName LIKE ?
+                            OR LastName LIKE ?
+                        )
+                    """
+
+            search_value = f"%{search}%"
+
+            parameters.extend([
+                search_value,
+                search_value,
+                search_value,
+                search_value
+            ])
+            # ---------------------------------------
+            # SECOND SEARCH
+            # Account Number only
+            # ---------------------------------------
+
+        elif search2:
+
+            search_condition = """
+                     WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
+                   """
+
+            parameters.append(
+                search2.strip()
+            )
+
+        query = f"""
+            SELECT
+                
+                AccountNumber,
+                MedicalRecordNumber,
+                LastName + ' ' + FirstName AS Patname,
+
+                CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
+               [Patient Type] as PatientType,
+               CONVERT(varchar(10), AdmitDateTime, 101) as AdmitDateTime,
+                 [Phys Name Attending ] as AttendingPhysician
+                
+            FROM Visits  
+            {search_condition}
+
+            ORDER BY
+                AdmitDateTime DESC,
+                AccountNumber DESC
+
+            OFFSET ? ROWS
+            FETCH NEXT ? ROWS ONLY
+            
+        """
+        parameters.extend([
+            offset,
+            PAGE_SIZE
+        ])
+
+        cursor.execute(query,
+            parameters)
+
+        columns = [
+            column[0]
+            for column in cursor.description
+        ]
+
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+    finally:
+
+        connection.close()
+
+def get_available_details_count(search=None,
+        search2=None):
+
+    connection = get_connection()
+
+    try:
+
+        cursor = connection.cursor()
+
+        search_condition = ""
+        parameters = []
+
+        if search:
+
+            search_condition = """
+                WHERE (
+                    AccountNumber LIKE ?
+                    OR MedicalRecordNumber LIKE ?
+                    OR FirstName LIKE ?
+                    OR LastName LIKE ?
+                )
+            """
+
+            search_value = f"%{search}%"
+
+            parameters.extend([
+                search_value,
+                search_value,
+                search_value,
+                search_value
+            ])
+        elif search2:
+
+            search_condition = """
+                      WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
+                    """
+
+            parameters.append(
+                search2.strip()
+            )
+
+        query = f"""
+            SELECT COUNT(*)
+
+            FROM Visits
+
+            {search_condition}
+        """
+
+        cursor.execute(
+            query,
+            parameters
+        )
+
+        return cursor.fetchone()[0]
+
+    finally:
+
+        connection.close()
+
+
+

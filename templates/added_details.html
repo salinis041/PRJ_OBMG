@@ -19,6 +19,35 @@
 </head>
 
 <body>
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo">
+        ∞
+    </div>
+
+    <nav class="main-nav">
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}">Home</a>
+        <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}" class="selected">Added Details</a>
+        <a href="#">Tasks</a>
+        <a href="#">Messages</a>
+        <a href="#">Cases</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+    </nav>
+
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+
+</header>
 
 <div class="available-details-page">
 
@@ -36,7 +65,7 @@
 
         </div>
 
-        <div>
+        <!--<div>
 
             <a
                 href="{{ url_for(
@@ -56,12 +85,12 @@
                 Back
             </a>
 
-        </div>
+        </div>-->
 
     </div>
 
 
-    <div class="details-summary">
+    <!--<div class="details-summary">
 
         Total added records:
 
@@ -69,10 +98,55 @@
             {{ details|length }}
         </strong>
 
+    </div>-->
+     <!-- =========================================
+         SEARCH
+    ========================================== -->
+
+    <div class="details-search-panel" style="display: flex; justify-content: space-between; align-items: end; gap: 20px; width: 100%;">
+        <!-- LEFT SEARCH -->
+        <form method="GET" action="{{ url_for('added_details_routes.added_details') }}" id="searchForm" style="display: flex; align-items: end; gap: 10px; width: 50%;">
+            <div class="search-field" style="flex: 1;">
+                <label for="searchInput">Search</label>
+                <input type="text" id="searchInput" name="search" value="{{ search }}" class="form-control" placeholder="Account, MRN or patient name..." autocomplete="off">
+            </div>
+            {% if search %}
+            <a href="{{ url_for('added_details_routes.added_details') }}" class="clear-button">
+                Clear </a> {% endif %}
+        </form> <!-- RIGHT SEARCH -->
+        <form method="GET" action="{{ url_for('added_details_routes.added_details') }}" id="searchForm2" style="display: flex; align-items: end; gap: 10px; width: 50%;">
+            <div class="search-field" style="flex: 1;">
+                <label for="searchInput2">Search Account</label>
+                <input type="text" id="searchInput2" name="search2" value="{{ search2 }}" class="form-control" placeholder="Account#" autocomplete="off">
+            </div> <button type="submit" class="search-button"> Search </button>
+            {% if search2 %} <a href="{{ url_for('added_details_routes.added_details') }}" class="clear-button"> Clear
+        </a> {% endif %} </form>
     </div>
+    <div class="details-summary">
+
+        <div>
+
+            {% if total_records > 0 %}
+
+                Showing
+                <strong>{{ start_record }}</strong>
+                -
+                <strong>{{ end_record }}</strong>
+                of
+                <strong>{{ total_records }}</strong>
+                records
+
+            {% else %}
+
+                No records found.
+
+            {% endif %}
+
+        </div>
+     </div>
 
 
-    <div class="available-details-table-container">
+    <div class="details-table-container">
 
         <table class="available-details-table">
 
@@ -88,9 +162,6 @@
 
                     <th>DOB</th>
 
-                    <th>GENDER</th>
-
-                    <th>FACILITY</th>
 
                     <th>ATTENDING PHYSICIAN</th>
 
@@ -98,7 +169,7 @@
 
                     <th>PATIENT TYPE</th>
 
-                    <th>ADDED DATE</th>
+
 
                 </tr>
 
@@ -109,7 +180,8 @@
 
                 {% for detail in details %}
 
-                    <tr>
+                    <tr onclick="openPatient({{ detail.AccountNumber }})"
+            style="cursor: pointer;">
 
                         <td>
                             {{ detail["AccountNumber"] }}
@@ -117,9 +189,8 @@
 
                         <td>
 
-                            {{ detail["PatientFirstName"] }}
-                            {{ detail["PatientMiddleName"] }}
-                            {{ detail["PatientLastName"] }}
+                            {{ detail["Patname"] }}
+
 
                         </td>
 
@@ -128,32 +199,23 @@
                         </td>
 
                         <td>
-                            {{ detail["PatientDOB"] }}
+                            {{ detail["BirthDate"] }}
                         </td>
 
-                        <td>
-                            {{ detail["PatientGender"] }}
-                        </td>
 
-                        <td>
-                            {{ detail["Facility"] }}
-                        </td>
 
                         <td>
                             {{ detail["AttendingPhysician"] }}
                         </td>
 
                         <td>
-                            {{ detail["AdmitDate"] }}
+                            {{ detail["AdmitDateTime"] }}
                         </td>
 
                         <td>
                             {{ detail["PatientType"] }}
                         </td>
 
-                        <td>
-                            {{ detail["CreatedDate"] }}
-                        </td>
 
                     </tr>
 
@@ -177,8 +239,232 @@
         </table>
 
     </div>
+     <!-- =========================================
+         PAGINATION
+    ========================================== -->
+
+    {% if total_pages > 1 %}
+
+    <div class="details-pagination">
+
+
+        {% if page > 1 %}
+
+            <a
+                href="{{ url_for(
+                    'available_details_routes.available_details',
+                    page=page-1,
+                    search=search,
+                    search2=search2
+                ) }}">
+
+                Previous
+
+            </a>
+
+        {% endif %}
+
+
+        {% for page_number in page_numbers %}
+
+
+            {% if page_number == page %}
+
+                <span class="current-page">
+
+                    {{ page_number }}
+
+                </span>
+
+
+            {% else %}
+
+                <a
+                    href="{{ url_for(
+                        'added_details_routes.added_details',
+                        page=page_number,
+                        search=search,
+                        search2=search2
+                    ) }}">
+
+                    {{ page_number }}
+
+                </a>
+
+            {% endif %}
+
+
+        {% endfor %}
+
+
+        {% if page < total_pages %}
+
+            <a
+                href="{{ url_for(
+                    'added_details_routes.added_details',
+                    page=page+1,
+                    search=search,
+                    search2=search2
+                ) }}">
+
+                Next
+
+            </a>
+
+        {% endif %}
+
+
+    </div>
+
+    {% endif %}
+
 
 </div>
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+
+/*
+ * LIVE SEARCH
+ *
+ * Wait 500 milliseconds after the user stops typing.
+ */
+let searchTimer;
+
+
+const searchInput =
+    document.getElementById("searchInput");
+
+
+searchInput.addEventListener(
+    "input",
+    function () {
+
+
+        clearTimeout(searchTimer);
+
+
+        const searchValue =
+            this.value.trim();
+
+
+        searchTimer = setTimeout(
+            function () {
+
+
+                const url =
+                    new URL(
+                        window.location.href
+                    );
+
+
+                if (searchValue.length > 0) {
+
+                    url.searchParams.set(
+                        "search",
+                        searchValue
+                    );
+
+                }
+                else {
+
+                    url.searchParams.delete(
+                        "search"
+                    );
+
+                }
+
+
+                /*
+                 * New search always starts
+                 * at page 1.
+                 */
+                url.searchParams.set(
+                    "page",
+                    "1"
+                );
+
+
+                window.location.href =
+                    url.toString();
+
+
+            },
+            500
+        );
+
+
+    }
+);
+
+
+/*
+ * Add Visible Records confirmation.
+ */
+const addForm =
+    document.getElementById(
+        "addVisibleForm"
+    );
+
+
+if (addForm) {
+
+
+    addForm.addEventListener(
+        "submit",
+        function (event) {
+
+
+            const visitIds =
+                this.querySelectorAll(
+                    'input[name="visit_ids"]'
+                );
+
+
+            if (visitIds.length === 0) {
+
+                event.preventDefault();
+
+                alert(
+                    "There are no visible records to add."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    "Add " +
+                    visitIds.length +
+                    " visible record(s)?"
+                );
+
+
+            if (!confirmed) {
+
+                event.preventDefault();
+
+            }
+
+
+        }
+    );
+
+}
+
+
+</script>
+
+<script>
+    function openPatient(visit_id) {
+        window.location.href = `/Demographics/${visit_id}`;
+    }
+</script>
 
 </body>
 

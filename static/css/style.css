@@ -167,7 +167,7 @@ body {
 
 .search-button {
     height: 30px;
-    width: 34px;
+    width: 64px;
 
     border: none;
 
@@ -998,12 +998,19 @@ body {
 }
 
 .clear-button {
-    padding: 8px 12px;
+    padding: 7px 15px;
 
-    color: #087fa5;
+    border: 1px solid #087a9e;
+
+    border-radius: 3px;
+
+    background: #087fa5;
+
+    color: white;
 
     font-size: 12px;
 
+    cursor: pointer;
     text-decoration: none;
 }
 

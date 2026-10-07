@@ -232,8 +232,7 @@ def add_available_detail():
         # ----------------------------------------------------
 
         redirect_url = (
-            "/pat_demographics"
-            "?visitid="
+            "/Demographics/"
             + str(account_number)
         )
 
@@ -319,11 +318,9 @@ def update_available_detail():
             data
         )
 
-
         redirect_url = (
-            "/pat_demographics"
-            "?visitid="
-            + str(account_number)
+                "/Demographics/"
+                + str(account_number)
         )
 
 

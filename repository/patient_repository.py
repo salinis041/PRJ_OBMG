@@ -174,3 +174,92 @@ def get_patientVisit(visit_id):
 
     finally:
         connection.close()
+
+def get_patVisitDetails(visit_id):
+    query = """
+        SELECT
+            PatID,
+
+            LastName + ' ' + FirstName AS Patname,
+
+            CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
+
+            CONVERT(
+                varchar(3),
+                DATEDIFF(month, BirthDate, GETDATE()) / 12
+            ) AS Age,
+
+            CASE
+                WHEN Gender = 'M' THEN 'Male'
+                WHEN Gender = 'F' THEN 'Female'
+                ELSE 'Other'
+            END AS Gender,
+
+            MedicalRecordNumber,
+            AccountNumber,
+            MiddleName,
+
+            Address1,
+            Address2,
+            City,
+            State,
+            Zip,
+            Country,
+
+            [Pat Home Ph] as HomePhone,
+            [Pat Work Ph] as WorkPhone,
+            CASE
+                WHEN Langu = 'en' THEN 'ENGLISH'
+                WHEN Langu = 'spa' THEN 'SPANISH'
+                ELSE Langu
+            END AS PrimaryLang,
+
+            MaritalStatus,
+            Race,
+
+            [Patient Type] as PatientType,
+            
+
+            CONVERT(varchar(10), AdmitDateTime, 101) as AdmitDateTime,
+            [Discharge Date] as DischargeDateTimeDisplay,
+
+            
+            [Curr FC Nm] as PAYOR,
+
+            [Phys ID] as AttendingPhysicianID,
+            [Phys Name Attending ] as AttendingPhysicianFirstName,
+            [Phys NPI] as AttendingPhysicianLastName,
+            Guar,
+            [Guar Relation] as gurrelat,
+            [Guar Home Ph] as GurHomeph,
+            [Guar Addr 1] as GurAdd1
+
+            
+
+        FROM Visits
+
+        WHERE AccountNumber = ?
+    """
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(query, visit_id)
+
+        columns = [
+            column[0]
+            for column in cursor.description
+        ]
+
+        patcordinate = [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+        return patcordinate
+
+    finally:
+        connection.close()
+

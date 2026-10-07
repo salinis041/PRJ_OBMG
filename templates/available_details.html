@@ -18,6 +18,34 @@
     >
 
 </head>
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="logo">
+        ∞
+    </div>
+
+    <nav class="main-nav">
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}" class="selected" >Home</a>
+        <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}">Added Details</a>
+        <a href="#">Messages</a>
+        <a href="#">Cases</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+    </nav>
+
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+
+</header>
 
 
 <body>
