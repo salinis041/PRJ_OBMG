@@ -51,7 +51,11 @@ def get_available_details(
                     ''
                 ) AS [Pat Last Nm],
 
-                pat.bth_ts AS [Pat DOB],
+               CONVERT(
+    varchar(10),
+    TRY_CONVERT(datetime2, pat.bth_ts, 121),
+    101
+) AS [Pat DOB],
 
                 ISNULL(
                     org.org_nm,
@@ -65,7 +69,10 @@ def get_available_details(
                     ''
                 ) AS [Phys Name Attending],
 
-                pv.adm_ts AS [Admit Date],
+                FORMAT(
+    TRY_CONVERT(datetime2, pv.adm_ts, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS [Admit Date],
 
                 ISNULL(
                     dbo.fn_get_cod_dtl_ext_id(
@@ -395,7 +402,11 @@ def get_remote_visit_for_display(visit_id):
                     ''
                 ) AS [Pat Last Nm],
 
-                pat.bth_ts AS [Pat DOB],
+                CONVERT(
+    varchar(10),
+    TRY_CONVERT(datetime2, pat.bth_ts, 121),
+    101
+) AS [Pat DOB],
 
                 ISNULL(
                     org.org_nm,
@@ -409,7 +420,10 @@ def get_remote_visit_for_display(visit_id):
                     ''
                 ) AS [Phys Name Attending],
 
-                pv.adm_ts AS [Admit Date],
+                FORMAT(
+    TRY_CONVERT(datetime2, pv.adm_ts, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS [Admit Date],
 
                 ISNULL(
                     dbo.fn_get_cod_dtl_ext_id(
@@ -565,7 +579,10 @@ def get_full_remote_visit(visit_id):
                 ''
             ) AS [Phys ID],
 
-            pv.adm_ts AS [Admit Date],
+            FORMAT(
+    TRY_CONVERT(datetime2, pv.adm_ts, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS [Admit Date],
 
             pv.dschrg_ts AS [Discharge Date],
 
@@ -615,7 +632,11 @@ def get_full_remote_visit(visit_id):
                 ''
             ) AS [Pat Name Suf],
 
-            pat.bth_ts AS [Pat DOB],
+            CONVERT(
+    varchar(10),
+    TRY_CONVERT(datetime2, pat.bth_ts, 121),
+    101
+) AS [Pat DOB],
 
             ISNULL(
                 dbo.fn_get_cod_dtl_ext_id(
