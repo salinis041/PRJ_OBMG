@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Patients</title>
+    <title>OBMG PORTAL</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
@@ -102,7 +102,13 @@
             <span class="fax-icon">♟</span>
             <span>Faxes</span>
         </div>
-
+<a
+    href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}"
+>
+    Available Details
+</a>
     </div>
 
 </div>
