@@ -635,8 +635,29 @@
 
             <button
                 type="button"
+                id="modal-proceed-button"
+                class="modal-primary-button"
+                style="display:none;"
+            >
+                Proceed
+            </button>
+
+
+            <button
+                type="button"
+                id="modal-update-button"
+                class="modal-primary-button"
+                style="display:none;"
+            >
+                Update &amp; Proceed
+            </button>
+
+
+            <button
+                type="button"
                 id="modal-confirm-button"
                 class="modal-primary-button"
+                style="display:none;"
             >
                 Confirm
             </button>
@@ -658,20 +679,7 @@ document.addEventListener(
          * =====================================================
          * RADIO BUTTON MODE SWITCHING
          * =====================================================
-         *
-         * IMPORTANT:
-         * We let Flask render the selected mode.
-         *
-         * Current Census:
-         *     /details?mode=census&page=1
-         *
-         * Search by Visit ID:
-         *     /details?mode=visit
-         *
-         * We do NOT try to hide/show both tables with JavaScript.
-         * Only the correct section is rendered by Flask.
          */
-
 
         const censusMode =
             document.getElementById(
@@ -695,11 +703,6 @@ document.addEventListener(
                         return;
                     }
 
-
-                    /*
-                     * Always create a completely clean
-                     * Current Census URL.
-                     */
 
                     const url =
                         new URL(
@@ -749,11 +752,6 @@ document.addEventListener(
                         return;
                     }
 
-
-                    /*
-                     * Always create a completely clean
-                     * Visit Search URL.
-                     */
 
                     const url =
                         new URL(
@@ -822,6 +820,18 @@ document.addEventListener(
             );
 
 
+        const modalProceed =
+            document.getElementById(
+                "modal-proceed-button"
+            );
+
+
+        const modalUpdate =
+            document.getElementById(
+                "modal-update-button"
+            );
+
+
         const modalConfirm =
             document.getElementById(
                 "modal-confirm-button"
@@ -836,6 +846,20 @@ document.addEventListener(
             null;
 
 
+        let modalProceedAction =
+            null;
+
+
+        let modalUpdateAction =
+            null;
+
+
+        /*
+         * =====================================================
+         * CLOSE MODAL
+         * =====================================================
+         */
+
         function closeModal() {
 
             modalOverlay.style.display =
@@ -849,8 +873,65 @@ document.addEventListener(
             modalConfirmAction =
                 null;
 
+
+            modalProceedAction =
+                null;
+
+
+            modalUpdateAction =
+                null;
+
+
+            /*
+             * Reset modal to its normal state.
+             */
+
+            modalCancel.style.display =
+                "";
+
+
+            modalProceed.style.display =
+                "none";
+
+
+            modalUpdate.style.display =
+                "none";
+
+
+            modalConfirm.style.display =
+                "none";
+
+
+            modalCancel.disabled =
+                false;
+
+
+            modalProceed.disabled =
+                false;
+
+
+            modalUpdate.disabled =
+                false;
+
+
+            modalConfirm.disabled =
+                false;
+
         }
 
+
+        /*
+         * =====================================================
+         * STANDARD MODAL
+         * =====================================================
+         *
+         * Used for:
+         *
+         *     Success -> Continue
+         *     Error   -> Close
+         *
+         * Only modalConfirm is displayed.
+         */
 
         function openModal(
             title,
@@ -868,6 +949,26 @@ document.addEventListener(
                 message;
 
 
+            /*
+             * Hide the existing-record buttons.
+             */
+
+            modalProceed.style.display =
+                "none";
+
+
+            modalUpdate.style.display =
+                "none";
+
+
+            /*
+             * Show the normal action button.
+             */
+
+            modalConfirm.style.display =
+                "";
+
+
             modalConfirm.textContent =
                 confirmText;
 
@@ -876,10 +977,34 @@ document.addEventListener(
                 confirmAction;
 
 
+            modalProceedAction =
+                null;
+
+
+            modalUpdateAction =
+                null;
+
+
             modalCancel.style.display =
                 showCancel
                     ? ""
                     : "none";
+
+
+            modalCancel.disabled =
+                false;
+
+
+            modalProceed.disabled =
+                false;
+
+
+            modalUpdate.disabled =
+                false;
+
+
+            modalConfirm.disabled =
+                false;
 
 
             modalOverlay.style.display =
@@ -887,6 +1012,12 @@ document.addEventListener(
 
         }
 
+
+        /*
+         * =====================================================
+         * CANCEL
+         * =====================================================
+         */
 
         modalCancel.addEventListener(
             "click",
@@ -897,6 +1028,17 @@ document.addEventListener(
             }
         );
 
+
+        /*
+         * =====================================================
+         * NORMAL CONFIRM BUTTON
+         * =====================================================
+         *
+         * Used for:
+         *
+         *     Continue
+         *     Close
+         */
 
         modalConfirm.addEventListener(
             "click",
@@ -914,6 +1056,63 @@ document.addEventListener(
             }
         );
 
+
+        /*
+         * =====================================================
+         * PROCEED BUTTON
+         * =====================================================
+         *
+         * Existing visit:
+         *
+         *     Do NOT update.
+         *     Go directly to Details page.
+         */
+
+        modalProceed.addEventListener(
+            "click",
+            async function () {
+
+                if (
+                    typeof modalProceedAction ===
+                    "function"
+                ) {
+
+                    await modalProceedAction();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * UPDATE & PROCEED BUTTON
+         * =====================================================
+         */
+
+        modalUpdate.addEventListener(
+            "click",
+            async function () {
+
+                if (
+                    typeof modalUpdateAction ===
+                    "function"
+                ) {
+
+                    await modalUpdateAction();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * CLICK OUTSIDE MODAL
+         * =====================================================
+         */
 
         modalOverlay.addEventListener(
             "click",
@@ -958,10 +1157,6 @@ document.addEventListener(
                 return;
             }
 
-
-            /*
-             * Prevent duplicate event handlers.
-             */
 
             if (
                 censusSearch.dataset.searchBound ===
@@ -1037,12 +1232,6 @@ document.addEventListener(
 
             try {
 
-                /*
-                 * Cancel the previous request if
-                 * the user types/backspaces again
-                 * before it finishes.
-                 */
-
                 if (searchRequest) {
 
                     searchRequest.abort();
@@ -1086,11 +1275,6 @@ document.addEventListener(
 
                 }
                 else {
-
-                    /*
-                     * Empty search means load the
-                     * complete Current Census again.
-                     */
 
                     url.searchParams.delete(
                         "q"
@@ -1154,11 +1338,8 @@ document.addEventListener(
 
 
                 /*
-                 * IMPORTANT:
-                 *
-                 * Re-attach the search listener because
-                 * replacing innerHTML creates a new
-                 * #census-search element.
+                 * Re-attach handlers because
+                 * innerHTML created new elements.
                  */
 
                 attachCensusSearch();
@@ -1191,11 +1372,6 @@ document.addEventListener(
 
             }
             catch (error) {
-
-                /*
-                 * AbortError is expected when a
-                 * newer search replaces an older one.
-                 */
 
                 if (
                     error.name ===
@@ -1230,11 +1406,6 @@ document.addEventListener(
         }
 
 
-        /*
-         * Attach the listener to the
-         * initially rendered textbox.
-         */
-
         attachCensusSearch();
 
 
@@ -1256,10 +1427,6 @@ document.addEventListener(
 
             forms.forEach(
                 function (form) {
-
-                    /*
-                     * Prevent attaching the handler twice.
-                     */
 
                     if (
                         form.dataset.bound ===
@@ -1286,6 +1453,12 @@ document.addEventListener(
         }
 
 
+        /*
+         * =====================================================
+         * ADD / EXISTING RECORD
+         * =====================================================
+         */
+
         async function handleAddSubmit(
             event
         ) {
@@ -1304,8 +1477,7 @@ document.addEventListener(
 
 
             /*
-             * Prevent double-click / duplicate
-             * requests from the browser.
+             * Prevent double-click.
              */
 
             if (
@@ -1339,7 +1511,10 @@ document.addEventListener(
             if (!visitId) {
 
                 if (button) {
-                    button.disabled = false;
+
+                    button.disabled =
+                        false;
+
                 }
 
 
@@ -1392,7 +1567,9 @@ document.addEventListener(
 
 
                 /*
-                 * NEW RECORD
+                 * =================================================
+                 * NEW VISIT INSERTED
+                 * =================================================
                  */
 
                 if (data.inserted) {
@@ -1427,7 +1604,15 @@ document.addEventListener(
 
 
                 /*
-                 * EXISTING RECORD
+                 * =================================================
+                 * VISIT ALREADY EXISTS
+                 * =================================================
+                 *
+                 * Show exactly:
+                 *
+                 *     Cancel
+                 *     Proceed
+                 *     Update & Proceed
                  */
 
                 if (data.exists) {
@@ -1436,12 +1621,8 @@ document.addEventListener(
                         data.visit_id;
 
 
-                    openModal(
-                        "Visit Already Exists",
-                        "This visit has already been added. Would you like to update it with the latest information?",
-                        "Update",
-                        confirmUpdate,
-                        true
+                    openExistingVisitModal(
+                        data.redirect_url
                     );
 
 
@@ -1464,7 +1645,10 @@ document.addEventListener(
 
 
                 if (button) {
-                    button.disabled = false;
+
+                    button.disabled =
+                        false;
+
                 }
 
 
@@ -1488,6 +1672,120 @@ document.addEventListener(
 
         /*
          * =====================================================
+         * EXISTING RECORD - THREE BUTTON MODAL
+         * =====================================================
+         */
+
+        function openExistingVisitModal(
+            redirectUrl
+        ) {
+
+            modalTitle.textContent =
+                "Visit Already Exists";
+
+
+            modalMessage.textContent =
+                "This visit is already present in the table. What would you like to do?";
+
+
+            /*
+             * Show exactly three buttons:
+             *
+             *     Cancel
+             *     Proceed
+             *     Update & Proceed
+             */
+
+            modalCancel.style.display =
+                "";
+
+
+            modalProceed.style.display =
+                "";
+
+
+            modalUpdate.style.display =
+                "";
+
+
+            /*
+             * Hide normal Confirm button.
+             */
+
+            modalConfirm.style.display =
+                "none";
+
+
+            modalCancel.disabled =
+                false;
+
+
+            modalProceed.disabled =
+                false;
+
+
+            modalUpdate.disabled =
+                false;
+
+
+            /*
+             * =================================================
+             * PROCEED
+             * =================================================
+             *
+             * Do NOT update the database.
+             *
+             * Just move to Details page.
+             */
+
+            modalProceedAction =
+                function () {
+
+                    const targetUrl =
+                        redirectUrl ||
+                        (
+                            "/Demographics/" +
+                            String(
+                                pendingUpdateVisitId
+                            )
+                        );
+
+
+                    closeModal();
+
+
+                    window.location.assign(
+                        targetUrl
+                    );
+
+                };
+
+
+            /*
+             * =================================================
+             * UPDATE & PROCEED
+             * =================================================
+             *
+             * Update first.
+             * Then the update success modal appears.
+             */
+
+            modalUpdateAction =
+                confirmUpdate;
+
+
+            modalConfirmAction =
+                null;
+
+
+            modalOverlay.style.display =
+                "flex";
+
+        }
+
+
+        /*
+         * =====================================================
          * UPDATE EXISTING RECORD
          * =====================================================
          */
@@ -1503,7 +1801,16 @@ document.addEventListener(
             }
 
 
-            modalConfirm.disabled =
+            /*
+             * Disable the actual buttons while
+             * update is in progress.
+             */
+
+            modalUpdate.disabled =
+                true;
+
+
+            modalProceed.disabled =
                 true;
 
 
@@ -1563,13 +1870,13 @@ document.addEventListener(
                 }
 
 
-                modalConfirm.disabled =
-                    false;
-
-
-                modalCancel.disabled =
-                    false;
-
+                /*
+                 * =================================================
+                 * UPDATE SUCCESS
+                 * =================================================
+                 *
+                 * Only Continue is shown.
+                 */
 
                 openModal(
                     "Success",
@@ -1597,13 +1904,9 @@ document.addEventListener(
             }
             catch (error) {
 
-                modalConfirm.disabled =
-                    false;
-
-
-                modalCancel.disabled =
-                    false;
-
+                /*
+                 * Only Close is shown.
+                 */
 
                 openModal(
                     "Error",
