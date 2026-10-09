@@ -220,7 +220,10 @@ def get_patVisitDetails(visit_id):
             [Patient Type] as PatientType,
             
 
-            CONVERT(varchar(10), AdmitDateTime, 101) as AdmitDateTime,
+           FORMAT(
+    TRY_CONVERT(datetime2, AdmitDateTime, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS AdmitDateTime,
             [Discharge Date] as DischargeDateTimeDisplay,
 
             

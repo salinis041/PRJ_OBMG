@@ -265,7 +265,10 @@ def get_added_Visitdetails(page=1, search=None,
 
                 CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
                [Patient Type] as PatientType,
-               CONVERT(varchar(10), AdmitDateTime, 101) as AdmitDateTime,
+             FORMAT(
+    TRY_CONVERT(datetime2, AdmitDateTime, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS AdmitDateTime,
                  [Phys Name Attending ] as AttendingPhysician
                 
             FROM Visits  
