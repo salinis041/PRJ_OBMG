@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Master</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
+</head>
+<body>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
+<section class="um-page">
+  <div class="um-heading">
+    <div><h1>User Master</h1><p>Manage application users.</p></div>
+    <a class="um-btn um-primary" href="{{ url_for('user_master_routes.create') }}">Create User</a>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}{% for category, message in messages %}
+      <div class="um-alert {{ category }}">{{ message }}</div>
+    {% endfor %}{% endif %}
+  {% endwith %}
+  <div class="um-panel">
+    <div class="um-toolbar">
+      <h2>Users</h2>
+      <input id="userSearch" type="search" placeholder="Search UID, username, or name" aria-label="Search users">
+    </div>
+    <div class="um-table-wrap">
+      <table class="um-table" id="usersTable">
+        <thead><tr><th>UID</th><th>Username</th><th>Name</th><th>User Type</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.Uid }}</td>
+            <td>{{ user.Uname or '' }}</td>
+            <td>{{ ((user.Fname or '') ~ ' ' ~ (user.Lname or '')).strip() }}</td>
+            <td>{{ user.Utype or '' }}</td>
+            <td><span class="um-status">{{ 'Active' if user.IsActive == 'Y' else 'Inactive' }}</span></td>
+            <td><a class="um-btn" href="{{ url_for('user_master_routes.edit', uid=user.Uid) }}">Edit</a></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="um-empty">No users found, or the user table could not be loaded.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<script>
+document.getElementById("userSearch").addEventListener("input", function () {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll("#usersTable tbody tr").forEach(row => {
+    row.hidden = !row.innerText.toLowerCase().includes(q);
+  });
+});
+</script>
+</body>
+</html>

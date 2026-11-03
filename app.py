@@ -1,5 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
+from routes.user_master_routes import user_master_routes
 
 from routes.available_details_routes import (
     available_details_routes
@@ -34,6 +35,7 @@ app.register_blueprint(
     added_details_routes
 )
 
+app.register_blueprint(user_master_routes)
 
 if __name__ == "__main__":
     app.run(debug=True)
