@@ -20,13 +20,24 @@
     </div>
 
     <nav class="main-nav">
-        <a href="/home">Home</a>
-        <a href="/patient" >Patients</a>
+<!--        <a href="/home">Home</a>-->
+        <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}" >Patients</a>
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}">Available Patients</a>
         <a href="#">Tasks</a>
         <a href="#">Messages</a>
         <a href="#">Cases</a>
         <a href="#">Work Queues</a>
         <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}">Provider</a>
+        <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}">User</a>
     </nav>
 
     <div class="header-right">
@@ -79,7 +90,7 @@
               <hr class="custom-line">
              </div>
             <div style="font-size: small;">
-                  BLUE CROSS  BLUE SHIELD PPO
+                  {{ pv.PAYOR }}
                   </div>
               <hr class="custom-line">
             <div class="line-container" >

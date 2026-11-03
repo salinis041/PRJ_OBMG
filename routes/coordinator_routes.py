@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, jsonify
 
 from service.patcoordi_service import get_patCordinat_list,get_patCordinat_Visit,get_patVisit
 from service.patient_service import get_patient_list
+from service.provider_service import get_provider_list
+
 from ldap3 import Server, Connection, NTLM
 
 coodinator_routes = Blueprint(
@@ -12,10 +14,25 @@ coodinator_routes = Blueprint(
 
 @coodinator_routes.route("/")
 def patients():
+    # search = request.args.get(
+    #     "search",
+    #     default="",
+    #     type=str
+    # )
+    #
+    # data = get_provider_list(
+    #     search=search
+    # )
 
-    patients = get_patCordinat_list()
-    # for x in patients:
+
+    #patients = get_patCordinat_list()
+    # for x in data:
     #  print(x)
+    # return render_template(
+    #     "provider.html",
+    #     details=data["details"],
+    #     search=search
+    # )
     return render_template(
         "login.html"
     )
@@ -53,7 +70,6 @@ def Coordinatormain(visit_id):
     )
 @coodinator_routes.route("/login", methods=["POST"])
 def login():
-
     data = request.get_json()
 
     username = data.get("username", "").strip()
@@ -76,28 +92,15 @@ def login():
             get_info="NONE"
         )
 
-        user = f"{domain}\\{username}"
-
-        print("======================================")
-        print("AD LOGIN ATTEMPT")
-        print("Server   :", server_address)
-        print("Domain   :", domain)
-        print("User     :", user)
-        print("======================================")
-
         conn = Connection(
             server,
-            user=user,
+            user=f"{domain}\\{username}",
             password=password,
             authentication=NTLM,
-            auto_bind=False
+            auto_bind=True
         )
 
-        if conn.bind():
-
-            print("AD BIND SUCCESS")
-            print("Result:", conn.result)
-
+        if conn.bound:
             conn.unbind()
 
             return jsonify({
@@ -105,11 +108,7 @@ def login():
                 "message": "Login successful"
             })
 
-        print("AD BIND FAILED")
-        print("Result:", conn.result)
-
         result = conn.result
-
         conn.unbind()
 
         return jsonify({
@@ -120,16 +119,13 @@ def login():
 
     except Exception as e:
 
-        print("AD CONNECTION ERROR")
-        print("Error type:", type(e).__name__)
-        print("Error:", str(e))
-
         return jsonify({
             "success": False,
             "message": "AD authentication failed",
             "error_type": type(e).__name__,
             "error": str(e)
         }), 401
+
 
 @coodinator_routes.route("/Demographics/<visit_id>")
 def Demographics(visit_id):

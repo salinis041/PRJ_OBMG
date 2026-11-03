@@ -75,83 +75,150 @@ def get_coorpathome():
         connection.close()
 
 def get_patientVisit(visit_id):
+
     query = """
-        SELECT
-            PatID,
+            SELECT
+                PatID,
 
-            LastName + ' ' + FirstName AS Patname,
+                LastName + ' ' + FirstName AS Patname,
 
-            CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
+                CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
 
-            CONVERT(
-                varchar(3),
-                DATEDIFF(month, BirthDate, GETDATE()) / 12
-            ) AS Age,
+                CONVERT(
+                    varchar(3),
+                    DATEDIFF(month, BirthDate, GETDATE()) / 12
+                ) AS Age,
 
-            CASE
-                WHEN Gender = 'M' THEN 'Male'
-                WHEN Gender = 'F' THEN 'Female'
-                ELSE 'Other'
-            END AS Gender,
+                CASE
+                    WHEN Gender = 'M' THEN 'Male'
+                    WHEN Gender = 'F' THEN 'Female'
+                    ELSE 'Other'
+                END AS Gender,
 
-            MedicalRecordNumber,
-            AccountNumber,
+                MedicalRecordNumber,
+                AccountNumber,
 
-            NamePrefix,
-            NameSuffix,
-            MiddleName,
+                 ISNULL(Address1,'') Address1,
+                 ISNULL(Address2,'') Address2,
+                 ISNULL(City,'') City,
+                 ISNULL(State,'') State,
+                 ISNULL(Zip,'') Zip,
+                 ISNULL(Country,'') Country,
 
-            Address1,
-            Address2,
-            City,
-            State,
-            Zip,
-            Country,
+                ISNULL([Pat Home Ph],'') HomePhone,
+                ISNULL([Pat Work Ph],'') WorkPhone,
+                CASE
+                WHEN Langu = 'en' THEN 'ENGLISH'
+                WHEN Langu = 'spa' THEN 'SPANISH'
+                ELSE Langu
+            END AS PrimaryLang,
+                MaritalStatus,
+                Race,
+               ISNULL([Patient Type],'')  PatientType,
+                '' AdmitReason,
+                 '' ServicingFacility,
+               ISNULL([Admit FC Name],'') PAYOR,
+               '' Room
+               
+                --HospitalService,
+                -- Location,
+                -- AdmitDateTime,
+                -- AdmitDateTimeDisplay,
+                -- DischargeDateTimeDisplay,
+                -- AdmitSource,
+                -- FinancialClass,
+                -- PCP,
+                -- AttendingPhysicianID,
+                -- AttendingPhysicianFirstName,
+                -- AttendingPhysicianLastName,
+                -- ReferringPhysicianID,
+                -- ReferringPhysicianFirstName,
+                -- ReferringPhysicianLastName,
+                -- ConsultingPhysicianID,
+                -- ConsultingPhysicianFirstName,
+                -- ConsultingPhysicianLastName
 
-            HomePhone,
-            WorkPhone,
-            PrimaryLang,
+            FROM Visits
 
-            Alias,
-            MothersName,
-            MaritalStatus,
-            Race,
-            Religion,
-
-            PatientType,
-            HospitalService,
-            Location,
-
-            ServicingFacility,
-            Room,
-
-            AdmitDateTime,
-            AdmitDateTimeDisplay,
-            DischargeDateTimeDisplay,
-
-            AdmitReason,
-            AdmitSource,
-
-            FinancialClass,
-            PCP,
-            PAYOR,
-
-            AttendingPhysicianID,
-            AttendingPhysicianFirstName,
-            AttendingPhysicianLastName,
-
-            ReferringPhysicianID,
-            ReferringPhysicianFirstName,
-            ReferringPhysicianLastName,
-
-            ConsultingPhysicianID,
-            ConsultingPhysicianFirstName,
-            ConsultingPhysicianLastName
-
-        FROM PatientVisits
-
-        WHERE AccountNumber = ?
-    """
+            WHERE AccountNumber = ?
+        """
+    # query = """
+    #     SELECT
+    #         PatID,
+    #
+    #         LastName + ' ' + FirstName AS Patname,
+    #
+    #         CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
+    #
+    #         CONVERT(
+    #             varchar(3),
+    #             DATEDIFF(month, BirthDate, GETDATE()) / 12
+    #         ) AS Age,
+    #
+    #         CASE
+    #             WHEN Gender = 'M' THEN 'Male'
+    #             WHEN Gender = 'F' THEN 'Female'
+    #             ELSE 'Other'
+    #         END AS Gender,
+    #
+    #         MedicalRecordNumber,
+    #         AccountNumber,
+    #
+    #         NamePrefix,
+    #         NameSuffix,
+    #         MiddleName,
+    #
+    #         Address1,
+    #         Address2,
+    #         City,
+    #         State,
+    #         Zip,
+    #         Country,
+    #
+    #         HomePhone,
+    #         WorkPhone,
+    #         PrimaryLang,
+    #
+    #         Alias,
+    #         MothersName,
+    #         MaritalStatus,
+    #         Race,
+    #         Religion,
+    #
+    #         PatientType,
+    #         HospitalService,
+    #         Location,
+    #
+    #         ServicingFacility,
+    #         Room,
+    #
+    #         AdmitDateTime,
+    #         AdmitDateTimeDisplay,
+    #         DischargeDateTimeDisplay,
+    #
+    #         AdmitReason,
+    #         AdmitSource,
+    #
+    #         FinancialClass,
+    #         PCP,
+    #         PAYOR,
+    #
+    #         AttendingPhysicianID,
+    #         AttendingPhysicianFirstName,
+    #         AttendingPhysicianLastName,
+    #
+    #         ReferringPhysicianID,
+    #         ReferringPhysicianFirstName,
+    #         ReferringPhysicianLastName,
+    #
+    #         ConsultingPhysicianID,
+    #         ConsultingPhysicianFirstName,
+    #         ConsultingPhysicianLastName
+    #
+    #     FROM PatientVisits
+    #
+    #     WHERE AccountNumber = ?
+    # """
 
     connection = get_connection()
 

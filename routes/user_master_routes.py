@@ -4,7 +4,7 @@ from service import user_master_service
 user_master_routes = Blueprint('user_master_routes', __name__, url_prefix='/user-master')
 
 
-@user_master_routes.route('/', methods=['GET'])
+@user_master_routes.route('/index', methods=['GET'])
 def index():
     try:
         users = user_master_service.get_users()
