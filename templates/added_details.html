@@ -8,14 +8,13 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Added Details</title>
+    <title>OBMG PORTAL</title>
 
     <link rel="stylesheet"
           href="{{ url_for(
               'static',
               filename='css/style.css'
           ) }}">
-
 </head>
 
 <body>
@@ -23,17 +22,24 @@
 
 <header class="top-header">
     <nav class="main-nav">
-        <a href="{{ url_for(
-        'available_details_routes.available_details'
-    ) }}">Home</a>
+
         <a href="{{ url_for(
         'added_details_routes.added_details'
-    ) }}" class="selected">Added Details</a>
+    ) }}" class="selected">Patients</a>
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}">Available Patients</a>
         <a href="#">Tasks</a>
         <a href="#">Messages</a>
         <a href="#">Cases</a>
         <a href="#">Work Queues</a>
         <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}">Provider</a>
+     <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}">User</a>
     </nav>
 
     <div class="header-right">
@@ -175,14 +181,15 @@
 
                 {% for detail in details %}
 
-                    <tr onclick="openPatient({{ detail.AccountNumber }})"
-            style="cursor: pointer;">
-
+<!--                    <tr onclick="openPatient({{ detail.AccountNumber }})"-->
+<!--            style="cursor: pointer;">-->
+                        <tr>
                         <td>
                             {{ detail["AccountNumber"] }}
                         </td>
 
-                        <td>
+                        <td onclick="openPatient({{ detail.AccountNumber }})"
+            style="" class="patient-name">
 
                             {{ detail["Patname"] }}
 
@@ -457,7 +464,9 @@ if (addForm) {
 
 <script>
     function openPatient(visit_id) {
-        window.location.href = `/Demographics/${visit_id}`;
+           window.location.href = `/CoordinatorMain/${visit_id}`;
+<!--          window.location.href = `/Demographics/${visit_id}`;-->
+
     }
 </script>
 

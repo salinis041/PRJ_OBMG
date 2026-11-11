@@ -57,10 +57,12 @@ def get_available_details(
     101
 ) AS [Pat DOB],
 
-                ISNULL(
-                    org.org_nm,
-                    ''
-                ) AS [Facility],
+                CASE
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'JS%' THEN 'Jacksonstreet'
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'WW%' THEN 'WilliamWay'
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'WH%' THEN 'Wharton'
+                    ELSE ''
+                END AS [Facility],
 
                 ISNULL(
                     dbo.fn_get_attend_dr_name(
@@ -90,6 +92,10 @@ def get_available_details(
                 ON org.org_int_id = pv.org_int_id
 
             WHERE pv.dschrg_ts IS NULL
+              AND ISNULL(
+                    dbo.fn_get_attend_dr_name(pv.vst_int_id),
+                    ''
+                  ) <> 'CLIENT, ACCOUNT'
         """
 
         parameters = []
@@ -214,6 +220,10 @@ def get_available_details_count(
                 ON org.org_int_id = pv.org_int_id
 
             WHERE pv.dschrg_ts IS NULL
+              AND ISNULL(
+                    dbo.fn_get_attend_dr_name(pv.vst_int_id),
+                    ''
+                  ) <> 'CLIENT, ACCOUNT'
         """
 
         parameters = []
@@ -408,10 +418,12 @@ def get_remote_visit_for_display(visit_id):
     101
 ) AS [Pat DOB],
 
-                ISNULL(
-                    org.org_nm,
-                    ''
-                ) AS [Facility],
+                CASE
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'JS%' THEN 'Jacksonstreet'
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'WW%' THEN 'WilliamWay'
+                    WHEN dbo.fn_get_cod_dtl_ext_id(pv.pat_ty) LIKE 'WH%' THEN 'Wharton'
+                    ELSE ''
+                END AS [Facility],
 
                 ISNULL(
                     dbo.fn_get_attend_dr_name(
@@ -440,6 +452,11 @@ def get_remote_visit_for_display(visit_id):
             LEFT JOIN TSM030_ORGANIZATION org
                 ON org.org_int_id = pv.org_int_id
 WHERE CAST(pv.vst_ext_id AS VARCHAR(50)) = ?
+          AND pv.dschrg_ts IS NULL
+          AND ISNULL(
+                dbo.fn_get_attend_dr_name(pv.vst_int_id),
+                ''
+              ) <> 'CLIENT, ACCOUNT'
         """
 
         cursor.execute(
@@ -583,8 +600,10 @@ def get_full_remote_visit(visit_id):
     TRY_CONVERT(datetime2, pv.adm_ts, 121),
     'MM/dd/yyyy hh:mm:ss tt'
 ) AS [Admit Date],
-
-            pv.dschrg_ts AS [Discharge Date],
+FORMAT(
+    TRY_CONVERT(datetime2, pv.dschrg_ts, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS  [Discharge Date],
 
             dbo.fn_get_cod_dtl_ext_id(
                 pv.pat_ty

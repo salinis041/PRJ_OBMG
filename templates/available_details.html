@@ -22,16 +22,23 @@
 
 <header class="top-header">
     <nav class="main-nav">
+<!--        <a href="/home"  >Home</a>-->
+         <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}">Patients</a>
         <a href="{{ url_for(
         'available_details_routes.available_details'
-    ) }}" class="selected" >Home</a>
-        <a href="{{ url_for(
-        'added_details_routes.added_details'
-    ) }}">Added Details</a>
+    ) }}" class="selected">Available Patients</a>
         <a href="#">Messages</a>
         <a href="#">Cases</a>
         <a href="#">Work Queues</a>
         <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}">Provider</a>
+        <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}">User</a>
     </nav>
 
     <div class="header-right">

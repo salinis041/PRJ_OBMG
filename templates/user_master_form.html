@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ 'Edit User' if is_edit else 'Create User' }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
+</head>
+<body>
+<section class="um-page">
+  <div class="um-titlebar"><h1 id="stepTitle">Profile Info</h1><p id="stepDescription">{{ 'Update user information.' if is_edit else "Set up new user's general information." }}</p></div>
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}<div class="um-alert {{ category }}">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
+  <div class="um-progress" aria-label="User details steps"><span class="active">1. Profile</span><span>2. Login &amp; Proxy</span></div>
+  <form method="post" id="userWizard">
+    <section class="um-step active" data-title="Profile Info" data-description="{{ 'Update the user’s general information.' if is_edit else 'Set up the user’s general information.' }}">
+      <div class="um-card narrow"><h2>General Info</h2>
+        <div class="um-field"><label for="user_type">User Type <b>*</b></label><select id="user_type" name="user_type" required><option value="">Select user type</option>{% for value in ['Office User','Administrator','Coordinator','Clinical User','Other'] %}<option value="{{ value }}" {% if user and user.Utype == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></div>
+        <div class="um-field"><label for="first_name">First <b>*</b></label><input id="first_name" name="first_name" maxlength="30" required value="{{ user.Fname if user else '' }}"></div>
+        <div class="um-field"><label for="last_name">Last <b>*</b></label><input id="last_name" name="last_name" maxlength="30" required value="{{ user.Lname if user else '' }}"></div>
+        <div class="um-field"><label>Phone</label><div class="um-phone-fields"><input name="home_phone" maxlength="20" placeholder="Home" value="{{ user.Hphone or '' if user else '' }}"><input name="mobile_phone" maxlength="20" placeholder="Mobile" value="{{ user.Mphone or '' if user else '' }}"><input name="work_phone" maxlength="20" placeholder="Work" value="{{ user.Wphone or '' if user else '' }}"><input name="fax" maxlength="30" placeholder="Fax" value="{{ user.FaxNu or '' if user else '' }}"></div></div>
+        <div class="um-field"><label for="email">Email</label><input id="email" name="email" type="email" maxlength="30" value="{{ user.Email or '' if user else '' }}"></div>
+        <div class="um-field"><label for="direct_email">Direct Email</label><input id="direct_email" name="direct_email" type="email" maxlength="30" value="{{ user.DEmail or '' if user else '' }}"></div>
+      </div>
+    </section>
+    <section class="um-step" data-title="Setup Account/Login Info" data-description="Update login information and proxy users.">
+      <div class="um-card"><h2>Login</h2><div class="um-login-grid">
+        <div class="um-field"><label for="username">Username <b>*</b></label><input id="username" name="username" maxlength="30" required autocomplete="username" value="{{ user.Uname if user else '' }}"></div>
+        <div class="um-field"><label for="password">{{ 'New Password (optional)' if is_edit else 'Password *' }}</label><div class="um-passwords"><input id="password" name="password" type="password" autocomplete="new-password" placeholder="{{ 'Leave blank to keep current password' if is_edit else 'At least 12 characters' }}" {% if not is_edit %}required{% endif %}><input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" placeholder="Confirm password"><div class="um-password-actions"><button type="button" class="um-btn" id="generatePassword">Generate Password</button><button type="button" class="um-btn" id="togglePassword">Show Password</button></div><label class="um-check"><input type="checkbox" name="change_password" {% if not user or user.NxtLgpawChg == 'Y' %}checked{% endif %}> User must change password on next login</label></div></div>
+      </div></div>
+      <div class="um-card"><h2>Proxy User(s)</h2><p class="um-muted">Select users who can act on behalf of this user.</p>
+        <div class="um-field"><label for="proxy_uids">Users who can act on behalf of this user</label><select id="proxy_uids" name="proxy_uids" multiple size="5">{% for item in users %}{% if not user or item.Uid != user.Uid %}<option value="{{ item.Uid }}" {% if user and item.Uid in user.proxy_uids %}selected{% endif %}>{{ item.Uname or ('UID ' ~ item.Uid) }} — {{ ((item.Fname or '') ~ ' ' ~ (item.Lname or '')).strip() }}</option>{% endif %}{% endfor %}</select><small>Use Ctrl (Windows) or Command (Mac) to select multiple users.</small></div>
+      </div>
+    </section>
+    <div class="um-form-actions"><a class="um-btn" href="{{ url_for('user_master_routes.index') }}">Cancel</a><button type="button" class="um-btn" id="backButton" disabled>Back</button><span class="um-step-count" id="stepCount">Step 1 of 2</span><button type="button" class="um-btn um-primary" id="nextButton">Next</button><button type="submit" class="um-btn um-primary" id="saveButton" hidden>{{ 'Update User' if is_edit else 'Create User' }}</button></div>
+  </form>
+</section>
+<script>
+(() => {
+  const form = document.getElementById('userWizard'); form.noValidate = true;
+  const steps = [...document.querySelectorAll('.um-step')], progress = [...document.querySelectorAll('.um-progress span')];
+  const title = document.getElementById('stepTitle'), description = document.getElementById('stepDescription');
+  const back = document.getElementById('backButton'), next = document.getElementById('nextButton'), save = document.getElementById('saveButton'), count = document.getElementById('stepCount');
+  let current = 0;
+  function showStep(index) {
+    current = index; steps.forEach((step,i) => step.classList.toggle('active', i === index));
+    progress.forEach((item,i) => { item.classList.toggle('active',i===index); item.classList.toggle('complete',i<index); });
+    title.textContent = steps[index].dataset.title; description.textContent = steps[index].dataset.description;
+    back.disabled = index === 0; next.hidden = index === steps.length-1; save.hidden = index !== steps.length-1;
+    count.textContent = `Step ${index+1} of ${steps.length}`; window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function validateStep() {
+    for (const field of steps[current].querySelectorAll('input,select,textarea')) {
+      if (field.disabled || field.type === 'checkbox' || field.type === 'button' || field.name === 'proxy_uids' || (field.type === 'password' && !field.required && !field.value)) continue;
+      if (!field.checkValidity()) { field.reportValidity(); return false; }
+    }
+    if (current === 1) {
+      const p=document.getElementById('password'), c=document.getElementById('confirm_password');
+      if (p.value && p.value.length < 12) { p.setCustomValidity('Use at least 12 characters.'); p.reportValidity(); p.setCustomValidity(''); return false; }
+      if (p.value !== c.value) { c.setCustomValidity('Passwords do not match.'); c.reportValidity(); c.setCustomValidity(''); return false; }
+      {% if not is_edit %}if (!p.value) { p.setCustomValidity('Password is required.'); p.reportValidity(); p.setCustomValidity(''); return false; }{% endif %}
+    }
+    return true;
+  }
+  next.addEventListener('click',()=>{if(validateStep())showStep(Math.min(current+1,steps.length-1));});
+  back.addEventListener('click',()=>showStep(Math.max(current-1,0)));
+  document.getElementById('togglePassword').addEventListener('click',()=>{const p=document.getElementById('password'),c=document.getElementById('confirm_password'),show=p.type==='password';p.type=show?'text':'password';c.type=show?'text':'password';document.getElementById('togglePassword').textContent=show?'Hide Password':'Show Password';});
+  document.getElementById('generatePassword').addEventListener('click',()=>{const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%*-_';const values=new Uint32Array(20);crypto.getRandomValues(values);const p=Array.from(values,n=>chars[n%chars.length]).join('').slice(0,18)+'aA7!';document.getElementById('password').value=p;document.getElementById('confirm_password').value=p;});
+  form.addEventListener('submit',e=>{if(!validateStep())e.preventDefault();}); showStep(0);
+})();
+</script>
+</body></html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OBMG PORTAL</title>
+    <link rel="stylesheet"
+          href="{{ url_for(
+              'static',
+              filename='css/style.css'
+          ) }}">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        .edit-button {
+    flex: 0 0 auto;
+    width: 51px;
+    height: 25px;
+    padding: 0 17px;
+    border: 1px solid #087a9e;
+    border-radius: 4px;
+    background: #bcc5c8;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+ .toggle-btn {
+        width: 100px;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 50px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .enabled {
+        background-color: #198754;
+    }
+    .disabled {
+        background-color: #dc3545;
+    }
+     .modal-div{
+     border: 1px solid #c8c8cc;
+     background-color: #f8f9fa;
+     padding: 10px;border-radius: 10px;
+        }
+ .rounded-toggle-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: #d6d6d6;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.rounded-toggle-btn:hover {
+    background-color: #bdbdbd;
+}
+.arrow-toggle {
+   width: 29px;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 25px;
+    color: #000;
+    margin-right: 6px;
+    transition: transform 0.3s ease;
+}
+    </style>
+
+</head>
+<body>
+<!-- ================= HEADER ================= -->
+<header class="top-header">
+    <nav class="main-nav">
+<!--        <a href="/home">Home</a>-->
+        <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}" >Patients</a>
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}">Available Patients</a>
+
+        <a href="#">Tasks</a>
+        <a href="#">Messages</a>
+        <a href="#">Cases</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}" class="selected">Provider</a>
+     <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}">User</a>
+    </nav>
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+</header>
+<div class="available-details-page">
+    <div class="available-details-header">
+        <div>
+            <h4>
+                PROVIDERS
+            </h4>
+            <p>
+            </p>
+        </div>
+    </div>
+     <!-- =========================================
+         SEARCH
+    ========================================== -->
+    <div class="details-search-panel" style="display: flex; justify-content: space-between; align-items: end; gap: 20px; width: 100%;">
+        <!-- LEFT SEARCH -->
+        <form method="GET" action="{{ url_for('provider_routes.prov_details') }}" id="searchForm" style="display: flex; align-items: end; gap: 10px; width: 50%;">
+            <div class="search-field" style="flex: 1;">
+                <label for="searchInput">Search</label>
+                <input type="text" id="searchInput" name="search" value="{{ search }}" class="form-control" placeholder="NPI# or provider name" autocomplete="off">
+            </div>
+           <button type="submit" class="search-button"> Search </button>
+             <a href="{{ url_for('provider_routes.prov_details') }}" class="clear-button"> Clear
+        </a>
+        </form> <!-- RIGHT SEARCH -->
+        <div  id="searchForm2" style="display: flex; align-items: end; gap: 10px; width: 50%;">
+            <button type="submit" class="search-button" data-bs-toggle="modal" onclick="showUser()"
+                >+ Add </button> </div>
+    </div>
+    <div class="details-table-container">
+        <table class="available-details-table">
+            <thead>
+                <tr>
+                    <th>PROVIDER</th>
+                    <th>NPI #</th>
+                    <th>SPECIALITY</th>
+                    <th>USER</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+             {% for detail in details %}
+            <tr>
+             <td>{{ detail["ProviderName"] }}</td>
+             <td>{{ detail["NPI"] }}</td>
+                <td>{{ detail["Spety"] }}</td>
+             <td>{{ detail["Uname"] }}</td>
+                <td>
+    <button class="edit-button" title="Edit user "
+            type="button" onclick="loadUser({{ detail.Uid }})">
+        <span class="provider-icon">👤</span> +
+    </button>
+                </td>
+             <td>
+                 <button class="edit-button" title="Add Provider info"
+            type="button" onclick="loadProvider({{ detail.Uid }})">
+        <span class="provider-icon">ⓤ</span> +
+    </button></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+             </tbody>
+        </table>
+</div>
+ <!-- Add Provider Modal -->
+<div class="modal fade" id="providerModal" tabindex="-1"
+     aria-hidden="true" >
+    <div class="modal-dialog" style="width: 1256px; max-width: 95vw;">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('provider_routes.add_provider') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Provider</h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4 modal-div" >
+                            <h6 class="fw-bold mb-3">General Info</h6>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">USER TYPE <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="user-type" value="Provider" name="user-type"
+                               class="form-control" required>
+                    </div>
+                </div>
+                <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">FIRST <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="first_name" name="first_name"
+                               class="form-control" required>
+                    </div>
+                </div>
+                <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">LAST <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="last_name" name="last_name"
+                               class="form-control" required>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">PHONE</label>
+                    <div class="col-8">
+                        <div class="row align-items-center mb-3">
+                        <div class="col-8">
+                        <input type="text" id="phome" name="phome"
+                               class="form-control" >
+                        </div>
+                         <label class="col-4 col-form-label">home</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                         <div class="col-8">
+                        <input type="text" id="pmobile" name="pmobile"
+                               class="form-control" >
+                         </div>
+                        <label class="col-4 col-form-label">mobile</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                         <div class="col-8">
+                        <input type="text" id="pwork" name="pwork"
+                               class="form-control" >
+                         </div>
+                        <label class="col-4 col-form-label">work</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                        <div class="col-8">
+                        <input type="text" id="pfax" name="pfax"
+                               class="form-control" >
+                        </div>
+                        <label class="col-4 col-form-label">fax</label>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">EMAIL</label>
+                    <div class="col-8">
+                        <input type="text" id="email" name="email"
+                               class="form-control" >
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">DIRECT EMAIL</label>
+                    <div class="col-8">
+                        <input type="text" id="direct_email" name="direct_email"
+                               class="form-control" >
+                    </div>
+                </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="col-12 modal-div">
+                            <h6 class="fw-bold mb-3"><span class="arrow-toggle">⌄</span>Login</h6>
+                             <div class="row align-items-center mb-3">
+                            <label class="col-3 col-form-label">USERNAME</label>
+                            <div class="col-3">
+                            <input type="text" id="user_name" name="user_name"
+                               class="form-control" >
+                            </div>
+                             <label class="col-3 col-form-label">PASSWORD</label>
+                            <div class="col-3">
+                            <input type="text" id="user_pass" name="user_pass"
+                               class="form-control" >
+                            <input type="hidden" id="usrid" name="usrid" value="Y">
+                            </div>
+                            </div>
+                            </div>
+                            <div class="col-12 modal-div">
+                                 <h6 class="fw-bold mb-3"><span class="arrow-toggle">⌄</span>Proxy Users</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+ <!--end modal-->
+ <!-- Edit/Add Provider Modal -->
+<div class="modal fade" id="editProviderModal" tabindex="-1"
+     aria-hidden="true" >
+    <div class="modal-dialog" style="width: 1256px; max-width: 95vw;">
+        <div class="modal-content">
+
+            <form method="POST" id="editProvid" action="{{ url_for('provider_routes.edit_provider') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit/Add Provider</h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4 modal-div">
+                            <h6 class="fw-bold mb-3">General Info</h6>
+                <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">FIRST <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="pfirst_name" name="pfirst_name"
+                               class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">LAST <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="plast_name" name="plast_name"
+                               class="form-control" required>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">PHONE</label>
+                    <div class="col-8">
+                        <div class="row align-items-center mb-3">
+                        <div class="col-8">
+                        <input type="text" id="pphome" name="pphome"
+                               class="form-control" >
+                        </div>
+                         <label class="col-4 col-form-label">home</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                         <div class="col-8">
+                        <input type="text" id="ppmobile" name="ppmobile"
+                               class="form-control" >
+                         </div>
+                        <label class="col-4 col-form-label">mobile</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                         <div class="col-8">
+                        <input type="text" id="ppwork" name="ppwork"
+                               class="form-control" >
+                         </div>
+                        <label class="col-4 col-form-label">work</label>
+                        </div>
+                        <div class="row align-items-center mb-3">
+                        <div class="col-8">
+                        <input type="text" id="ppfax" name="ppfax"
+                               class="form-control" >
+                        </div>
+                        <label class="col-4 col-form-label">fax</label>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">EMAIL</label>
+                    <div class="col-8">
+                        <input type="text" id="pemail" name="pemail"
+                               class="form-control" >
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">DIRECT EMAIL</label>
+                    <div class="col-8">
+                        <input type="text" id="pdirect_email" name="pdirect_email"
+                               class="form-control" >
+                    </div>
+                </div>
+                        </div>
+
+                        <div class="col-md-4 modal-div">
+                         <div class="d-flex justify-content-between align-items-center mb-2">
+                           <h6 class="fw-bold mb-3">Addresses</h6><button class="rounded-toggle-btn"
+            type="button" id="addressToggle" onclick="toggleAddress()">
+
+         +
+                        </button>
+                         </div>
+<div class="container mt-3">
+    <!-- Address Entry Section -->
+    <div id="addressDiv" style="display:none;" class="border rounded p-3 mb-3">
+       <div class="mb-2">
+            <input type="text" id="location" class="form-control"
+                   placeholder="Office Location">
+        </div>
+        <div class="mb-2">
+            <input type="text" id="address" class="form-control"
+                   placeholder="Enter address">
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <input type="text" id="city" placeholder="City" class="form-control">
+            </div>
+            <div class="col-md-6 mb-2">
+                <input type="text" id="state" placeholder="State" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+                <input type="text" id="zip" placeholder="ZIP Code" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+                <input type="text" id="aphone" placeholder="Phone" class="form-control">
+            </div>
+            <div class="col-md-4 mb-2">
+                <input type="text" id="afax" placeholder="Fax" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-success mt-2"
+                onclick="saveAddress()">
+            OK
+        </button>
+    </div>
+    <!-- Display Multiple Addresses -->
+    <div class="border rounded p-3">
+        <div class="d-flex justify-content-between mb-3">
+            <h8>Address List</h8>
+
+<!--            <button type="button" class="btn btn-primary btn-sm"-->
+<!--                    onclick="clearAddressForm()">-->
+<!--                + Add Address-->
+<!--            </button>-->
+        </div>
+
+        <div id="addressList"></div>
+    </div>
+</div>
+                        </div>
+                        <div class="col-md-4 modal-div">
+                           <h6 class="fw-bold mb-3">Practitioner Info</h6>
+                            <div class="row align-items-center mb-3">
+                           <label class="col-4 col-form-label">SPECIALTY <span class="text-danger">*</span></label>
+                         <div class="col-8">
+                          <select id="specialty" name="specialty" class="form-control" required>
+                         <option value="">-- Select specialty --</option>
+                              <option value="General Medicine">General Medicine</option>
+                            <option value="Family Practice">Family Practice</option>
+                          <option value="Interal Medicine">Interal Medicine</option>
+                          </select>
+                          </div>
+                        </div>
+                    <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">DEGREE </label>
+                    <div class="col-8">
+                        <input type="text" id="degree" name="degree"
+                               class="form-control">
+                      </div>
+                     </div>
+                     <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">NPI #<span class="text-danger">*</span></label>
+                    <div class="col-8">
+                        <input type="text" id="npi" name="npi"
+                               class="form-control"  required>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">DEA #</label>
+                    <div class="col-8">
+                        <input type="text" id="dea" name="dea"
+                               class="form-control" >
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">LICENSE #</label>
+                    <div class="col-8">
+                        <input type="text" id="licen" name="licen"
+                               class="form-control" >
+                    </div>
+                </div>
+                <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">GENDER</label>
+                    <div class="col-8">
+                        <select id="gender" name="gender" class="form-control" >
+                         <option value="">-- Select Gender --</option>
+                              <option value="M">Male</option>
+                            <option value="F">Female</option>
+                          <option value="U">Unknown</option>
+                          </select>
+                    </div>
+                </div>
+                 <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">ACCEPTS NEW PATIENTS</label>
+                    <div class="col-8">
+                        <button type="button" id="toggleBtn"
+        class="toggle-btn enabled"
+        onclick="toggleStatus()">
+    Yes
+</button>
+<input type="hidden" id="status" name="status" value="Y">
+<input type="hidden" id="uid" name="uid" value="Y">
+<input type="hidden" id="pid" name="pid" value="Y">
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+ <!--end modal-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+ window.loadProvider = async function(userId) {
+    try {
+        const response = await fetch(`/provider/${userId}`);
+
+        if (!response.ok) {
+            throw new Error("Unable to load provider details");
+        }
+         document.getElementById('status').value='Y'
+        const provider = await response.json();
+        console.log("Provider:", provider);
+        const details = provider.provider.details[0];
+        if (!details) {
+            alert("Provider details not found");
+            return;
+        }
+        document.getElementById("addressList").innerHTML = "";
+        const addList = provider.AddList.AddList || [];
+       document.getElementById('uid').value = userId;
+       document.getElementById('pfirst_name').value = details.Fname ?? '';
+       document.getElementById('plast_name').value = details.Lname ?? '';
+       document.getElementById('pphome').value = details.Hphone ?? '';
+        document.getElementById('ppmobile').value = details.Mphone ?? '';
+        document.getElementById('ppwork').value = details.Wphone ?? '';
+        document.getElementById('ppfax').value = details.FaxNu ?? '';
+        document.getElementById('pemail').value = details.Email ?? '';
+        document.getElementById('pdirect_email').value = details.DEmail ?? '';
+        document.getElementById('pid').value = details.PrId ?? '';
+         document.getElementById('specialty').value = details.Spety ?? '';
+       document.getElementById('degree').value = details.Deg ?? '';
+       document.getElementById('npi').value = details.NPI ?? '';
+        document.getElementById('dea').value = details.DEA ?? '';
+        document.getElementById('licen').value = details.Lic ?? '';
+        if(details.gender==='M' || details.gender==='F')
+        {
+           document.getElementById('gender').value = details.gender ?? '';
+        }
+        else
+        {
+            document.getElementById('gender').value = 'U';
+        }
+        document.getElementById('status').value = details.AccNPat ?? '';
+        const btn = document.getElementById("toggleBtn");
+        if(details.AccNPat=='Y')
+        {
+            btn.textContent = "Yes";
+            btn.className = "toggle-btn enabled"
+        }
+        else
+        {
+           btn.textContent = "No";
+            btn.className = "toggle-btn disabled";
+        }
+         // Create address details safely
+         // Address list
+addList.forEach(item => {
+         const newAddress = {
+        location:item.pr_Loc,
+        address: item.pr_Addres,
+        city: item.pr_city,
+        state: item.pr_state,
+        zip: item.pr_zip,
+        aphone: item.pr_phone,
+        afax:item.pr_fax
+    };
+        const addressDiv = document.createElement("div");
+        addressDiv.className = "border rounded p-3 mb-2";
+
+        // Create address details safely
+        const heading = document.createElement("h10");
+         heading.textContent = item.pr_Loc;
+         heading.style.fontWeight = "bold"
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        //closeButton.className = "btn btn-danger btn-sm";
+         closeButton.className = "rounded-toggle-btn";
+        closeButton.textContent = "×";
+        closeButton.title = "Delete Address";
+        closeButton.onclick = function () {
+            deleteAddress(item.PAdId, this)
+            const index = addressData.indexOf(newAddress);
+            if (index !== -1) {
+                addressData.splice(index, 1);
+            }
+            addressDiv.remove();
+        };
+
+        const header = document.createElement("div");
+        header.className = "d-flex justify-content-between mb-2";
+        header.append(heading, closeButton);
+      const addressLine1 = document.createElement("div");
+<!--addressLine1.textContent = item.pr_Loc;-->
+<!--addressLine1.style.fontWeight = "bold";-->
+
+const addressLine2 = document.createElement("div");
+addressLine2.textContent =
+    [item.pr_Addres,item.pr_city, item.pr_state,item.pr_zip].filter(Boolean).join(", ");
+    const addressLine3 = document.createElement("div");
+addressLine3.textContent ="Ph: " + item.pr_phone+ ",Fax: " + item.pr_fax;
+
+addressDiv.append(header, addressLine1, addressLine2,addressLine3);
+
+        document.getElementById("addressList").appendChild(addressDiv);
+});
+
+
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('editProviderModal')
+        );
+
+        modal.show();
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+</script>
+ <script>
+    function toggleStatus() {
+        const btn = document.getElementById("toggleBtn");
+        const status = document.getElementById("status");
+
+        if (status.value === "Y") {
+            status.value = "N";
+            btn.textContent = "No";
+            btn.className = "toggle-btn disabled";
+        } else {
+            status.value = "Y";
+            btn.textContent = "Yes";
+            btn.className = "toggle-btn enabled";
+        }
+    }
+ window.loadUser = async function(userId) {
+    try {
+        const response = await fetch(`/providerUser/${userId}`);
+
+        if (!response.ok) {
+            throw new Error("Unable to load user details");
+        }
+        const provider = await response.json();
+        console.log("Provider:", provider);
+        const details = provider.details[0];
+       document.getElementById('usrid').value = userId;
+       document.getElementById('first_name').value = details.Fname ?? '';
+       document.getElementById('last_name').value = details.Lname ?? '';
+       document.getElementById('phome').value = details.Hphone ?? '';
+        document.getElementById('pmobile').value = details.Mphone ?? '';
+        document.getElementById('pwork').value = details.Wphone ?? '';
+        document.getElementById('pfax').value = details.FaxNu ?? '';
+        document.getElementById('email').value = details.Email ?? '';
+        document.getElementById('direct_email').value = details.DEmail ?? '';
+        document.getElementById('user_name').value = details.Uname ?? '';
+       const modal = new bootstrap.Modal(
+            document.getElementById('providerModal')
+        );
+
+        modal.show();
+
+    } catch (error) {
+        alert(error.message);
+    }
+}
+ function showUser() {
+
+ document.getElementById('usrid').value = 0;
+       document.getElementById('first_name').value =  '';
+       document.getElementById('last_name').value =  '';
+       document.getElementById('phome').value = '';
+        document.getElementById('pmobile').value = '';
+        document.getElementById('pwork').value = '';
+        document.getElementById('pfax').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('direct_email').value = '';
+        document.getElementById('user_name').value = '';
+
+ const modal = new bootstrap.Modal(
+            document.getElementById('providerModal')
+        );
+
+        modal.show();
+     }
+</script>
+<script>
+    function toggleAddress() {
+        const addressDiv = document.getElementById("addressDiv");
+        const button = document.getElementById("addressToggle");
+
+        if (addressDiv.style.display === "none") {
+            addressDiv.style.display = "block";
+            button.textContent = "−";
+        } else {
+            addressDiv.style.display = "none";
+            button.textContent = "+";
+        }
+    }
+</script>
+<script>
+    let addressCount = 0;
+    let addressData = [];
+
+    function saveAddress() {
+        const location = document.getElementById("location").value.trim();
+        const address = document.getElementById("address").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const state = document.getElementById("state").value.trim();
+        const zip = document.getElementById("zip").value.trim();
+        const aphone = document.getElementById("aphone").value.trim();
+         const afax = document.getElementById("afax").value.trim();
+
+        if (!address) {
+            alert("Please enter address");
+            return;
+        }
+        const newAddress = {
+        location:location,
+        address: address,
+        city: city,
+        state: state,
+        zip: zip,
+        aphone: aphone,
+        afax:afax
+    };
+
+    addressData.push(newAddress);
+
+        addressCount++;
+
+        const addressDiv = document.createElement("div");
+        addressDiv.className = "border rounded p-3 mb-2";
+
+        // Create address details safely
+        const heading = document.createElement("h10");
+        heading.textContent = location;
+        heading.style.fontWeight = "bold"
+
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        //closeButton.className = "btn btn-danger btn-sm";
+         closeButton.className = "rounded-toggle-btn";
+        closeButton.textContent = "×";
+        closeButton.title = "Delete Address";
+        closeButton.onclick = function () {
+            const index = addressData.indexOf(newAddress);
+            if (index !== -1) {
+                addressData.splice(index, 1);
+            }
+            addressDiv.remove();
+        };
+
+        const header = document.createElement("div");
+        header.className = "d-flex justify-content-between mb-2";
+        header.append(heading, closeButton);
+      const addressLine1 = document.createElement("div");
+<!--addressLine1.textContent = location;-->
+<!--addressLine1.style.fontWeight = "bold";-->
+
+const addressLine2 = document.createElement("div");
+addressLine2.textContent =
+    [address,city, state,zip].filter(Boolean).join(", ");
+    const addressLine3 = document.createElement("div");
+addressLine3.textContent ="Ph: " + aphone+ ",Fax: " + afax;
+
+addressDiv.append(header, addressLine1, addressLine2,addressLine3);
+
+        document.getElementById("addressList").appendChild(addressDiv);
+
+        clearAddressForm();
+    }
+
+    function clearAddressForm() {
+        document.getElementById("location").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("city").value = "";
+        document.getElementById("state").value = "";
+        document.getElementById("zip").value = "";
+        document.getElementById("aphone").value = "";
+        document.getElementById("afax").value = "";
+
+        document.getElementById("address").focus();
+    }
+document.getElementById("editProvid").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    formData.append("addresses", JSON.stringify(addressData));
+
+    const response = await fetch(this.action, {
+        method: "POST",
+        body: formData
+    });
+
+const result = await response.json();
+
+        if (result.inserted) {
+
+            alert(result.message);
+
+            // Navigate to provider.html after successful save
+            window.location.href = result.redirect_url;
+
+        } else {
+            alert(result.message);
+        }
+});
+window.deleteAddress = async function(addressId, button) {
+
+<!--    if (!confirm("Are you sure you want to delete this address?")) {-->
+<!--        return;-->
+<!--    }-->
+
+    try {
+        const response = await fetch(`/provider/delete-address/${addressId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            // Remove address from modal without closing it
+            //button.closest(".address-item").remove();
+
+            alert("Address deleted successfully");
+        } else {
+            alert(result.message || "Unable to delete address");
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("Error deleting address");
+    }
+};
+</script>
+</body>
+</html>

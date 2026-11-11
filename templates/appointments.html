@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appointments</title><link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}">
+</head><body><main class="ap-page">
+<header class="ap-header"><div><h1>Appointments</h1><p>Manage patient appointments.</p></div><a class="ap-btn primary" href="{{ url_for('appointment_routes.create') }}">＋ Add</a></header>
+{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="ap-alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+<section class="ap-panel"><div class="ap-toolbar"><h2>Appointments</h2><input id="search" type="search" placeholder="Search appointments"></div>
+<div class="ap-table-wrap"><table id="appointments"><thead><tr><th>When</th><th>Provider</th><th>Phone</th><th>Record Type</th><th>Status</th><th>Account</th><th>MRN</th><th>Actions</th></tr></thead><tbody>
+{% for a in appointments %}<tr><td>{{ a.App_date.strftime('%m/%d/%Y') if a.App_date else '' }} {{ a.App_time or '' }}</td><td>{{ a.ProviderName or a.ProviderUsername or ('Provider #' ~ a.PrId if a.PrId else '') }}</td><td>{{ a.Hphone or a.Mphone or '' }}</td><td>{{ 'New' if a.ReType == 'N' else 'Logged' if a.ReType == 'L' else '' }}</td><td><span class="ap-status">{{ a.App_status or '' }}</span></td><td>{{ a.Acct or '' }}</td><td>{{ a.Mrn or '' }}</td><td><a class="ap-btn" href="{{ url_for('appointment_routes.edit', aid=a.AId) }}">Edit</a></td></tr>
+{% else %}<tr><td colspan="8" class="empty">No appointments found.</td></tr>{% endfor %}
+</tbody></table></div></section></main>
+<script>document.getElementById('search').addEventListener('input',function(){const q=this.value.toLowerCase();document.querySelectorAll('#appointments tbody tr').forEach(r=>r.hidden=!r.innerText.toLowerCase().includes(q));});</script>
+</body></html>

@@ -1,0 +1,49 @@
+.um-page{max-width:1200px;margin:22px auto;padding:0 18px;color:#333;font-family:Arial,Helvetica,sans-serif}
+.um-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.um-heading h1{font-size:27px;font-weight:500;margin:0 0 6px}
+.um-heading p{margin:0;color:#68737d}
+.um-titlebar{background:#0875bd;color:#fff;margin:0 -18px 20px;padding:16px 22px}
+.um-titlebar h1{font-size:24px;font-weight:400;margin:0 0 8px}
+.um-titlebar p{background:#dff3fc;color:#222;margin:0 -22px -16px;padding:10px 22px;font-size:15px}
+.um-progress{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}
+.um-progress span{flex:1;min-width:130px;text-align:center;padding:10px 8px;border:1px solid #d4dce2;border-radius:4px;background:#f5f6f7;color:#69727b;font-size:13px}
+.um-progress span.active{background:#0875bd;color:#fff;border-color:#0875bd}
+.um-progress span.complete{background:#e1f5e7;color:#287a43;border-color:#b5e0c1}
+.um-step{display:none}.um-step.active{display:block}
+.um-card{border:1px solid #d2d2d2;border-radius:8px;margin:0 auto 16px;background:#fff;overflow:hidden;max-width:900px}
+.um-card.narrow{max-width:620px}
+.um-card h2{font-size:16px;font-weight:600;margin:0;padding:13px 16px;border-bottom:1px solid #e5e5e5;color:#51565a}
+.um-field{display:grid;grid-template-columns:155px minmax(0,1fr);gap:14px;align-items:center;padding:13px 16px;border-bottom:1px dotted #ddd}
+.um-field:last-child{border-bottom:0}
+.um-field>label{font-size:12px;text-transform:uppercase;color:#555}
+.um-field b{color:#d64d58}
+.um-field input,.um-field select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #c8c8c8;border-left:3px solid #8fc6a4;padding:9px 10px;font:15px Arial;background:#fff;color:#333;border-radius:0}
+.um-field input:focus,.um-field select:focus{outline:2px solid #a8d9f2;outline-offset:0}
+.um-phone-fields{display:grid;gap:8px}
+.um-phone-fields input::placeholder{font-style:italic;color:#9a9a9a}
+.um-info{margin:15px 16px;padding:13px;background:#def3fc;color:#31586d;font-size:13px;line-height:1.5}
+.um-login-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:8px 0}
+.um-passwords{display:grid;gap:8px}
+.um-password-actions{display:flex;gap:8px;flex-wrap:wrap}
+.um-check{display:flex;align-items:center;gap:8px;border:1px solid #ddd;padding:9px;font-size:13px;color:#555}
+.um-check input{width:auto}
+.um-muted{font-size:13px;color:#6f777d;padding:0 16px}
+.um-field small{grid-column:2;color:#777}
+.um-field select[multiple]{height:115px}
+.um-template-label{float:right;font-size:12px;font-weight:400;color:#555}
+.um-form-actions{display:flex;align-items:center;gap:10px;max-width:900px;margin:20px auto 35px}
+.um-step-count{margin-left:auto;color:#737b81;font-size:13px}
+.um-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid #c9cdd0;background:#f5f5f5;color:#444;border-radius:4px;padding:10px 16px;text-decoration:none;font-size:14px;cursor:pointer}
+.um-btn:disabled{opacity:.45;cursor:not-allowed}
+.um-primary{background:#0875bd;color:white;border-color:#0875bd}
+.um-alert{max-width:900px;margin:12px auto;padding:11px 14px;border-radius:4px}
+.um-alert.error{background:#fde8e8;color:#8a2020}.um-alert.success{background:#e3f6e7;color:#226d35}
+.um-panel{border:1px solid #ddd;border-radius:7px;overflow:hidden}
+.um-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 16px;border-bottom:1px solid #ddd}
+.um-toolbar h2{font-size:17px;margin:0}
+.um-toolbar input{max-width:320px;width:100%;padding:9px 10px;border:1px solid #ccc}
+.um-table-wrap{overflow-x:auto}.um-table{width:100%;border-collapse:collapse}
+.um-table th,.um-table td{text-align:left;padding:12px 14px;border-bottom:1px solid #e7e7e7;font-size:14px}
+.um-table th{background:#f3f5f6;color:#555}.um-status{display:inline-block;background:#e1f5e7;color:#287a43;padding:4px 8px;border-radius:12px;font-size:12px}
+.um-empty{text-align:center;color:#777;padding:25px!important}
+@media(max-width:650px){.um-field{grid-template-columns:1fr;gap:7px}.um-field small{grid-column:1}.um-login-grid{grid-template-columns:1fr}.um-form-actions{flex-wrap:wrap}.um-step-count{width:100%;order:3;text-align:center}.um-template-label{float:none;display:block;margin-top:6px}}
