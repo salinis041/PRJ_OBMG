@@ -9,6 +9,54 @@
     >
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+    <style>
+      .modal-div{
+      border: 1px solid #c8c8cc;
+    background-color: #f8f9fa;
+    /* padding: 10px; */
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+        }
+        .radio-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    font-size: 12px;
+    background-color: gainsboro;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    cursor: pointer;
+}
+.arrow-toggle {
+   width: 29px;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 25px;
+    color: #000;
+    margin-right: 6px;
+    transition: transform 0.3s ease;
+}
+ .task-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.task-row:hover {
+    background-color: #f0f8ff;
+}
+    </style>
 </head>
 <body>
 <!-- ================= HEADER ================= -->
@@ -132,7 +180,7 @@
         <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#patientList" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> Additional Patient Details
+                <span class="arrow-toggle me-2">›</span> Additional Patient Details
                  </div>
             <!-- Content --> <div class="collapse" id="patientList" style="margin-left: 40px;" >
             <div class="list-group list-group-flush">
@@ -144,7 +192,7 @@
         <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#notelistt" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> Notes
+                <span class="arrow-toggle me-2">›</span> Notes
                  </div>
             <!-- Content --> <div class="collapse" id="notelistt" style="margin-left: 40px;" >
             <div class="list-group list-group-flush">
@@ -155,7 +203,7 @@
         <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#Messagelist" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> Messages
+                <span class="arrow-toggle me-2">›</span> Messages
                  </div>
             <!-- Content --> <div class="collapse" id="Messagelist" style="margin-left: 40px;" >
             <div class="list-group list-group-flush">
@@ -1271,7 +1319,7 @@
         <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#workQ" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> Work Queues
+                <span class="arrow-toggle me-2">›</span> Work Queues
                  </div>
             <!-- Content --> <div class="collapse" id="workQ" style="margin-left: 40px;" >
             <div class="list-group list-group-flush">
@@ -1280,18 +1328,17 @@
                  </div> </div> </div>
          <div class="border rounded mb-2">
             <!-- Clickable Header -->
-            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#Encount" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> Encounter Task
+            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;"  data-bs-toggle="collapse" data-bs-target="#Encount" aria-expanded="false" onclick="GenerateEncoutTask({{pv.MedicalRecordNumber}},{{pv.AccountNumber}}, this)" aria-controls="patientList">
+                <span id="EncountArrow" class="arrow-toggle">›</span> Encounter Task<span><label id="encnt" style="margin-left: 50px;" class="col-form-label"></label></span>
                  </div>
-            <!-- Content --> <div class="collapse" id="Encount" style="margin-left: 40px;" >
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action"> Task 1 </a>
-                <a href="#" class="list-group-item list-group-item-action"> Task 2 </a>
-                 </div> </div> </div>
+            <!-- Content -->
+             <div class="collapse" id="Encount" style="margin-left: 10px;" >
+
+         </div> </div>
         <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#gen" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow me-2">▶</span> General Task
+                <span class="arrow-toggle me-2">›</span> General Task
                  </div>
             <!-- Content --> <div class="collapse" id="gen" style="margin-left: 40px;" >
             <div class="list-group list-group-flush">
@@ -1300,6 +1347,7 @@
                  </div> </div> </div>
     </div>
     </div>
+
      <footer style="
     height:50px;
     background:#f8f9fa;
@@ -1312,13 +1360,693 @@
 ">
     © 2026 Your Company. All Rights Reserved.
 </footer>
+<!-- Add Provider Modal -->
+<div class="modal fade" id="EncouterModal" tabindex="-1"
+     aria-hidden="true" >
+    <div class="modal-dialog" style="width: 900px;height:600px; max-width: 95vw;">
+        <div class="modal-content">
+            <form method="POST" id="EditEncount" action="{{ url_for('coodinator_routes.edit_EncouterTask') }}">
+                <div class="modal-header" style="background-color: #129cb8;color: #fff;">
+                    <h5 class="modal-title"><label  style="line-height: 0.3 !important;" id="lbl_title" class="col-form-label">Add Task</label></h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6 modal-div" >
+                     <div class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">PATIENT <span class="text-danger">*</span></label>
+                    <div class="col-8">
+                         <div style=""><span class="patient-icon" >♟</span>
+                {{ pv.Patname }}
+
+            </div>
+
+            <div style="font-size: 12px;">
+                DOB {{ pv.BirthDate }} |
+                Age {{ pv.Age }} |
+                {{ pv.Gender }}
+            </div>
+              <div style="font-size: small;">
+                  <span class="address-icon">⌖</span>
+                  {{ pv.Address1 }}
+                  <div>{{ pv.City }} {{ pv.State }} {{ pv.Zip }}</div>
+                  </div>
+
+                    </div>
+                    <hr class="custom-line" style="margin-top:5px;">
+
+                     </div>
+            <div class="row align-items-center mb-3">
+            <label class="col-4 col-form-label">TASK <span class="text-danger">*</span></label>
+            <div class="col-8">
+                <label id="lbl_task" name="lbl_task"  class="col-form-label">Contact Patient</label>
+            </div>
+                 <hr class="custom-line">
+                </div>
+            <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+            <label class="col-4 col-form-label">STATUS </label>
+            <div class="col-8 radio-group">
+               <div class="form-check">
+        <input class="form-check-input" type="radio" onclick="setHiddenValue(this.value)"
+               name="status" id="Pending" value="Pending">
+        <label class="form-check-label" for="Pending">Pending</label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio" onclick="setHiddenValue(this.value)"
+               name="status" id="In Progress" value="In Progress">
+        <label class="form-check-label" for="In Progress">In Progress</label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio"  onclick="setHiddenValue(this.value)"
+               name="status" id="Completed" value="Completed">
+        <label class="form-check-label" for="Completed">Completed</label>
+    </div>
+            </div>
+                 <hr class="custom-line" style="margin-top:5px;">
+                </div>
+      <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+                           <label class="col-4 col-form-label">ASSIGNED TO </label>
+                         <div class="col-8">
+                          <select id="assign" name="assign" class="form-control" >
+                         <option value="">-- Select user --</option>
+                             {% for item in usrlist %}
+                         <option value="{{ item.id }}">
+                         {{ item.name }}
+                         </option>
+                         {% endfor %}
+                          </select>
+                          </div>
+           <hr class="custom-line" style="margin-top:5px;">
+                        </div>
+     <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+                           <label class="col-4 col-form-label">TAGS </label>
+                         <div class="col-8">
+                          <select id="tags" name="tags" class="form-control" >
+                         <option value="">-- Select Tags --</option>
+                              <option value="Task|Contact">Task|Contact</option>
+                            <option value="Task|Reminder">Task|Reminder</option>
+                              <option value="Task|Schedule PCP">Task|Schedule PCP</option>
+                              <option value="Task|Schedule Specialist">Task|Schedule Specialist</option>
+                              <option value="Task|Schedule PCP & Specialist">Task|Schedule PCP & Specialist</option>
+                              <option value="Task|Schedule PCP & 2 Specialist">Task|Schedule PCP & 2 Specialist</option>
+                              <option value="Task|Unable">Task|Unable</option>
+                              <option value="Task|Confirm">Task|Confirm</option>
+                              <option value="Task|Cancel">Task|Cancel</option>
+                              <option value="Task|Office">Task|Office</option>
+                          </select>
+                          </div>
+          <hr class="custom-line" style="margin-top:5px;">
+                        </div>
+                              <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+                    <label class="col-4 col-form-label">DUE </label>
+                    <div class="col-md-8">
+                    <label class="form-label fw-bold">Date & Time</label>
+
+                    <div class="input-group">
+                        <input type="date" class="form-control rounded-end-0"
+                               id="due_dt" name="due_dt">
+
+                        <input type="text" placeholder="Ex: 11:30 AM" class="form-control rounded-start-0"
+                               id="due_time" name="due_time">
+                    </div>
+                </div>
+                    <hr class="custom-line" style="margin-top:5px;">
+                </div>
+      <div id="Divmth" style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+                           <label class="col-4 col-form-label">METHOD <span class="text-danger">*</span></label>
+                         <div class="col-8">
+                          <select id="method" name="method" class="form-control" >
+                         <option value="">-- Select Method --</option>
+                              <option value="By Phone">By Phone</option>
+                            <option value="By Person">By Person</option>
+                          <option value="Other">Other</option>
+                          </select>
+                          </div>
+           <hr class="custom-line" style="margin-top:5px;">
+                        </div>
+      <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
+                           <label class="col-4 col-form-label">DISPOSITION <span class="text-danger">*</span></label>
+                         <div class="col-8">
+                          <select id="disposition" name="disposition" class="form-control" required>
+                         <option value="">-- Select Disposition --</option>
+                              <option value="General Medicine">Unable to Assist</option>
+                            <option value="Family Practice">Family Practice</option>
+                          <option value="Interal Medicine">Interal Medicine</option>
+                          </select>
+                          </div>
+                        </div>
+
+                        </div>
+                        <div class="col-md-6 modal-div">
+                             <h6 class="fw-bold mb-3">Comments</h6>
+                            <div class="col-md-12 modal-div" id="Tascommt" style="height:380px">
+
+
+                            </div>
+                            <div class="row align-items-center mb-3">
+                    <div class="col-8">
+                        <textarea id="txtcmnt"
+          name="comment"
+          class="form-control"
+          rows="4"
+          placeholder="Enter comment"></textarea>
+                    </div>
+                     <div class="col-4">
+                     <button type="button" class="search-button"
+                onclick="saveComment()">
+            Add Comment
+        </button>
+                         <div class="col-6">
+
+                </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Save
+                    </button>
+                    <input type="hidden" id="Tstatus" name="Tstatus" value="">
+                    <input type="hidden" id="TId" name="TId" value="">
+                    <input type="hidden" id="DisPost" name="DisPost" value="">
+                     <input type="hidden" id="mrn" name="mrn" value="{{ pv.MedicalRecordNumber }}">
+                    <input type="hidden" id="vist" name="vist" value="{{ pv.AccountNumber }}">
+                     <input type="hidden" id="Tsk" name="Tsk" value="">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+ <!--end modal-->
 {% endfor %}
 
 
-<script> document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (header)
- { header.addEventListener('click', function () { const arrow = this.querySelector('.arrow');
-  setTimeout(function () { if (header.getAttribute('aria-expanded') === 'true')
-   { arrow.textContent = '▼'; } else { arrow.textContent = '▶'; } }, 50); }); });
+<!--<script> document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (header)-->
+<!-- { header.addEventListener('click', function () { const arrow = this.querySelector('.arrow');-->
+<!--  setTimeout(function () { if (header.getAttribute('aria-expanded') === 'true')-->
+<!--   { arrow.textContent = '⌄'; } else { arrow.textContent = '›'; } }, 50); }); });-->
+<!--</script>-->
+<!--<script> document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (header)-->
+<!-- { header.addEventListener('click', function () { const arrow = this.querySelector('.arrow-toggle');-->
+<!--  setTimeout(function () { if (header.getAttribute('aria-expanded') === 'true')-->
+<!--   { arrow.textContent = '⌄'; } else { arrow.textContent = '›'; } }, 50); }); });-->
+<!--</script>-->
+
+<script>
+ function initializeEncounter() {
+
+    const content = document.getElementById("Encount");
+    const arrow = document.getElementById("EncountArrow");
+
+    if (!content || !arrow) return;
+
+    content.addEventListener("shown.bs.collapse", function () {
+        arrow.textContent = "⌄";
+    });
+
+    content.addEventListener("hidden.bs.collapse", function () {
+        arrow.textContent = "›";
+    });
+}
+ <!--Encounter List Generate pageload-->
+ document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const response = await fetch(`/EncounterLoad`);
+        if (!response.ok) {
+            throw new Error("Unable to load Taskdetails");
+        }
+
+        document.getElementById("Encount")?.replaceChildren();
+
+        const TasKList = await response.json();
+
+        const Tcount = TasKList.TaskCount[0];
+
+        if (Number(Tcount.Tcount) > 0) {
+
+            document.getElementById("encnt").textContent = Tcount.Tcount;
+
+            const addList = TasKList.TaslList || [];
+            GenerateTaskDIV(addList);
+            setEncounterCollapse(addList.length > 0);
+            initializeEncounter();
+
+        } else {
+            document.getElementById("encnt").textContent = "0";
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+});
+<!--Encounter Task add into Div-->
+function GenerateTaskDIV(addList){
+         addList.forEach(item => {
+                        const taskRow = document.createElement("div");
+                        taskRow.className = "d-flex align-items-start gap-2 mb-2 task-row";
+
+                        taskRow.style.borderBottom = "1px solid #dee2e6";
+                        taskRow.style.paddingBottom = "10px";
+                        taskRow.style.marginBottom = "10px";
+
+                        taskRow.onclick = function () {
+                            GoTaskModal(item.Task, item.TId, this);
+                        };
+
+                        const addressDiv1 = document.createElement("div");
+                        addressDiv1.className = "p-2";
+                        addressDiv1.style.width = "45px";
+                        addressDiv1.style.minHeight = "60px";
+                        addressDiv1.style.textAlign = "center";
+                        addressDiv1.style.flexShrink = "0";
+
+                        if (item.Task_status === 'Completed') {
+                            addressDiv1.textContent = '✓';
+                            addressDiv1.style.color = 'green';
+                            addressDiv1.style.fontSize = '15px';
+                            addressDiv1.style.fontWeight = 'bold';
+                        } else {
+                            if ((item.Task === 'Schedule Appointment-PCP' && item.Dispos === '' ) || (item.Task === 'Schedule Appointment-Specialist' && item.Dispos === '')
+                             || (item.Task === 'Schedule Appointment-PCP & Specialist' && item.Dispos === '' ) || (item.Task === 'Schedule Appointment-PCP & 2 Specialist' && item.Dispos === '') ){
+
+                                const date = new Date(item.Due_date).toLocaleDateString('en-US', {
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    year: '2-digit'
+                                });
+                             addressDiv1.innerHTML = `
+                            <div style="color:#e51111;font-size:16px;">🕒</div>
+                            <div style="font-size:6px;color:#e51111;">
+                                ${date || ''}
+                            </div>
+                            <div style="font-size:6px;color:#e51111;">
+                                ${item.Due_time || ''}
+                            </div>
+                        `;
+                           }
+                           else{
+                            addressDiv1.textContent = '○';
+                            addressDiv1.style.color = 'orange';
+                            addressDiv1.style.fontSize = '15px';
+                           }
+
+                        }
+                        const addressDiv = document.createElement("div");
+                        addressDiv.className = "p-2";
+                        addressDiv.style.flex = "1";
+                        addressDiv.style.padding = "8px !important";
+
+                        const addressLine1 = document.createElement("div");
+                        addressLine1.textContent = item.Task;
+                        addressLine1.style.fontWeight = "bold";
+                        //addressLine1.style.fontSize = "12px";
+                         addressLine1.style.fontSize = "10px";
+
+                        const addressLine2 = document.createElement("div");
+                        const addressLine3 = document.createElement("div");
+                        const addressLine4 = document.createElement("div");
+
+                        if (item.Tags) {
+                            addressLine2.textContent ='🏷'+ item.Tags;
+                            addressLine2.style.fontSize = "10px";
+                        }
+
+                        if (item.Task_method) {
+                            addressLine3.textContent = '* ' + item.Task_method;
+                            addressLine3.style.fontSize = "8px";
+                        }
+
+                        if (item.Dispos) {
+                            addressLine4.textContent = '* ' + item.Dispos;
+                            addressLine4.style.fontSize = "8px";
+                        }
+
+                        addressDiv.append(
+                            addressLine1,
+                            ...(item.Tags ? [addressLine2] : []),
+                            ...(item.Task_method ? [addressLine3] : []),
+                            ...(item.Dispos ? [addressLine4] : [])
+                        );
+
+                        taskRow.append(addressDiv1, addressDiv);
+
+                        document.getElementById("Encount").appendChild(taskRow);
+                    });
+    }
+<!--Generate Encounter Task click on header-->
+ window.GenerateEncoutTask = async function GenerateEncoutTask(mrn,vist, element){
+       try {
+        const response = await fetch(
+        `/EncouterTask/${encodeURIComponent(mrn)}/${encodeURIComponent(vist)}`,
+        {
+            method: "POST"
+        }
+         );
+        if (!response.ok) {
+            throw new Error("Unable to load Taskdetails");
+        }
+       document.getElementById("Encount")?.replaceChildren();
+        const TasKList = await response.json();
+        //console.log("Provider:", TasKList);
+<!--        const details = TasKList.TaslList.TaslList[0];-->
+        const Tcount = TasKList.TaskCount[0];
+        document.getElementById('encnt').textContent = Tcount.Tcount;
+        //console.log("Tcount:", Tcount);
+        const addList = TasKList.TaslList || [];
+       GenerateTaskDIV(addList);
+<!--        setEncounterCollapse(addList.length > 0);-->
+<!--            initializeEncounter();-->
+     const header = document.getElementById('Encount');
+    const arrow = header?.querySelector('.arrow-toggle');
+
+    if (header && arrow) {
+        arrow.textContent =
+            header.getAttribute('aria-expanded') === 'true' ? '⌄' : '›';
+    }
+
+    } catch (error) {
+        alert(error.message);
+    }
+ }
+
+ <!--END Encounter List Generate-->
+ function GoTaskModal(Task,TId,element)
+ {
+
+   document.getElementById('TId').value = TId;
+   document.getElementById('Tsk').value = Task;
+   var Taskcode ='';
+   if(Task==='Contact Patient')
+   {
+    document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='contact';
+    setStatus("Completed");
+   }
+   else if(Task==='Schedule Appointment-PCP' || Task==='Scheduling Needed-Specialist' ||
+    Task==='Schedule Appointment-PCP & Specialist' || Task==='Schedule Appointment-PCP & 2 Specialist')
+   {
+      document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='Schedule';
+
+      document.getElementById("Divmth").style.display='None';
+    setStatus("Completed");
+   }
+   else if(Task==='Confirm Appointment Attendance-PCP' || Task==='Confirm Appointment Attendance-Specialist'
+    || Task==='Confirm Appointment Attendance-PCP & Specialist' || Task==='Confirm Appointment Attendance-PCP & 2 Specialist')
+   {
+      document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='confirm';
+
+      document.getElementById("Divmth").style.display='None';
+    setStatus("Completed");
+   }
+   if(Taskcode!=='')
+   {
+    showEncoutModal(Task,TId,Taskcode)
+    }
+ }
+ <!--Display encounter modal-->
+window.showEncoutModal = async  function showEncoutModal(Task,TId,dispst) {
+   try {
+    const disposition = document.getElementById("disposition");
+    const  vist=document.getElementById("vist").value;
+    disposition.innerHTML = '<option value="">-- Select Disposition --</option>';
+
+    let dispositionList = [];
+
+    if (dispst === "contact") {
+
+        dispositionList = [
+            { id: "Unable to Assist", name: "Unable to Assist" },
+            { id: "Scheduling Needed-PCP", name: "Scheduling Needed-PCP" },
+            { id: "Scheduling Needed-Specialist", name: "Scheduling Needed-Specialist" },
+            { id: "Scheduling Needed-PCP & Specialist", name: "Scheduling Needed-PCP & Specialist" },
+            { id: "Scheduling Needed-PCP & 2 Specialist", name: "Scheduling Needed-PCP & 2 Specialist" },
+            { id: "Unable to Reach-No SMS", name: "Unable to Reach-No SMS" }
+        ];
+
+    }
+    else if (dispst === "Schedule") {
+
+        dispositionList = [
+            { id: "Appointment Scheduled", name: "Appointment Scheduled" },
+            { id: "Scheduling Completed by Other", name: "Scheduling Completed by Other" },
+            { id: "Unable to schedule-Patient Barrier", name: "Unable to schedule-Patient Barrier" },
+            { id: "Unable to schedule-Office Barrier", name: "Unable to schedule-Office Barrier" },
+            { id: "Unable to schedule-Payer Barrier", name: "Unable to schedule-Payer Barrier" },
+            { id: "Appointment Not Needed Any more", name: "Appointment Not Needed Any more" },
+             { id: "Office Managed Appointment", name: "Office Managed Appointment" },
+            { id: "Archive Task", name: "Archive Task" }
+        ];
+
+    }
+    else if (dispst === "confirm") {
+
+        dispositionList = [
+            { id: "Confirmed Attended", name: "Confirmed Attended" },
+            { id: "Confirmed Did not Show",name: "Confirmed Did not Show" },
+             { id: "Confirmed Canceled", name: "Confirmed Canceled" },
+             { id: "Confirmed Canceled and Rescheduled", name: "Confirmed Canceled and Rescheduled" },
+            { id: "Unable to Confirm", name: "Unable to Confirm" }
+        ];
+    }
+
+    dispositionList.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.name;
+        disposition.appendChild(option);
+    });
+
+    const response = await fetch(
+        `/EncoutTaskTID/${encodeURIComponent(TId)}/${encodeURIComponent(vist)}`,
+        {
+            method: "POST"
+        }
+         );
+        if (!response.ok) {
+            throw new Error("Unable to load Taskdetails");
+        }
+        const TaskDet = await response.json();
+        console.log("TaskDet:", TaskDet);
+        const details = TaskDet.TaskDetails[0];
+        //TaskCmnt
+
+        document.getElementById("Tascommt").innerHTML = "";
+        const cmntList = TaskDet.TaskCmnt || [];
+        GenerateComment(cmntList);
+        document.getElementById('DisPost').value = details.Dispos ?? '';
+        if(details.Dispos!=='')
+        {
+          disposition.value = details.Dispos ?? '';
+        }
+        if(details.Task_method!=='')
+        {
+         const ddlmth = document.getElementById("method");
+          ddlmth.value = details.Task_method ?? '';
+        }
+        if(details.Tags!=='')
+        {
+        const ddl = document.getElementById("tags");
+
+        ddl.value = details.Tags ?? '';
+
+         ddl.dispatchEvent(new Event("change", { bubbles: true }));
+          //tags.value = details.Tags ?? '';
+        }
+        if(details.Assigto!=='')
+        {
+           const ddlasgn = document.getElementById("assign");
+           if(dispst === 'Schedule' || dispst === 'confirm'){
+             ddlasgn.value =  '';
+           }
+           else{
+           ddlasgn.value = details.Assigto ?? '';
+           }
+
+
+        }
+         if(details.Due_date!=='')
+        {
+         let dueDate = details.Due_date;
+
+        if (dueDate) {
+            let parts = dueDate.split("-");
+            if(dispst === 'confirm'){
+            document.getElementById("due_dt").value ='';
+            }
+            else{
+
+            document.getElementById("due_dt").value =
+                `${parts[2]}-${parts[0]}-${parts[1]}`;
+                }
+        }
+        }
+         if(details.Due_time!=='')
+        {
+          if(dispst === 'confirm'){
+          due_time.value = '';
+          }
+          else{
+           due_time.value = details.Due_time ?? '';
+          }
+
+        }
+        if (details.Task_status === 'Pending') {
+            document.getElementById("Pending").checked = true;
+            document.getElementById('Tstatus').value = details.Task_status;
+        }
+        else if(details.Task_status === 'In Progress') {
+             document.getElementById("In Progress").checked = true;
+             document.getElementById('Tstatus').value = details.Task_status;
+        }
+        else if(details.Task_status === 'Completed') {
+             document.getElementById("Completed").checked = true;
+             document.getElementById('Tstatus').value = details.Task_status;
+        }
+         else {
+            document.getElementById("Completed").checked = true;
+            document.getElementById('Tstatus').value = details.Task_status;
+        }
+
+   const modal = new bootstrap.Modal(
+            document.getElementById('EncouterModal')
+        );
+
+        modal.show();
+     } catch (error) {
+        alert(error.message);
+    }
+
+    }
+    <!--Bind Encounter comments-->
+    function GenerateComment(cmntList){
+         cmntList.forEach(item => {
+            const addressDiv = document.createElement("div");
+          addressDiv.className = "border rounded p-3 mb-2";
+           const addressLine1 = document.createElement("div");
+           addressLine1.textContent = item.Task_cmmnt;
+         addressDiv.append(addressLine1);
+        document.getElementById("Tascommt").appendChild(addressDiv);
+         });
+    }
+    //Task Status
+    function setHiddenValue(value) {
+        document.getElementById("Tstatus").value = value;
+    }
+    function setStatus(status) {
+
+    document.querySelectorAll('input[name="status"]').forEach(radio => {
+        radio.checked = (radio.value === status);
+    });
+
+    document.getElementById("Tstatus").value = status;
+}
+<!--Save button submit function-->
+    document.getElementById("EditEncount").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+            const form = this;
+                const formData = new FormData(form);
+             formData.append("commentData", JSON.stringify(commentData));
+
+                // Check submitted values
+                for (const [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
+
+    try {
+        const response = await fetch(form.action, {
+            method: "POST",
+            body: formData
+        });
+            document.getElementById("Encount")?.replaceChildren();
+           const TasKList = await response.json();
+           console.log("Provider:", TasKList);
+          const Tcount = TasKList.TaskCount[0];
+          document.getElementById('encnt').textContent = Tcount.Tcount;
+         const addList = TasKList.TaslList || [];
+
+
+         GenerateTaskDIV(addList);
+<!--         const modal = new bootstrap.Modal(-->
+<!--            document.getElementById('EncouterModal')-->
+<!--        );-->
+
+       const modalElement = document.getElementById("EncouterModal");
+
+    const modal = bootstrap.Modal.getInstance(modalElement);
+
+        modal?.hide();
+
+         } catch (error) {
+        alert(error.message);
+    }
+
+<!--            if (result.inserted) {-->
+
+<!--                alert(result.message);-->
+
+<!--                // Navigate to provider.html after successful save-->
+<!--                window.location.href = result.redirect_url;-->
+
+});
+function setEncounterCollapse(hasData) {
+
+    const content = document.getElementById("Encount");
+    const header = document.querySelector(
+        '[data-bs-target="#Encount"]'
+    );
+
+    const arrow = header?.querySelector(".arrow-toggle");
+
+    if (!content || !header || !arrow) return;
+
+    const collapse = bootstrap.Collapse.getOrCreateInstance(
+        content,
+        { toggle: false }
+    );
+
+    if (hasData) {
+        collapse.show();
+    } else {
+        collapse.hide();
+    }
+}
+<!--Save Encounter comments to Div-->
+let commentData = [];
+function saveComment(){
+
+     const cmntdt = document.getElementById("txtcmnt").value.trim();
+      if (!cmntdt) {
+            alert("Please enter comments");
+            return;
+        }
+        const newComment = {
+        cmntdt:cmntdt    };
+        commentData.push(newComment);
+        const addressDiv = document.createElement("div");
+        addressDiv.className = "border rounded p-3 mb-2";
+         const addressLine1 = document.createElement("div");
+         addressLine1.textContent = cmntdt;
+         addressDiv.append(addressLine1);
+        document.getElementById("Tascommt").appendChild(addressDiv);
+        document.getElementById("txtcmnt").value = "";
+}
+
+
 </script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

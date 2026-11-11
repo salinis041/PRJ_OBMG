@@ -474,3 +474,29 @@ def Delete_PrAdd(address_id):
     finally:
         connection.close()
 
+def get_specialty_list():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT  Uid,Fname+','+Lname as Username
+            FROM Umaster
+            WHERE IsActive = 'Y' and Utype!='Provider'
+            ORDER BY Fname
+        """)
+
+        rows = cursor.fetchall()
+
+        return [
+            {
+                "id": row.Uid,
+                "name": row.Username
+            }
+            for row in rows
+        ]
+
+    finally:
+        cursor.close()
+        conn.close()
+
