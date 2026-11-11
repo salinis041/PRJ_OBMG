@@ -1086,75 +1086,177 @@
     </div>
         <!--team care-->
     <div class="tab-pane fade" id="appoint">
-        <h6>Appointments</h6>
-         <!-- ================= TABLE ================= -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Appointments</h5>
+            {% if not appointment_form_open %}
+            <a class="btn btn-primary btn-sm"
+               href="{{ url_for('coodinator_routes.Coordinatormain', visit_id=pv.VisitID if pv.VisitID is defined else pv.AccountNumber, add_appointment=1) }}#appoint">＋ Add</a>
+            {% endif %}
+        </div>
 
-    <div class="patient-table-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for category, message in messages %}
+            <div class="alert {{ 'alert-success' if category == 'success' else 'alert-danger' }}">{{ message }}</div>
+          {% endfor %}
+        {% endwith %}
 
-        <table class="patient-table" style="min-width:800px!important">
+        <!-- Appointment modal layout: fixed viewport shell with a scrollable form area -->
+<style>
+    #appointmentModal .modal-dialog {
+        width: min(1200px, calc(100vw - 2rem));
+        max-width: calc(100vw - 2rem);
+        height: calc(100vh - 2rem);
+        margin: 1rem auto;
+    }
+    #appointmentModal .modal-content {
+        height: 100%;
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    #appointmentModal .modal-content > form {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-height: 0;
+        height: 100%;
+        margin: 0;
+    }
+    #appointmentModal .modal-header,
+    #appointmentModal .modal-footer {
+        flex: 0 0 auto;
+        background: #fff;
+        z-index: 1;
+    }
+    #appointmentModal .modal-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        padding: 1.25rem;
+    }
+    #appointmentModal .form-label {
+        display: block;
+        margin-bottom: .4rem;
+        font-weight: 500;
+    }
+    #appointmentModal textarea.form-control {
+        min-height: 2.5rem;
+        resize: vertical;
+    }
+    #appointmentModal .appointment-reason {
+        display: flex;
+        align-items: flex-start;
+        gap: .5rem;
+        min-height: 48px;
+        padding: .65rem;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+    }
+    #appointmentModal .appointment-reason input {
+        flex: 0 0 auto;
+        margin-top: .15rem;
+    }
+    #appointmentModal .modal-footer {
+        border-top: 1px solid #dee2e6;
+    }
+    @media (max-width: 767.98px) {
+        #appointmentModal .modal-dialog {
+            width: calc(100vw - 1rem);
+            max-width: calc(100vw - 1rem);
+            height: calc(100dvh - 1rem);
+            margin: .5rem auto;
+        }
+        #appointmentModal .modal-body { padding: .85rem; }
+    }
+</style>
 
-            <thead>
+<!-- Add/Edit Appointment modal -->
+        <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <form method="post" action="{{ url_for('coodinator_routes.save_coordinator_appointment', visit_id=pv.VisitID if pv.VisitID is defined else pv.AccountNumber) }}">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="appointmentModalLabel">{{ 'Edit Appointment' if appointment_is_edit else 'Add Appointment' }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  {% if appointment %}<input type="hidden" name="aid" value="{{ appointment.AId }}">{% endif %}
+                  <div class="row g-3 appointment-form-grid">
+                    <div class="col-lg-6 col-12">
+                      <label class="form-label">Account Number</label>
+                      <input class="form-control" name="acct" maxlength="30" value="{{ appointment.Acct if appointment else pv.AccountNumber or '' }}">
+                      <label class="form-label mt-2">Medical Record Number</label>
+                      <input class="form-control" name="mrn" maxlength="30" value="{{ appointment.Mrn if appointment else pv.MedicalRecordNumber or '' }}">
+                      <label class="form-label mt-2">Record Type *</label>
+                      <div><label class="me-3"><input type="radio" name="record_type" value="N" {% if not appointment or appointment.ReType == 'N' %}checked{% endif %}> New</label>
+                      <label><input type="radio" name="record_type" value="L" {% if appointment and appointment.ReType == 'L' %}checked{% endif %}> Logged</label></div>
+                      <label class="form-label mt-2">Provider *</label>
+                      <select class="form-select" name="provider_id" required>
+                        <option value="">Select Provider</option>
+                        {% for provider in appointment_providers %}
+                        <option value="{{ provider.Uid }}" {% if appointment and appointment.PrId == provider.Uid %}selected{% endif %}>{{ ((provider.Fname or '') ~ ' ' ~ (provider.Lname or '')).strip() or provider.Uname }}{% if provider.Uname %} — {{ provider.Uname }}{% endif %}</option>
+                        {% endfor %}
+                      </select>
+                      <label class="form-label mt-2">Address</label>
+                      <textarea class="form-control" name="address" rows="2">{{ appointment.App_add or '' if appointment else '' }}</textarea>
+                      <div class="row mt-1">
+                        <div class="col"><label class="form-label">Date *</label><input class="form-control" type="date" name="app_date" required value="{{ appointment.App_date.strftime('%Y-%m-%d') if appointment and appointment.App_date else '' }}"></div>
+                        <div class="col"><label class="form-label">Time</label><input class="form-control" name="app_time" maxlength="20" placeholder="11:30 AM" value="{{ appointment.App_time or '' if appointment else '' }}"></div>
+                      </div>
+                      <label class="form-label mt-2">Status *</label>
+                      <select class="form-select" name="app_status" required>
+                        {% for status in ['Pending','Completed','Canceled and Rescheduled','Canceled','Pending - No Answer','No Show'] %}
+                        <option value="{{ status }}" {% if appointment and appointment.App_status == status %}selected{% elif not appointment and status == 'Pending' %}selected{% endif %}>{{ status }}</option>
+                        {% endfor %}
+                      </select>
+                      <label class="form-label mt-2">Patient Appointment Instructions</label>
+                      <textarea class="form-control" name="app_instr" rows="3">{{ appointment.App_instr or '' if appointment else '' }}</textarea>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                      <label class="form-label fw-semibold">Why was this provider selected? *</label>
+                      {% set appointment_reasons = [('established','This is the patient’s Established Physician/Office','Est_phOffice'),('discharge','This specific provider/office is written in the Discharge Instructions','Pron_inDisch'),('in_network','This provider/office is the first available in-network','Prov_inNet'),('restricted_insurance','This provider accepts the patient’s Restricted Insurance','Prov_RestIns'),('chosen_patient','This provider was Chosen by the Patient','Prov_chpat'),('assigned_insurance','This provider is Assigned by Insurance','Prov_AssIns'),('availability','This provider/office Has Availability','Prov_Aval'),('far_hospital','Patient wanted a provider Far From Hospital','Prov_FarHosp'),('chosen_pcp','This provider was Chosen by the Patient’s PCP','Prov_ChPcp')] %}
+                      {% for key, label, column in appointment_reasons %}
+                      <label class="appointment-reason border rounded mb-2 bg-white"><input class="form-check-input" type="checkbox" name="{{ key }}" {% if appointment and appointment[column] == 'Y' %}checked{% elif not appointment and key == 'established' %}checked{% endif %}>{{ label }}</label>
+                      {% endfor %}
+                      <label class="form-label mt-2">Reason Provider Selected Notes *</label>
+                      <textarea class="form-control" name="selection_notes" rows="5" required>{{ appointment.Pro_Slreasn or '' if appointment else '' }}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-outline-secondary" href="{{ url_for('coodinator_routes.Coordinatormain', visit_id=pv.VisitID if pv.VisitID is defined else pv.AccountNumber) }}#appoint">Cancel</a>
+                  <button class="btn btn-primary" type="submit">{{ 'Update Appointment' if appointment_is_edit else 'Save Appointment' }}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
 
-            <tr>
-                <th>WHEN</th>
-                <th>PROVIDER</th>
-                <th>SPECIALTY</th>
-                <th>TYPE</th>
-                <th>PHONE</th>
-                <th>APPNT TYPE</th>
-                <th>STATUS</th>
-                <th>ACTION</th>
-
-            </tr>
-
-            </thead>
-
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light"><tr><th>WHEN</th><th>PROVIDER</th><th>SPECIALTY</th><th>TYPE</th><th>PHONE</th><th>APPT TYPE</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
             <tbody>
-<tr>
-
-     <td>
-      09/08/2026
-    </td>
-    <td>
-        ALICE JOHN
-    </td>
-    <td>
-        Family Practice
-    </td>
-
-    <td>
-        PCP
-    </td>
-
-    <td>
-        (281)3412334
-    </td>
-    <td>
-
-    </td>
-
-    <td>
-        Pending No Answer
-    </td>
-
-
-    <td>
-        <button class="expand-button">...</button>
-    </td>
-
-
-
-</tr>
-
-
-
-
-</tbody>
-
+            {% for a in appointments %}
+            <tr>
+                <td>{{ a.App_date.strftime('%m/%d/%Y') if a.App_date else '' }} {{ a.App_time or '' }}</td>
+                <td>{{ a.ProviderName or a.ProviderUsername or ('Provider #' ~ a.PrId if a.PrId else '') }}</td>
+                <td>—</td>
+                <td>{{ 'New' if a.ReType == 'N' else 'Logged' if a.ReType == 'L' else '' }}</td>
+                <td>{{ a.Hphone or a.Mphone or '' }}</td>
+                <td>—</td>
+                <td>{{ a.App_status or '' }}</td>
+                <td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('coodinator_routes.Coordinatormain', visit_id=pv.VisitID if pv.VisitID is defined else pv.AccountNumber, edit_appointment=a.AId) }}#appoint">Edit</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center text-muted">No appointments found for this patient.</td></tr>
+            {% endfor %}
+            </tbody>
         </table>
-
-    </div>
-
+        </div>
     </div>
         <!--appmnt-->
     </div>
@@ -1223,5 +1325,26 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
+{% if appointment_form_open %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalElement = document.getElementById('appointmentModal');
+    // Activate the Appointments tab first; then display the dialog.
+    const tabButton = document.querySelector('[data-bs-target="#appoint"]');
+    const showModal = function () {
+        const modalElement = document.getElementById('appointmentModal');
+        if (modalElement && window.bootstrap) {
+            bootstrap.Modal.getOrCreateInstance(modalElement).show();
+        }
+    };
+    if (tabButton && window.bootstrap) {
+        tabButton.addEventListener('shown.bs.tab', showModal, { once: true });
+        bootstrap.Tab.getOrCreateInstance(tabButton).show();
+    } else {
+        showModal();
+    }
+});
+</script>
+{% endif %}
 </body>
 </html>

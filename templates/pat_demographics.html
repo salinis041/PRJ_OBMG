@@ -145,7 +145,7 @@
                     </label>
 
                     <span>
-                        {{ pv.AdmitDateTimeDisplay or pv.AdmitDateTime or '-' }}
+                        {{ pv.AdmitDateTimeDisplay or '-' }}
                     </span>
 
                 </div>
@@ -621,7 +621,7 @@
                     </label>
 
                     <span>
-                        {{ pv.PAYOR or '-' }}
+                        {{ pv.PrimaryInsurance or pv.PAYOR or '-' }}
                     </span>
 
                 </div>
@@ -754,7 +754,7 @@
                     </label>
 
                     <span>
-                        {{ pv.AttendingPhysicianFirstName or '' }}
+                        {{ pv.AttendingPhysicianName or '-' }}
                     </span>
 
                 </div>
