@@ -48,7 +48,9 @@
         'available_details_routes.available_details'
     ) }}" class="selected">Available Patients</a>
         <a href="#">Messages</a>
-        <a href="#">Cases</a>
+        <a href="{{ url_for(
+        'task_routes.tasks_home'
+    ) }}">Tasks</a>
         <a href="#">Work Queues</a>
         <a href="#">Reports</a>
          <a href="{{ url_for(

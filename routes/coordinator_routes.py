@@ -3,10 +3,11 @@ from flask import (Blueprint, render_template, request,
 
 from service.patcoordi_service import (get_patCordinat_list,get_patCordinat_Visit,
                                        get_patVisit,get_EnTask_list_VId,get_EnTaskCont_VId,get_patVisit,get_user_list,get_EnTaskVId
-,get_EnTask_list_TId,addedit_ETask,get_EnTaskCmnt_VstId)
+,get_EnTask_list_TId,addedit_ETask,get_EnTaskCmnt_VstId,get_EnTask_MRN)
 from service.patient_service import get_patient_list
 from service.provider_service import get_provider_list
 from service import appointment_service
+from service.care_team_service import Add_CareTeamData,get_CareTeam_MRN
 
 from ldap3 import Server, Connection, NTLM
 
@@ -149,13 +150,19 @@ def Generate_EncounterTask(mrn,vist):
     # delusrname = data.get("delUsername")
     # print(vist)
     # print(mrn)
+
     TaslList = get_EnTask_list_VId(mrn,vist)
     TaskCount = get_EnTaskCont_VId(vist)
+    TasklistAll = get_EnTask_MRN(vist)
+    Add_CareTeamData(1, mrn, vist, 'ENTASK')
+    CareTeamlistAll = get_CareTeam_MRN(vist)
 
     return jsonify({
         "success": True,
         "TaslList": TaslList,
-        "TaskCount": TaskCount
+        "TaskCount": TaskCount,
+        "TasklistAll": TasklistAll,
+        "CareTeamlistAll": CareTeamlistAll
     })
 @coodinator_routes.route("/EncounterLoad", methods=['GET'])
 def EncounterLoad():
@@ -164,14 +171,17 @@ def EncounterLoad():
     print(VisitId)
     TaslList = get_EnTaskVId(VisitId)
     TaskCount = get_EnTaskCont_VId(VisitId)
+    TasklistAll = get_EnTask_MRN(VisitId)
+    CareTeamlistAll = get_CareTeam_MRN(VisitId)
     # for x in patvisit:
     #  print(x)
     return jsonify({
         "success": True,
         "TaslList": TaslList,
-        "TaskCount": TaskCount
+        "TaskCount": TaskCount,
+        "TasklistAll":TasklistAll,
+        "CareTeamlistAll":CareTeamlistAll
     })
-#
 @coodinator_routes.route("/EncoutTaskTID/<TId>/<string:vist>", methods=["POST"])
 def EncoutTaskTID(TId,vist):
 
@@ -195,11 +205,20 @@ def edit_EncouterTask():
         TaslList = addedit_ETask(data,commentData)
 
         TaskCount=get_EnTaskCont_VId(data.get("vist"))
+        TasklistAll = get_EnTask_MRN(data.get("vist"))
+        if data.get("assign"):
+            Add_CareTeamData(data.get("assign"), data.get("mrn"), data.get("vist"), 'ENTASK')
+        else:
+            Add_CareTeamData(1, data.get("mrn"), data.get("vist"), 'ENTASK')
+        CareTeamlistAll = get_CareTeam_MRN(data.get("vist"))
+
 
         return jsonify({
         "success": True,
         "TaslList": TaslList,
-        "TaskCount": TaskCount
+        "TaskCount": TaskCount,
+        "TasklistAll": TasklistAll,
+        "CareTeamlistAll": CareTeamlistAll
     })
 
     except Exception  as e:
@@ -214,6 +233,7 @@ def Coordinatormain(visit_id):
     session['Vst'] = visit_id
     patvisit = get_patCordinat_Visit(visit_id)
     usrlist = get_user_list()
+    # tasklist =get_EnTask_MRN(visit_id)
     appointment_rows = []
     providers = []
     selected_appointment = None
@@ -238,6 +258,7 @@ def Coordinatormain(visit_id):
         appointment=selected_appointment,
         appointment_is_edit=selected_appointment is not None
     )
+
 
 
 @coodinator_routes.route("/CoordinatorMain/<visit_id>/appointment", methods=["POST"])

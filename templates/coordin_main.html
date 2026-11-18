@@ -63,9 +63,6 @@
 
 <header class="top-header">
 
-    <div class="logo">
-        ∞
-    </div>
 
     <nav class="main-nav">
 <!--        <a href="/home">Home</a>-->
@@ -75,7 +72,9 @@
         <a href="{{ url_for(
         'available_details_routes.available_details'
     ) }}">Available Patients</a>
-        <a href="#">Tasks</a>
+        <a href="{{ url_for(
+        'task_routes.tasks_home'
+    ) }}">Tasks</a>
         <a href="#">Messages</a>
         <a href="#">Cases</a>
         <a href="#">Work Queues</a>
@@ -251,6 +250,12 @@
             <button class="nav-link" data-bs-toggle="tab"
                     data-bs-target="#appoint">
                 📄 Appointments
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab"
+                    data-bs-target="#task">
+                💬 Tasks
             </button>
         </li>
     </ul>
@@ -1051,81 +1056,8 @@
 
             </thead>
 
-            <tbody>
-<tr>
-
-     <td>
-
-    </td>
-    <td class="patient-name">
-        ALICE JOHN
-    </td>
-    <td>
-        Family Practice
-    </td>
-
-    <td>
-        (281)3412334
-    </td>
-
-    <td>
-        <div><span class="language-icon" >🆕  New</span></div>
-        <div><span class="language-icon" >🚫 Not Affiliated</span></div>
-    </td>
-
-    <td>
-        Enrolled
-    </td>
-    <td>
-       <span class="language-icon" >✉️ Invited</span>
-    </td>
-
-    <td>
-        <button class="expand-button">...</button>
-    </td>
-
-
-
-</tr>
- <tr>
-
-     <td>
-
-    </td>
-    <td class="patient-name">
-        ALEX JHON
-    </td>
-    <td>
-        Office User
-    </td>
-
-    <td>
-        (281)3412456
-    </td>
-
-    <td>
-        <div><span class="language-icon" >🆕  New</span></div>
-        <div><span class="language-icon" >🚫 Not Affiliated</span></div>
-    </td>
-
-    <td>
-        Enrolled
-    </td>
-    <td>
-       <span class="language-icon" >✉️ Invited</span>
-    </td>
-
-    <td>
-        <button class="expand-button">...</button>
-    </td>
-
-
-
-</tr>
-
-
-
-</tbody>
+            <tbody id="CareTeamData">
+            </tbody>
 
         </table>
 
@@ -1307,6 +1239,41 @@
         </div>
     </div>
         <!--appmnt-->
+      <!--tasks-->
+    <div class="tab-pane fade" id="task">
+        <h6>Tasks</h6>
+<!--        <p>Tasks content goes here.</p>-->
+         <!-- ================= TABLE ================= -->
+
+    <div class="details-table-container">
+
+        <table class="available-details-table" style="min-width:800px!important">
+
+            <thead>
+
+            <tr>
+                <th>TASK</th>
+                <th>TAGS</th>
+                <th>ASSIGNED TO</th>
+                <th>ASSIGNED BY</th>
+                <th>FACILITY</th>
+                <th>DUE</th>
+                <th>STATUS</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody id="TaskData">
+    
+   </tbody>
+
+        </table>
+
+    </div>
+
+    </div>
+        <!--tasks-->
     </div>
     </div>
     </div>
@@ -1316,16 +1283,16 @@
             padding:15px;
             overflow-y:auto;">
         <!-- Expand / Collapse Section -->
-        <div class="border rounded mb-2">
-            <!-- Clickable Header -->
-            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#workQ" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow-toggle me-2">›</span> Work Queues
-                 </div>
-            <!-- Content --> <div class="collapse" id="workQ" style="margin-left: 40px;" >
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action"> Work 1 </a>
-                <a href="#" class="list-group-item list-group-item-action"> Work2 2 </a>
-                 </div> </div> </div>
+<!--        <div class="border rounded mb-2">-->
+<!--            &lt;!&ndash; Clickable Header &ndash;&gt;-->
+<!--            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#workQ" aria-expanded="false" aria-controls="patientList">-->
+<!--                <span class="arrow-toggle me-2">›</span> Work Queues-->
+<!--                 </div>-->
+<!--            &lt;!&ndash; Content &ndash;&gt; <div class="collapse" id="workQ" style="margin-left: 40px;" >-->
+<!--            <div class="list-group list-group-flush">-->
+<!--                <a href="#" class="list-group-item list-group-item-action"> Work 1 </a>-->
+<!--                <a href="#" class="list-group-item list-group-item-action"> Work2 2 </a>-->
+<!--                 </div> </div> </div>-->
          <div class="border rounded mb-2">
             <!-- Clickable Header -->
             <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;"  data-bs-toggle="collapse" data-bs-target="#Encount" aria-expanded="false" onclick="GenerateEncoutTask({{pv.MedicalRecordNumber}},{{pv.AccountNumber}}, this)" aria-controls="patientList">
@@ -1335,16 +1302,16 @@
              <div class="collapse" id="Encount" style="margin-left: 10px;" >
 
          </div> </div>
-        <div class="border rounded mb-2">
-            <!-- Clickable Header -->
-            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#gen" aria-expanded="false" aria-controls="patientList">
-                <span class="arrow-toggle me-2">›</span> General Task
-                 </div>
-            <!-- Content --> <div class="collapse" id="gen" style="margin-left: 40px;" >
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action"> Task 1 </a>
-                <a href="#" class="list-group-item list-group-item-action"> Task 2 </a>
-                 </div> </div> </div>
+<!--        <div class="border rounded mb-2">-->
+<!--            &lt;!&ndash; Clickable Header &ndash;&gt;-->
+<!--            <div style="cursor:pointer; background:#f8f9fa;padding: 0.5rem!important;font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#gen" aria-expanded="false" aria-controls="patientList">-->
+<!--                <span class="arrow-toggle me-2">›</span> General Task-->
+<!--                 </div>-->
+<!--            &lt;!&ndash; Content &ndash;&gt; <div class="collapse" id="gen" style="margin-left: 40px;" >-->
+<!--            <div class="list-group list-group-flush">-->
+<!--                <a href="#" class="list-group-item list-group-item-action"> Task 1 </a>-->
+<!--                <a href="#" class="list-group-item list-group-item-action"> Task 2 </a>-->
+<!--                 </div> </div> </div>-->
     </div>
     </div>
 
@@ -1463,7 +1430,7 @@
                               <div style="margin-bottom: 0.7rem !important;" class="row align-items-center mb-3">
                     <label class="col-4 col-form-label">DUE </label>
                     <div class="col-md-8">
-                    <label class="form-label fw-bold">Date & Time</label>
+<!--                    <label class="form-label fw-bold">Date & Time</label>-->
 
                     <div class="input-group">
                         <input type="date" class="form-control rounded-end-0"
@@ -1595,7 +1562,11 @@
             document.getElementById("encnt").textContent = Tcount.Tcount;
 
             const addList = TasKList.TaslList || [];
+            const tasklistAll = TasKList.TasklistAll || [];
+            const CareTemlistAll = TasKList.CareTeamlistAll || [];
             GenerateTaskDIV(addList);
+            GenerateTasKTable(tasklistAll);
+            GenerateCareTeamTable(CareTemlistAll);
             setEncounterCollapse(addList.length > 0);
             initializeEncounter();
 
@@ -1702,6 +1673,41 @@ function GenerateTaskDIV(addList){
                         document.getElementById("Encount").appendChild(taskRow);
                     });
     }
+function GenerateTasKTable(tasklistAll){
+      const Takbody = document.getElementById("TaskData");
+      Takbody.innerHTML = "";
+  tasklistAll.forEach(item => {
+   Takbody.innerHTML += `
+          <tr>
+            <td>${item.Task}</td>
+            <td>${item.Tags}</td>
+            <td>${item.Assigto}</td>
+            <td>${item.Assigby}</td>
+            <td>${item.Facility}</td>
+            <td>${item.Due_date} ${item.Due_time}</td>
+             <td>${item.Task_status}</td>
+          </tr>`;
+
+});
+}
+function GenerateCareTeamTable(careteamlistAll){
+      const CareTeambody = document.getElementById("CareTeamData");
+      CareTeambody.innerHTML = "";
+  careteamlistAll.forEach(item => {
+   CareTeambody.innerHTML += `
+          <tr>
+            <td></td>
+            <td>${item.CareName}<br>Last Active:${item.LstAct_Dt}</td>
+            <td>${item.SPECIALTY}</td>
+            <td>${item.OffPhone}</td>
+            <td></td>
+            <td></td>
+            <td>Accepted</td>
+             <td></td>
+          </tr>`;
+
+});
+}
 <!--Generate Encounter Task click on header-->
  window.GenerateEncoutTask = async function GenerateEncoutTask(mrn,vist, element){
        try {
@@ -1722,7 +1728,11 @@ function GenerateTaskDIV(addList){
         document.getElementById('encnt').textContent = Tcount.Tcount;
         //console.log("Tcount:", Tcount);
         const addList = TasKList.TaslList || [];
-       GenerateTaskDIV(addList);
+        const tasklistAll = TasKList.TasklistAll || [];
+        const CareTemlistAll = TasKList.CareTeamlistAll || [];
+        GenerateTaskDIV(addList);
+        GenerateTasKTable(tasklistAll);
+        GenerateCareTeamTable(CareTemlistAll);
 <!--        setEncounterCollapse(addList.length > 0);-->
 <!--            initializeEncounter();-->
      const header = document.getElementById('Encount');
@@ -1741,9 +1751,13 @@ function GenerateTaskDIV(addList){
  <!--END Encounter List Generate-->
  function GoTaskModal(Task,TId,element)
  {
-
+  document.getElementById("disposition").disabled = false;
    document.getElementById('TId').value = TId;
    document.getElementById('Tsk').value = Task;
+   const today = new Date().toISOString().split('T')[0];
+
+    document.getElementById("due_dt").value = today;
+   commentData = [];
    var Taskcode ='';
    if(Task==='Contact Patient')
    {
@@ -1755,9 +1769,17 @@ function GenerateTaskDIV(addList){
    else if(Task==='Schedule Appointment-PCP' || Task==='Scheduling Needed-Specialist' ||
     Task==='Schedule Appointment-PCP & Specialist' || Task==='Schedule Appointment-PCP & 2 Specialist')
    {
-      document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_task").textContent = Task;
     document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
     Taskcode='Schedule';
+
+      document.getElementById("Divmth").style.display='None';
+    setStatus("Completed");
+   }
+   else if(Task==='OakBend Medical Group SMS'){
+     document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='sendsms';
 
       document.getElementById("Divmth").style.display='None';
     setStatus("Completed");
@@ -1768,6 +1790,24 @@ function GenerateTaskDIV(addList){
       document.getElementById("lbl_task").textContent = Task;
     document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
     Taskcode='confirm';
+
+      document.getElementById("Divmth").style.display='None';
+    setStatus("Completed");
+   }
+   else if(Task==='Appointment Reminder-PCP' || Task==='Appointment Reminder-Specialist'
+    || Task==='Appointment Reminder-PCP & Specialist' || Task==='Appointment Reminder-PCP & 2 Specialist')
+   {
+      document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='Reminder';
+
+      document.getElementById("Divmth").style.display='None';
+    setStatus("Completed");
+   }
+   else if(Task==='Unable to Assist Reason'){
+     document.getElementById("lbl_task").textContent = Task;
+    document.getElementById("lbl_title").textContent = "Edit Task-"+Task;
+    Taskcode='Unable';
 
       document.getElementById("Divmth").style.display='None';
     setStatus("Completed");
@@ -1822,6 +1862,30 @@ window.showEncoutModal = async  function showEncoutModal(Task,TId,dispst) {
             { id: "Unable to Confirm", name: "Unable to Confirm" }
         ];
     }
+    else if (dispst === "sendsms") {
+
+        dispositionList = [
+            { id: "Send SMS", name: "Send SMS" },
+            { id: "Not Send SMS",name: "Not Send SMS" },
+             { id: "Other", name: "Other" }
+        ];
+    }
+    else if (dispst === "Unable") {
+
+        dispositionList = [
+            { id: "Suicide", name: "Suicide" },
+            { id: "Substance Abuse",name: "Substance Abuse" },
+             { id: "Nursing Home", name: "Nursing Home" },
+             { id: "Dental", name: "Dental" },
+            { id: "Psych", name: "Psych" },
+            { id: "Low Enforcement", name: "Low Enforcement" },
+            { id: "Other", name: "Other" }
+        ];
+    }
+    else if (dispst === "Reminder") {
+      document.getElementById("disposition").disabled = true;
+
+    }
 
     dispositionList.forEach(item => {
         const option = document.createElement("option");
@@ -1866,9 +1930,10 @@ window.showEncoutModal = async  function showEncoutModal(Task,TId,dispst) {
          ddl.dispatchEvent(new Event("change", { bubbles: true }));
           //tags.value = details.Tags ?? '';
         }
+         const ddlasgn = document.getElementById("assign");
         if(details.Assigto!=='')
         {
-           const ddlasgn = document.getElementById("assign");
+
            if(dispst === 'Schedule' || dispst === 'confirm'){
              ddlasgn.value =  '';
            }
@@ -1877,6 +1942,9 @@ window.showEncoutModal = async  function showEncoutModal(Task,TId,dispst) {
            }
 
 
+        }
+        else{
+          ddlasgn.value = '-- Select user --';
         }
          if(details.Due_date!=='')
         {
@@ -1972,15 +2040,17 @@ window.showEncoutModal = async  function showEncoutModal(Task,TId,dispst) {
             method: "POST",
             body: formData
         });
-            document.getElementById("Encount")?.replaceChildren();
-           const TasKList = await response.json();
-           console.log("Provider:", TasKList);
-          const Tcount = TasKList.TaskCount[0];
-          document.getElementById('encnt').textContent = Tcount.Tcount;
+         document.getElementById("Encount")?.replaceChildren();
+         const TasKList = await response.json();
+         //console.log("Provider:", TasKList);
+         const Tcount = TasKList.TaskCount[0];
+         document.getElementById('encnt').textContent = Tcount.Tcount;
          const addList = TasKList.TaslList || [];
-
-
+         const tasklistAll = TasKList.TasklistAll || [];
+         const CareTemlistAll = TasKList.CareTeamlistAll || [];
          GenerateTaskDIV(addList);
+         GenerateTasKTable(tasklistAll);
+         GenerateCareTeamTable(CareTemlistAll);
 <!--         const modal = new bootstrap.Modal(-->
 <!--            document.getElementById('EncouterModal')-->
 <!--        );-->

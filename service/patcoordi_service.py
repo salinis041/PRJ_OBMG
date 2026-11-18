@@ -2,7 +2,7 @@ from repository.provider_repository import(get_specialty_list)
 from repository.patient_repository import (get_coorpathome,get_patientVisit
 ,get_patVisitDetails,get_EncTask_list,get_EncTask_count,get_EnTaskVIdList
 ,get_EnTaskList_TId,update_ETask,Schedule_ETask,SchAppoimnt_ETask,ConfirmApoimnt_ETask
-,get_Task_CmntList_Vistid)
+,get_Task_CmntList_Vistid,get_EnTaskListMRN)
 
 
 def get_patCordinat_list():
@@ -38,13 +38,22 @@ def addedit_ETask(data,commentData):
           or Dispo == "Scheduling Completed by Other" or Dispo == "Unable to schedule-Patient Barrier"
           or Dispo == "Unable to schedule-Office Barrier" or Dispo == "Unable to schedule-Payer Barrier"
           or Dispo == "Appointment Not Needed Any more" or Dispo == "Office Managed Appointment"
-          or Dispo == "Archive Task"):
+          or Dispo == "Archive Task" or data.get("Tsk") == "OakBend Medical Group SMS"
+          or data.get("Tsk") == "Unable to Assist Reason"  or data.get("Tsk") == "Appointment Reminder-PCP"
+          or data.get("Tsk") == "Appointment Reminder-Specialist"  or data.get("Tsk") == "Appointment Reminder-PCP & Specialist"
+          or data.get("Tsk") == "Appointment Reminder-PCP & 2 Specialist" ):
         details = ConfirmApoimnt_ETask(data,commentData)
     return details
-def get_EnTaskCmnt_VstId(vist):
+def get_EnTaskCmnt_VstId(TId):
     CmntList = get_Task_CmntList_Vistid(
-        vist
+        TId
     )
 
     return  CmntList
+def get_EnTask_MRN(Visit):
+    TaskList = get_EnTaskListMRN(
+        Visit
+    )
+
+    return  TaskList
 

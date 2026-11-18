@@ -353,7 +353,7 @@ def get_EncTask_list(mrn,vist):
     )
     VALUES
         (?, ?, 'Registration Issue', NULL, 'Pending', 1, GETDATE()),
-        (?, ?, 'High Risk', 'High Risk', 'Pending', 1, GETDATE()),
+        (?, ?, 'High Risk', 'High|Risk', 'Pending', 1, GETDATE()),
         (?, ?, 'Contact Patient', 'Task|Contact', 'Pending', 1, GETDATE())
                 """
         cursor.execute(
@@ -406,6 +406,42 @@ def get_EncTask_count(vist):
     try:
         cursor = connection.cursor()
         cursor.execute(query, vist)
+
+        columns = [column[0] for column in cursor.description]
+
+        patcordinate = [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+        return patcordinate
+
+    finally:
+        connection.close()
+def get_EnTaskListMRN(Visit):
+    connection = get_connection()
+    cursor = connection.cursor()
+    try:
+        query = """
+                SELECT
+                    TId,Acct, Mrn,
+                    ISNULL(Task,'') Task,
+                    ISNULL(Tags,'') Tags,
+                    ISNULL(Task_status,'') Task_status ,ISNULL(Task_method,'') Task_method,
+                    ISNULL(Dispos,'') Dispos,ISNULL((FORMAT(Due_date, 'MM-dd-yyyy')),'') Due_date
+                    ,ISNULL(Due_time,'') Due_time,ISNULL(u1.Lname,'')+' '+ISNULL(u1.Fname,'') Assigto
+                    ,ISNULL(u2.Lname,'')+' '+ISNULL(u2.Fname,'') Assigby,'' Facility
+
+
+                FROM EncoutTask left join Umaster u1 on u1.Uid=EncoutTask.Assigto
+                left join Umaster u2 on u2.Uid=EncoutTask.Assigby left join Visits v on v.AccountNumber=EncoutTask.Acct
+                
+                Where Mrn in(select distinct MedicalRecordNumber from Visits v where  v.AccountNumber = ?)
+                ORDER BY
+                        TId DESC
+            """
+
+        cursor.execute(query,Visit)
 
         columns = [column[0] for column in cursor.description]
 
@@ -482,34 +518,36 @@ def get_EnTaskList_TId(TId):
 
     finally:
         connection.close()
-def add_comment(commentData,vst,mrn):
-    connection = get_connection()
-    cursor = connection.cursor()
+def add_comment(commentData,vst,mrn,TId,cursor):
+    # connection = get_connection()
+    # cursor = connection.cursor()
     if commentData:
 
         sql2 = """
                                      INSERT INTO TaskCommnt
                                      (
                                          Acct ,
-                                         Mrn ,
-                                         Task_cmmnt,
-                                         CreateBy,
-                                         CreateDt
+                                             Mrn ,
+                                             TId,
+                                             Task_cmmnt,
+                                             CreateBy,
+                                             CreateDt
                                      )
-                                     VALUES (?, ?, ?,  1, GETDATE())
+                                     VALUES (?, ?, ?,?,  1, GETDATE())
                                  """
 
         for cmnt in commentData:
             cursor.execute(sql2, (
                 vst,
                 mrn,
+                TId,
                 cmnt.get("cmntdt")
 
 
             ))
-    connection.commit()
-    cursor.close()
-    connection.close()
+    # connection.commit()
+    # cursor.close()
+    # connection.close()
 
 def update_ETask(data,commentData):
     connection = get_connection()
@@ -598,27 +636,7 @@ def update_ETask(data,commentData):
             data.get("due_time") or None,
             data.get("TId")
         )
-        if commentData:
-
-            sql2 = """
-                                         INSERT INTO TaskCommnt
-                                         (
-                                             Acct ,
-                                             Mrn ,
-                                             Task_cmmnt,
-                                             CreateBy,
-                                             CreateDt
-                                         )
-                                         VALUES (?, ?, ?,  1, GETDATE())
-                                     """
-
-            for cmnt in commentData:
-                cursor.execute(sql2, (
-                    data.get("vist"),
-                    data.get("mrn"),
-                    cmnt.get("cmntdt")
-
-                ))
+        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
         connection.commit()
 
         query = """
@@ -698,7 +716,7 @@ def Schedule_ETask(data,commentData):
                   Due_time, CreateBy, CreateDt
                )
                VALUES (?, ?, ?, 'Pending',?,?,?,?, 1, GETDATE()),
-                      (?, ?, 'OakBend Medical Group SMS', 'Pending','',?,'','', 1, GETDATE())
+                      (?, ?, 'OakBend Medical Group SMS', 'Pending','',?,?,'', 1, GETDATE())
            """
 
             cursor.execute(
@@ -712,7 +730,8 @@ def Schedule_ETask(data,commentData):
                 current_time,
                 data.get("vist"),
                 data.get("mrn"),
-                data.get("assign")
+                data.get("assign"),
+                data.get("due_dt") or None,
             )
 
         else:
@@ -759,28 +778,7 @@ def Schedule_ETask(data,commentData):
                 data.get("due_time") or None,
                 data.get("TId")
             )
-        if commentData:
-
-            sql2 = """
-                                                INSERT INTO TaskCommnt
-                                                (
-                                                    Acct ,
-                                                    Mrn ,
-                                                    Task_cmmnt,
-                                                    CreateBy,
-                                                    CreateDt
-                                                )
-                                                VALUES (?, ?, ?,  1, GETDATE())
-                                            """
-
-            for cmnt in commentData:
-
-                cursor.execute(sql2, (
-                    data.get("vist"),
-                    data.get("mrn"),
-                    cmnt.get("cmntdt")
-
-                ))
+        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
         connection.commit()
 
         query = """
@@ -914,27 +912,7 @@ def SchAppoimnt_ETask(data,commentData):
             data.get("disposition"),
             data.get("TId")
         )
-        if commentData:
-
-            sql2 = """
-                                                INSERT INTO TaskCommnt
-                                                (
-                                                    Acct ,
-                                                    Mrn ,
-                                                    Task_cmmnt,
-                                                    CreateBy,
-                                                    CreateDt
-                                                )
-                                                VALUES (?, ?, ?,  1, GETDATE())
-                                            """
-
-            for cmnt in commentData:
-                cursor.execute(sql2, (
-                    data.get("vist"),
-                    data.get("mrn"),
-                    cmnt.get("cmntdt")
-
-                ))
+        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
 
         connection.commit()
 
@@ -988,28 +966,7 @@ def ConfirmApoimnt_ETask(data,commentData):
             data.get("disposition"),
             data.get("TId")
         )
-        if commentData:
-
-
-            sql2 = """
-                                                INSERT INTO TaskCommnt
-                                                (
-                                                    Acct ,
-                                                    Mrn ,
-                                                    Task_cmmnt,
-                                                    CreateBy,
-                                                    CreateDt
-                                                )
-                                                VALUES (?, ?, ?,  1, GETDATE())
-                                            """
-
-            for cmnt in commentData:
-                cursor.execute(sql2, (
-                    data.get("vist"),
-                    data.get("mrn"),
-                    cmnt.get("cmntdt")
-
-                ))
+        add_comment(commentData,data.get("vist"), data.get("mrn"),data.get("TId"),cursor)
         connection.commit()
 
         query = """
@@ -1040,7 +997,7 @@ def ConfirmApoimnt_ETask(data,commentData):
     finally:
         cursor.close()
         connection.close()
-def get_Task_CmntList_Vistid(vist):
+def get_Task_CmntList_Vistid(TId):
     conn = get_connection()
 
     try:
@@ -1052,10 +1009,10 @@ def get_Task_CmntList_Vistid(vist):
                                                     CreateBy,
                                                     CreateDt
                     FROM dbo.TaskCommnt 
-                    WHERE  Acct = ?
+                    WHERE  TId = ?
                 """
 
-        cursor.execute(sql, vist)
+        cursor.execute(sql, TId)
 
         columns = [column[0] for column in cursor.description]
         return [
