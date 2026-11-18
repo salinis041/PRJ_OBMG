@@ -9,6 +9,7 @@ from repository.available_details_repository import (
     get_available_details_page,
     get_available_visit,
     get_full_remote_visit,
+    get_active_facilities,
 )
 
 from repository.visits_repository import (
@@ -16,6 +17,7 @@ from repository.visits_repository import (
     insert_visit,
     update_visit,
 )
+from datetime import datetime
 
 
 available_details_routes = Blueprint(
@@ -32,32 +34,17 @@ available_details_routes = Blueprint(
     "/details",
     methods=["GET"]
 )
+
+@available_details_routes.route("/details", methods=["GET"])
 def available_details():
 
-    mode = request.args.get(
-        "mode",
-        "census"
-    ).strip().lower()
+    mode = request.args.get("mode", "census").strip().lower()
 
-    visit_id = request.args.get(
-        "visit_id",
-        ""
-    ).strip()
-
-    search = request.args.get(
-        "q",
-        ""
-    ).strip()
-
+    visit_id = request.args.get("visit_id", "").strip()
+    search = request.args.get("q", "").strip()
 
     # ========================================================
     # SEARCH BY VISIT ID / ACCOUNT NUMBER MODE
-    # ========================================================
-    #
-    # IMPORTANT:
-    # Even when visit_id is empty, we MUST remain in
-    # visit mode. This is what allows the radio button to
-    # switch correctly.
     # ========================================================
 
     if mode == "visit":
@@ -65,69 +52,102 @@ def available_details():
         visit = None
 
         if visit_id:
-
-            visit = get_available_visit(
-                visit_id
-            )
+            visit = get_available_visit(visit_id)
 
         return render_template(
             "available_details.html",
-
             mode="visit",
-
             visit_id=visit_id,
-
             visit=visit,
-
             details=None,
-
             total_records=0,
-
             total_pages=0,
-
             start_record=0,
-
             end_record=0,
-
             page_numbers=[],
-
             page=1,
-
             search=""
         )
-
 
     # ========================================================
     # CURRENT CENSUS MODE
     # ========================================================
 
-    page = request.args.get(
-        "page",
-        1,
-        type=int
-    )
+    page = request.args.get("page", 1, type=int)
 
     if page < 1:
         page = 1
 
+    from_date_input = request.args.get("from_date", "").strip()
+    to_date_input = request.args.get("to_date", "").strip()
+
+    try:
+        from_date = (
+            datetime.strptime(from_date_input, "%m/%d/%Y").date()
+            if from_date_input else None
+        )
+
+        to_date = (
+            datetime.strptime(to_date_input, "%m/%d/%Y").date()
+            if to_date_input else None
+        )
+    except ValueError:
+        return "Invalid date format. Please use MM/DD/YYYY.", 400
+
+    facilities = get_active_facilities()
+
+    all_facility_ids = [
+        str(f["FId"]) for f in facilities
+    ]
+
+    selected_facility_ids = request.args.getlist("facility_ids")
+
+    if "filters_applied" not in request.args:
+        selected_facility_ids = all_facility_ids
+
+    selected_facilities = [
+        f for f in facilities
+        if str(f["FId"]) in selected_facility_ids
+    ]
+
+    facility_codes = [
+        f["Faci_code"]
+        for f in selected_facilities
+        if f.get("Faci_code")
+    ]
 
     census = get_available_details_page(
         page=page,
-        search=search
+        search=search,
+        from_date=from_date,
+        to_date=to_date,
+        facility_codes=facility_codes
     )
 
+    # ========================================================
+    # RENDER PAGE
+    # Avoid duplicate keyword arguments from **census
+    # ========================================================
+
+    template_data = dict(census)
+    from_date_display = from_date.strftime("%m/%d/%Y") if from_date else ""
+    to_date_display = to_date.strftime("%m/%d/%Y") if to_date else ""
+    template_data.update({
+        "mode": "census",
+        "visit_id": "",
+        "visit": None,
+        "facilities": facilities,
+        "selected_facility_ids": selected_facility_ids,
+         "from_date": from_date_display,
+        "to_date": to_date_display,
+        "search": search
+    })
 
     return render_template(
         "available_details.html",
-
-        mode="census",
-
-        visit_id="",
-
-        visit=None,
-
-        **census
+        **template_data
     )
+
 
 
 # ============================================================
