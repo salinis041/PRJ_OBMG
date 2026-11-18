@@ -116,10 +116,10 @@ def get_patientVisit(visit_id):
                 MaritalStatus,
                 Race,
                ISNULL([Patient Type],'')  PatientType,
-                '' AdmitReason,
-                 '' ServicingFacility,
+                ChiefComplaint AdmitReason,
+                 Facility ServicingFacility,
                ISNULL([Admit FC Name],'') PAYOR,
-               '' Room
+               Room Room
                
                 --HospitalService,
                 -- Location,

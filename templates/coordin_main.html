@@ -144,10 +144,10 @@
                   <span>{{ pv.AdmitReason }}</span>    <span>Admit Reason</span>
                   </div>
               <hr class="custom-line">
-            <div style="font-size: small;">
-                  Home or self care
-                  </div>
-              <hr class="custom-line">
+<!--            <div style="font-size: small;">-->
+<!--                  Home or self care-->
+<!--                  </div>-->
+<!--              <hr class="custom-line">-->
             <div class="line-container" >
                   <span>Oakbend Medical Center</span>  <span>Client</span>
                   </div>
@@ -1556,17 +1556,25 @@
         const TasKList = await response.json();
 
         const Tcount = TasKList.TaskCount[0];
+        const CareTemlistAll = TasKList.CareTeamlistAll || [];
+         const addList = TasKList.TaslList || [];
+         const tasklistAll = TasKList.TasklistAll || [];
+         GenerateTaskDIV(addList);
+         GenerateTasKTable(tasklistAll);
+         GenerateCareTeamTable(CareTemlistAll);
+<!--        if (careteamlistAll === null) {-->
+<!--                console.log("Array is null");-->
+<!--            }-->
 
         if (Number(Tcount.Tcount) > 0) {
 
             document.getElementById("encnt").textContent = Tcount.Tcount;
 
-            const addList = TasKList.TaslList || [];
-            const tasklistAll = TasKList.TasklistAll || [];
-            const CareTemlistAll = TasKList.CareTeamlistAll || [];
-            GenerateTaskDIV(addList);
-            GenerateTasKTable(tasklistAll);
-            GenerateCareTeamTable(CareTemlistAll);
+
+
+
+
+
             setEncounterCollapse(addList.length > 0);
             initializeEncounter();
 
@@ -1676,6 +1684,7 @@ function GenerateTaskDIV(addList){
 function GenerateTasKTable(tasklistAll){
       const Takbody = document.getElementById("TaskData");
       Takbody.innerHTML = "";
+      if (tasklistAll.length > 0) {
   tasklistAll.forEach(item => {
    Takbody.innerHTML += `
           <tr>
@@ -1690,23 +1699,38 @@ function GenerateTasKTable(tasklistAll){
 
 });
 }
+else
+{
+         Takbody.innerHTML += `
+                  <tr><td colspan="7" class="text-center text-muted">No task found for this patient.</td></tr>`;
+}
+}
 function GenerateCareTeamTable(careteamlistAll){
-      const CareTeambody = document.getElementById("CareTeamData");
+    const CareTeambody = document.getElementById("CareTeamData");
       CareTeambody.innerHTML = "";
-  careteamlistAll.forEach(item => {
-   CareTeambody.innerHTML += `
-          <tr>
-            <td></td>
-            <td>${item.CareName}<br>Last Active:${item.LstAct_Dt}</td>
-            <td>${item.SPECIALTY}</td>
-            <td>${item.OffPhone}</td>
-            <td></td>
-            <td></td>
-            <td>Accepted</td>
-             <td></td>
-          </tr>`;
+     if (careteamlistAll.length > 0) {
 
-});
+          careteamlistAll.forEach(item => {
+           CareTeambody.innerHTML += `
+                  <tr>
+                    <td></td>
+                    <td>${item.CareName}<br>Last Active:${item.LstAct_Dt}</td>
+                    <td>${item.SPECIALTY}</td>
+                    <td>${item.OffPhone}</td>
+                    <td></td>
+                    <td></td>
+                    <td>Accepted</td>
+                     <td></td>
+                  </tr>`;
+
+        });
+}
+else
+{
+           CareTeambody.innerHTML += `
+                  <tr><td colspan="8" class="text-center text-muted">No care team found for this patient.</td></tr>`;
+
+}
 }
 <!--Generate Encounter Task click on header-->
  window.GenerateEncoutTask = async function GenerateEncoutTask(mrn,vist, element){
