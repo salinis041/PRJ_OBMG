@@ -213,6 +213,7 @@ def edit_EncouterTask():
 def Coordinatormain(visit_id):
     session['Vst'] = visit_id
     patvisit = get_patCordinat_Visit(visit_id)
+    usrlist = get_user_list()
     appointment_rows = []
     providers = []
     selected_appointment = None
@@ -230,6 +231,7 @@ def Coordinatormain(visit_id):
     return render_template(
         "coordin_main.html",
         patv=patvisit,
+        usrlist=usrlist,
         appointments=appointment_rows,
         appointment_providers=providers,
         appointment_form_open=bool(request.args.get("add_appointment") or selected_appointment),
