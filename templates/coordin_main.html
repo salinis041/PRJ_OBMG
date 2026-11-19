@@ -1265,7 +1265,7 @@
             </thead>
 
             <tbody id="TaskData">
-    
+
    </tbody>
 
         </table>
@@ -2144,5 +2144,20 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endif %}
+
+<!-- Keep the Appointments tab active after save or refresh.
+     This must remain OUTSIDE the appointment_form_open condition. -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.hash === '#appoint') {
+        const appointmentTab = document.querySelector(
+            '[data-bs-target="#appoint"]'
+        );
+        if (appointmentTab && window.bootstrap) {
+            bootstrap.Tab.getOrCreateInstance(appointmentTab).show();
+        }
+    }
+});
+</script>
 </body>
 </html>

@@ -273,11 +273,15 @@ def save_coordinator_appointment(visit_id):
             flash("Appointment created successfully.", "success")
     except ValueError as exc:
         flash(str(exc), "error")
-        return redirect(url_for("coodinator_routes.Coordinatormain",
-                                visit_id=visit_id,
-                                edit_appointment=aid) if aid else
-                        url_for("coodinator_routes.Coordinatormain",
-                                visit_id=visit_id, add_appointment=1) + "#appoint")
+        if aid:
+            return redirect(
+                url_for("coodinator_routes.Coordinatormain",
+                        visit_id=visit_id, edit_appointment=aid) + "#appoint"
+            )
+        return redirect(
+            url_for("coodinator_routes.Coordinatormain",
+                    visit_id=visit_id, add_appointment=1) + "#appoint"
+        )
     except Exception:
         current_app.logger.exception("Appointment save failed")
         flash("Appointment could not be saved. Check the server log.", "error")
