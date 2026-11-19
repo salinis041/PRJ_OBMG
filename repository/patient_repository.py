@@ -349,12 +349,12 @@ def get_EncTask_list(mrn,vist):
         sql = """
                 INSERT INTO dbo.EncoutTask
     (
-        Acct, Mrn, [Task], Tags, [Task_status], [CreateBy], CreateDt
+        Acct, Mrn, [Task], Tags, [Task_status], Due_date, [CreateBy], CreateDt
     )
     VALUES
-        (?, ?, 'Registration Issue', NULL, 'Pending', 1, GETDATE()),
-        (?, ?, 'High Risk', 'High|Risk', 'Pending', 1, GETDATE()),
-        (?, ?, 'Contact Patient', 'Task|Contact', 'Pending', 1, GETDATE())
+        (?, ?, 'Registration Issue', NULL, 'Pending', GETDATE(), 1, GETDATE()),
+        (?, ?, 'High Risk', 'High|Risk', 'Pending', GETDATE(), 1, GETDATE()),
+        (?, ?, 'Contact Patient', 'Task|Contact', 'Pending', GETDATE(), 1, GETDATE())
                 """
         cursor.execute(
             sql,
@@ -393,31 +393,36 @@ def get_EncTask_list(mrn,vist):
         connection.close()
 def get_EncTask_count(vist):
     query = """
-        SELECT
-            COUNT(*) as Tcount
+           SELECT COUNT(*) AS Tcount
+           FROM dbo.EncoutTask
+           WHERE Acct = ?
+       """
 
+    max_retries = 3
 
-        FROM EncoutTask
-        Where Acct = ?
-    """
+    for attempt in range(max_retries):
 
-    connection = get_connection()
+        connection = get_connection()
 
-    try:
-        cursor = connection.cursor()
-        cursor.execute(query, vist)
+        try:
+            cursor = connection.cursor()
 
-        columns = [column[0] for column in cursor.description]
+            cursor.execute(query, (vist,))
 
-        patcordinate = [
-            dict(zip(columns, row))
-            for row in cursor.fetchall()
-        ]
+            row = cursor.fetchone()
 
-        return patcordinate
+            return [{"Tcount": row[0]}]
 
-    finally:
-        connection.close()
+        except pyodbc.Error as e:
+
+            if ("40001" in str(e) or "1205" in str(e)) and attempt < max_retries - 1:
+                time.sleep(0.5 * (attempt + 1))
+                continue
+
+            raise
+
+        finally:
+            connection.close()
 def get_EnTaskListMRN(Visit):
     connection = get_connection()
     cursor = connection.cursor()
@@ -576,9 +581,9 @@ def update_ETask(data,commentData):
                         INSERT INTO dbo.EncoutTask
                         (
                             Acct, Mrn, [Task],Task_method, 
-                            [Task_status], CreateBy, CreateDt
+                            [Task_status],Due_date, CreateBy, CreateDt
                         )
-                        VALUES (?, ?, ?, ?, ?, 1, GETDATE())
+                        VALUES (?, ?, ?, ?, ?, GETDATE(), 1, GETDATE())
                     """
 
             cursor.execute(
@@ -595,7 +600,7 @@ def update_ETask(data,commentData):
             update_sql = """
                         UPDATE dbo.EncoutTask
                         SET
-                            [Task_status] = ?,
+                            -- [Task_status] = ?,
                             Task_method = ?,
                             ModifyBy = 1,
                             ModifyDt = GETDATE()
@@ -604,7 +609,7 @@ def update_ETask(data,commentData):
 
             cursor.execute(
                 update_sql,
-                data.get("Tstatus"),
+                #data.get("Tstatus"),
                 data.get("method"),
                 data.get("vist"),
                 tsk
@@ -739,7 +744,7 @@ def Schedule_ETask(data,commentData):
             update_sql = """
                    UPDATE dbo.EncoutTask
                    SET
-                       [Task_status] = ?,
+                       --[Task_status] = ?,
                        Task_method = ?,
                        ModifyBy = 1,
                        ModifyDt = GETDATE()
@@ -748,7 +753,7 @@ def Schedule_ETask(data,commentData):
 
             cursor.execute(
                 update_sql,
-                data.get("Tstatus"),
+                #data.get("Tstatus"),
                 data.get("method"),
                 data.get("vist"),
                 tsk)
