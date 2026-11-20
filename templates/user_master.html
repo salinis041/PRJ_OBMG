@@ -6,6 +6,38 @@
 <title>User Master</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
 </head>
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+    <nav class="main-nav">
+<!--        <a href="/home"  >Home</a>-->
+         <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}">Patients</a>
+        <a href="{{ url_for(
+        'available_details_routes.available_details'
+    ) }}" >Available Patients</a>
+        <a href="#">Messages</a>
+        <a href="{{ url_for(
+        'task_routes.tasks_home'
+    ) }}">Tasks</a>
+        <a href="#">Work Queues</a>
+        <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}">Provider</a>
+        <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}" class="selected" >User</a>
+    </nav>
+
+    <div class="header-right">
+        <span>🔍</span>
+        <span>⚙</span>
+        <span>?</span>
+    </div>
+
+</header>
 <body>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
 <section class="um-page">
