@@ -998,7 +998,7 @@ body {
 }
 
 .clear-button {
-    padding: 7px 15px;
+    padding: 9px 15px;
 
     border: 1px solid #087a9e;
 
@@ -1007,6 +1007,7 @@ body {
     background: #087fa5;
 
     color: white;
+    font-weight:600;
 
     font-size: 12px;
 

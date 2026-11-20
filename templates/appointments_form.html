@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ 'Edit Appointment' if is_edit else 'Add Appointment' }}</title><link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}"></head>
+<body><main class="ap-page">
+<header class="ap-form-title"><h1>{{ 'Edit Appointment' if is_edit else 'Add Appointment' }}</h1><a href="{{ url_for('appointment_routes.index') }}">×</a></header>
+{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="ap-alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+<form method="post" class="ap-form">
+<div class="ap-columns"><section class="ap-card">
+<div class="ap-field"><label>Account Number</label><input name="acct" maxlength="30" value="{{ appointment.Acct or '' if appointment else '' }}"></div>
+<div class="ap-field"><label>Medical Record Number</label><input name="mrn" maxlength="30" value="{{ appointment.Mrn or '' if appointment else '' }}"></div>
+<div class="ap-field"><label>Record Type *</label><div class="ap-radio"><label><input type="radio" name="record_type" value="N" {% if not appointment or appointment.ReType == 'N' %}checked{% endif %}> New</label><label><input type="radio" name="record_type" value="L" {% if appointment and appointment.ReType == 'L' %}checked{% endif %}> Logged</label></div></div>
+<div class="ap-field"><label>Provider *</label><select name="provider_id" required><option value="">Select Provider</option>{% for p in providers %}<option value="{{ p.Uid }}" {% if appointment and appointment.PrId == p.Uid %}selected{% endif %}>{{ ((p.Fname or '') ~ ' ' ~ (p.Lname or '')).strip() or p.Uname }}{% if p.Uname %} — {{ p.Uname }}{% endif %}</option>{% endfor %}</select></div>
+<div class="ap-field"><label>Address</label><textarea name="address" rows="2">{{ appointment.App_add or '' if appointment else '' }}</textarea></div>
+<div class="ap-field"><label>Date *</label><input type="date" name="app_date" required value="{{ appointment.App_date.strftime('%Y-%m-%d') if appointment and appointment.App_date else '' }}"></div>
+<div class="ap-field"><label>Time</label><input name="app_time" maxlength="20" placeholder="e.g. 11:30 AM" value="{{ appointment.App_time or '' if appointment else '' }}"></div>
+<div class="ap-field"><label>Status *</label><select name="app_status" required>{% for s in ['Pending','Completed','Canceled and Rescheduled','Canceled','Pending - No Answer','No Show'] %}<option value="{{ s }}" {% if appointment and appointment.App_status == s %}selected{% elif not appointment and s == 'Pending' %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+<div class="ap-field"><label>Patient Appointment Instructions</label><textarea name="app_instr" rows="4">{{ appointment.App_instr or '' if appointment else '' }}</textarea></div>
+</section>
+<section class="ap-card"><h2>Why was this provider selected? *</h2>
+{% set reasons=[('established','This is the patient’s Established Physician/Office','Est_phOffice'),('discharge','This specific provider/office is written in the Discharge Instructions','Pron_inDisch'),('in_network','This provider/office is the first available in-network','Prov_inNet'),('restricted_insurance','This provider accepts the patient’s Restricted Insurance','Prov_RestIns'),('chosen_patient','This provider was Chosen by the Patient','Prov_chpat'),('assigned_insurance','This provider is Assigned by Insurance','Prov_AssIns'),('availability','This provider/office Has Availability','Prov_Aval'),('far_hospital','Patient wanted a provider Far From Hospital','Prov_FarHosp'),('chosen_pcp','This provider was Chosen by the Patient’s PCP','Prov_ChPcp')] %}
+{% for key,label,col in reasons %}<label class="ap-reason"><input type="checkbox" name="{{ key }}" {% if appointment and appointment[col] == 'Y' %}checked{% elif not appointment and key == 'established' %}checked{% endif %}><span>{{ label }}</span></label>{% endfor %}
+<div class="ap-field vertical"><label>Reason Provider Selected Notes *</label><textarea name="selection_notes" rows="6">{{ appointment.Pro_Slreasn or '' if appointment else '' }}</textarea></div>
+</section></div>
+<footer class="ap-actions"><a class="ap-btn" href="{{ url_for('appointment_routes.index') }}">Cancel</a><button class="ap-btn primary" type="submit">{{ 'Update Appointment' if is_edit else 'Save Appointment' }}</button></footer>
+</form></main></body></html>
