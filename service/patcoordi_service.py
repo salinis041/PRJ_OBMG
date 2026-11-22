@@ -2,7 +2,7 @@ from repository.provider_repository import(get_specialty_list)
 from repository.patient_repository import (get_coorpathome,get_patientVisit
 ,get_patVisitDetails,get_EncTask_list,get_EncTask_count,get_EnTaskVIdList
 ,get_EnTaskList_TId,update_ETask,Schedule_ETask,SchAppoimnt_ETask,ConfirmApoimnt_ETask
-,get_Task_CmntList_Vistid,get_EnTaskListMRN)
+,get_Task_CmntList_Vistid,get_EnTaskListMRN,add_comment)
 
 
 def get_patCordinat_list():
@@ -25,12 +25,15 @@ def addedit_ETask(data,commentData):
     Dispo = data.get("disposition")
     details=''
     if Dispo == "Unable to Assist" or Dispo == "Unable to Reach-No SMS":
+        add_comment(data,commentData)
         details =update_ETask(data,commentData)
     elif (Dispo == "Scheduling Needed-PCP" or Dispo == "Scheduling Needed-Specialist"
           or Dispo == "Scheduling Needed-PCP & Specialist"
           or Dispo == "Scheduling Needed-PCP & 2 Specialist"):
+        add_comment(data, commentData)
         details = Schedule_ETask(data,commentData)
     elif Dispo == "Appointment Scheduled":
+        add_comment(data, commentData)
         details = SchAppoimnt_ETask(data,commentData)
     elif (Dispo == "Confirmed Attended" or Dispo == "Confirmed Did not Show"
           or Dispo == "Confirmed Canceled"
@@ -42,6 +45,7 @@ def addedit_ETask(data,commentData):
           or data.get("Tsk") == "Unable to Assist Reason"  or data.get("Tsk") == "Appointment Reminder-PCP"
           or data.get("Tsk") == "Appointment Reminder-Specialist"  or data.get("Tsk") == "Appointment Reminder-PCP & Specialist"
           or data.get("Tsk") == "Appointment Reminder-PCP & 2 Specialist" ):
+        add_comment(data, commentData)
         details = ConfirmApoimnt_ETask(data,commentData)
     return details
 def get_EnTaskCmnt_VstId(TId):

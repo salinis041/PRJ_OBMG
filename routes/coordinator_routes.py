@@ -188,9 +188,9 @@ def EncoutTaskTID(TId,vist):
     # data = request.json or {}
     # delusrname = data.get("delUsername")
     # print(vist)
-    # print(mrn)
+
     TaskDetails = get_EnTask_list_TId(TId)
-    TaskCmnt = get_EnTaskCmnt_VstId(vist)
+    TaskCmnt = get_EnTaskCmnt_VstId(TId)
     return jsonify({
         "success": True,
         "TaskDetails": TaskDetails,
@@ -264,6 +264,8 @@ def Coordinatormain(visit_id):
 @coodinator_routes.route("/CoordinatorMain/<visit_id>/appointment", methods=["POST"])
 def save_coordinator_appointment(visit_id):
     aid = request.form.get("aid", type=int)
+    PId = request.form.get("provider_id", type=int)
+    #data['provider_id']data['acct'], data['mrn']
     try:
         if aid:
             appointment_service.update_appointment(aid, request.form)
@@ -271,6 +273,8 @@ def save_coordinator_appointment(visit_id):
         else:
             appointment_service.create_appointment(request.form)
             flash("Appointment created successfully.", "success")
+        if PId:
+            Add_CareTeamData(PId, request.form.get("mrn"), request.form.get("acct"), 'APPMNT')
     except ValueError as exc:
         flash(str(exc), "error")
         if aid:

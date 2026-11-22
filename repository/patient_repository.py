@@ -523,9 +523,9 @@ def get_EnTaskList_TId(TId):
 
     finally:
         connection.close()
-def add_comment(commentData,vst,mrn,TId,cursor):
-    # connection = get_connection()
-    # cursor = connection.cursor()
+def add_comment(data,commentData):
+    connection = get_connection()
+    cursor = connection.cursor()
     if commentData:
 
         sql2 = """
@@ -543,16 +543,16 @@ def add_comment(commentData,vst,mrn,TId,cursor):
 
         for cmnt in commentData:
             cursor.execute(sql2, (
-                vst,
-                mrn,
-                TId,
+                data.get("vist"),
+                data.get("mrn"),
+                data.get("TId"),
                 cmnt.get("cmntdt")
 
 
             ))
-    # connection.commit()
-    # cursor.close()
-    # connection.close()
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 def update_ETask(data,commentData):
     connection = get_connection()
@@ -641,7 +641,29 @@ def update_ETask(data,commentData):
             data.get("due_time") or None,
             data.get("TId")
         )
-        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
+        # add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
+        # if commentData:
+        #     sql2 = """
+        #                                          INSERT INTO TaskCommnt
+        #                                          (
+        #                                              Acct ,
+        #                                                  Mrn ,
+        #                                                  TId,
+        #                                                  Task_cmmnt,
+        #                                                  CreateBy,
+        #                                                  CreateDt
+        #                                          )
+        #                                          VALUES (?, ?, ?,?,  1, GETDATE())
+        #                                      """
+        #     for cmnt in commentData:
+        #         print(cmnt.get("cmntdt"))
+        #         cursor.execute(sql2, (
+        #             data.get("vist"),
+        #             data.get("mrn"),
+        #             data.get("TId"),
+        #             cmnt.get("cmntdt")
+        #
+        #         ))
         connection.commit()
 
         query = """
@@ -783,7 +805,28 @@ def Schedule_ETask(data,commentData):
                 data.get("due_time") or None,
                 data.get("TId")
             )
-        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
+        # if commentData:
+        #     sql2 = """
+        #                                          INSERT INTO TaskCommnt
+        #                                          (
+        #                                              Acct ,
+        #                                                  Mrn ,
+        #                                                  TId,
+        #                                                  Task_cmmnt,
+        #                                                  CreateBy,
+        #                                                  CreateDt
+        #                                          )
+        #                                          VALUES (?, ?, ?,?,  1, GETDATE())
+        #                                      """
+        #     for cmnt in commentData:
+        #         print(cmnt.get("cmntdt"))
+        #         cursor.execute(sql2, (
+        #             data.get("vist"),
+        #             data.get("mrn"),
+        #             data.get("TId"),
+        #             cmnt.get("cmntdt")
+        #
+        #         ))
         connection.commit()
 
         query = """
@@ -917,7 +960,28 @@ def SchAppoimnt_ETask(data,commentData):
             data.get("disposition"),
             data.get("TId")
         )
-        add_comment(commentData, data.get("vist"), data.get("mrn"), data.get("TId"), cursor)
+        # if commentData:
+        #     sql2 = """
+        #                                          INSERT INTO TaskCommnt
+        #                                          (
+        #                                              Acct ,
+        #                                                  Mrn ,
+        #                                                  TId,
+        #                                                  Task_cmmnt,
+        #                                                  CreateBy,
+        #                                                  CreateDt
+        #                                          )
+        #                                          VALUES (?, ?, ?,?,  1, GETDATE())
+        #                                      """
+        #     for cmnt in commentData:
+        #         print(cmnt.get("cmntdt"))
+        #         cursor.execute(sql2, (
+        #             data.get("vist"),
+        #             data.get("mrn"),
+        #             data.get("TId"),
+        #             cmnt.get("cmntdt")
+        #
+        #         ))
 
         connection.commit()
 
@@ -971,7 +1035,28 @@ def ConfirmApoimnt_ETask(data,commentData):
             data.get("disposition"),
             data.get("TId")
         )
-        add_comment(commentData,data.get("vist"), data.get("mrn"),data.get("TId"),cursor)
+        # if commentData:
+        #     sql2 = """
+        #                                          INSERT INTO TaskCommnt
+        #                                          (
+        #                                              Acct ,
+        #                                                  Mrn ,
+        #                                                  TId,
+        #                                                  Task_cmmnt,
+        #                                                  CreateBy,
+        #                                                  CreateDt
+        #                                          )
+        #                                          VALUES (?, ?, ?,?,  1, GETDATE())
+        #                                      """
+        #     for cmnt in commentData:
+        #         print(cmnt.get("cmntdt"))
+        #         cursor.execute(sql2, (
+        #             data.get("vist"),
+        #             data.get("mrn"),
+        #             data.get("TId"),
+        #             cmnt.get("cmntdt")
+        #
+        #         ))
         connection.commit()
 
         query = """

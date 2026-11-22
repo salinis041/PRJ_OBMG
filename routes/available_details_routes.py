@@ -252,7 +252,7 @@ def add_available_detail():
         # ----------------------------------------------------
 
         redirect_url = (
-            "/Demographics/"
+            "/CoordinatorMain/"
             + str(account_number)
         )
 
@@ -339,7 +339,7 @@ def update_available_detail():
         )
 
         redirect_url = (
-                "/Demographics/"
+                "/CoordinatorMain/"
                 + str(account_number)
         )
 
