@@ -405,70 +405,72 @@
              PAGINATION
              ================================================= -->
 
-        {% if total_pages > 1 %}
+      {% if total_pages > 1 %}
 
-        <div class="details-pagination">
+<div class="details-pagination">
 
-            {% if page > 1 %}
-
-                <a
-                    href="{{ url_for(
-                        'available_details_routes.available_details',
-                        mode='census',
-                        page=page-1,
-                        q=search, from_date=from_date, to_date=to_date, filters_applied=1, facility_ids=selected_facility_ids
-                    ) }}"
-                >
-                    Previous
-                </a>
-
-            {% endif %}
-
-
-            {% for page_number in page_numbers %}
-
-                {% if page_number == page %}
-
-                    <span class="current-page">
-                        {{ page_number }}
-                    </span>
-
-                {% else %}
-
-                    <a
-                        href="{{ url_for(
-                            'available_details_routes.available_details',
-                            mode='census',
-                            page=page_number,
-                            q=search
-                        ) }}"
-                    >
-                        {{ page_number }}
-                    </a>
-
-                {% endif %}
-
-            {% endfor %}
+    {% if page > 1 %}
+        <a href="{{ url_for(
+            'available_details_routes.available_details',
+            mode='census',
+            page=page-1,
+            q=search,
+            from_date=from_date,
+            to_date=to_date,
+            filters_applied=1,
+            facility_ids=selected_facility_ids
+        ) }}">
+            Previous
+        </a>
+    {% endif %}
 
 
-            {% if page < total_pages %}
+    {% for page_number in page_numbers %}
 
-                <a
-                    href="{{ url_for(
-                        'available_details_routes.available_details',
-                        mode='census',
-                        page=page+1,
-                        q=search, from_date=from_date, to_date=to_date, filters_applied=1, facility_ids=selected_facility_ids
-                    ) }}"
-                >
-                    Next
-                </a>
+        {% if page_number == page %}
 
-            {% endif %}
+            <span class="current-page">
+                {{ page_number }}
+            </span>
 
-        </div>
+        {% else %}
+
+            <a href="{{ url_for(
+                'available_details_routes.available_details',
+                mode='census',
+                page=page_number,
+                q=search,
+                from_date=from_date,
+                to_date=to_date,
+                filters_applied=1,
+                facility_ids=selected_facility_ids
+            ) }}">
+                {{ page_number }}
+            </a>
 
         {% endif %}
+
+    {% endfor %}
+
+
+    {% if page < total_pages %}
+        <a href="{{ url_for(
+            'available_details_routes.available_details',
+            mode='census',
+            page=page+1,
+            q=search,
+            from_date=from_date,
+            to_date=to_date,
+            filters_applied=1,
+            facility_ids=selected_facility_ids
+        ) }}">
+            Next
+        </a>
+    {% endif %}
+
+</div>
+
+{% endif %}
 
     </div>
 
