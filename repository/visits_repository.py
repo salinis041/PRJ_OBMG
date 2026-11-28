@@ -102,6 +102,12 @@ def _visit_values(data):
         data.get("Race"),
         data.get("Language"),
         data.get("Insurance1PolicyID"),
+        data.get("Facility"),
+        data.get("Fcode"),
+        data.get("ChiefComplaint", data.get("AdmitReason")),
+        data.get("DischargeDisposition"),
+        data.get("PCPName"),
+        data.get("Room"),
     )
 
 
@@ -153,15 +159,8 @@ def insert_visit(data):
             return False
 
         # ----------------------------------------------------
-        # Get the 59 visit values.
-        # ----------------------------------------------------
-
+        # Get all visit values, including the six additional fields.
         values = _visit_values(data)
-
-        if len(values) != 59:
-            raise ValueError(
-                f"Expected 59 visit values, got {len(values)}."
-            )
 
         # ----------------------------------------------------
         # Generate exactly 59 parameter markers.
@@ -233,6 +232,12 @@ def insert_visit(data):
                 Race,
                 Langu,
                 Insurance1PolicyID,
+                [Facility],
+                [Fcode],
+                [ChiefComplaint],
+                [DischargeDisposition],
+                [PCPName],
+                [Room],
                 CreatedBy,
                 CreatedDate,
                 ModifiedBy,
@@ -347,6 +352,12 @@ def update_visit(data):
                 Race = ?,
                 Langu = ?,
                 Insurance1PolicyID = ?,
+                [Facility] = ?,
+                [Fcode] = ?,
+                [ChiefComplaint] = ?,
+                [DischargeDisposition] = ?,
+                [PCPName] = ?,
+                [Room] = ?,
                 ModifiedBy = 1,
                 ModifiedDate = GETDATE()
             WHERE AccountNumber = ?

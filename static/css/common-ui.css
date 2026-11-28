@@ -1,0 +1,17 @@
+/* SHARED UI STANDARD */
+:root{--ui-primary:#087ea4;--ui-border:#cbd5dc;--ui-text:#344054;--ui-head:#eaf0f4;--ui-row-alt:#f8fafc;--ui-focus:rgba(8,126,164,.16)}
+html,body{font-family:Arial,Helvetica,sans-serif;color:var(--ui-text)}
+input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]),select,textarea{font:13px Arial,Helvetica,sans-serif;color:var(--ui-text);background:#fff;border:1px solid var(--ui-border);border-radius:5px;min-height:34px;padding:7px 10px;box-sizing:border-box}
+input:not([type=checkbox]):not([type=radio]):focus,select:focus,textarea:focus{outline:0;border-color:var(--ui-primary);box-shadow:0 0 0 3px var(--ui-focus)}
+input[type=date]{min-height:34px;padding:6px 9px}
+button,input[type=submit],input[type=button],.search-button,.filter-search-button{font-family:Arial,Helvetica,sans-serif;border-radius:5px}
+.details-table-container,.patient-table-wrapper,.ap-table-wrap,.um-table-wrap{width:100%;overflow-x:auto;background:#fff;border:1px solid #dce3e8;border-radius:6px}
+.available-details-table,.patient-table,.ap-table-wrap table,.um-table{width:100%;border-collapse:collapse;background:#fff}
+.available-details-table th,.patient-table thead th,.ap-table-wrap th,.um-table th{background:var(--ui-head);color:#475467;border:1px solid #dce3e8;padding:10px 9px;text-align:left;font-size:11px;font-weight:700;white-space:nowrap;vertical-align:middle}
+.available-details-table td,.patient-table tbody td,.ap-table-wrap td,.um-table td{border:1px solid #e5eaf0;padding:9px;font-size:12px;color:#344054;vertical-align:middle}
+.available-details-table tbody tr:nth-child(even),.patient-table tbody tr:nth-child(even),.ap-table-wrap tbody tr:nth-child(even),.um-table tbody tr:nth-child(even){background:var(--ui-row-alt)}
+.available-details-table tbody tr:hover,.patient-table tbody tr:hover,.ap-table-wrap tbody tr:hover,.um-table tbody tr:hover{background:#eef7fb}
+.flatpickr-calendar{font-family:Arial,Helvetica,sans-serif!important;border:1px solid #dce3e8!important;border-radius:8px!important;box-shadow:0 8px 24px rgba(16,24,40,.14)!important}
+.flatpickr-day.selected,.flatpickr-day.startRange,.flatpickr-day.endRange{background:var(--ui-primary)!important;border-color:var(--ui-primary)!important}
+.flatpickr-day.today{border-color:var(--ui-primary)!important}
+@media(max-width:700px){.available-details-table,.patient-table,.ap-table-wrap table,.um-table{min-width:760px}}

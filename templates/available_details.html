@@ -16,22 +16,86 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='css/style.css') }}"
     >
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+>
+<style>
+/* One-line census filters; wraps only on narrow screens */
+.census-filter-panel{background:#f7fafc;border:1px solid #dbe3ea;border-radius:8px;padding:12px 14px;margin:12px 0;display:flex;align-items:flex-end;gap:12px;flex-wrap:nowrap;overflow-x:auto}
+.census-filter-panel .filter-field{display:flex;flex-direction:column;gap:5px;flex:0 0 auto;font-size:12px;font-weight:600;color:#334155}
+.census-filter-panel .filter-field input[type=date]{height:36px;min-width:145px;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;background:#fff}
+.facility-inline{display:flex;align-items:center;gap:10px;min-height:36px;white-space:nowrap}
+.facility-checkbox-list{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+.facility-checkbox-item{display:inline-flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap}
+.facility-checkbox-item input{margin:0}
+.census-filter-panel .existing-search-field{height:36px;min-width:190px;width:220px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff}
+.census-filter-panel .filter-search-button{height:36px;padding:0 18px;border:1px solid #087eaa;border-radius:6px;background:#087eaa;color:#fff;font-weight:600;cursor:pointer;white-space:nowrap}
+@media(max-width:900px){.census-filter-panel{flex-wrap:wrap;overflow-x:visible}.facility-checkbox-list{flex-wrap:wrap}}
+
+.info-hover{position:relative;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;border-radius:50%;background:#eaf3f8;color:#176b8a;font-size:19px;font-weight:700;letter-spacing:2px;cursor:help}.info-hover .info-tooltip{display:none;position:absolute;left:34px;top:50%;transform:translateY(-50%);z-index:1000;width:290px;white-space:normal;text-align:left;background:#172b3a;color:#fff;padding:12px 14px;border-radius:9px;box-shadow:0 8px 24px rgba(15,35,50,.22);font-size:12px;line-height:1.5;letter-spacing:normal}.info-hover:hover .info-tooltip,.info-hover:focus .info-tooltip{display:block}.info-tooltip strong{display:block;color:#9bdcf0;margin-bottom:3px}.info-tooltip .info-value{display:block;margin-bottom:9px;overflow-wrap:anywhere}.available-details-table th:first-child,.available-details-table td:first-child{width:54px;text-align:center}
+</style>
+
+<style id="available-details-ui-standard">
+/* Shared visual standard for Available Details page only */
+.available-details-page { color:#344054; font-family:Arial, sans-serif; }
+.available-details-page input:not([type="checkbox"]):not([type="radio"]),
+.available-details-page select,
+.available-details-page textarea {
+  min-height:38px !important; box-sizing:border-box !important; padding:8px 11px !important;
+  border:1px solid #cbd5e1 !important; border-radius:7px !important;
+  background:#fff !important; color:#344054 !important; font:14px Arial,sans-serif !important;
+  box-shadow:none !important; transition:border-color .15s ease, box-shadow .15s ease;
+}
+.available-details-page input:focus, .available-details-page select:focus,
+.available-details-page textarea:focus { outline:none !important; border-color:#2583b8 !important;
+  box-shadow:0 0 0 3px rgba(37,131,184,.14) !important; }
+.available-details-page .census-filter-panel { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; gap:14px; }
+.available-details-page .census-filter-panel .filter-field { font-size:12px; font-weight:600; color:#475467; }
+.available-details-page .census-filter-panel input.date-picker,
+.available-details-page .census-filter-panel .existing-search-field { height:38px !important; min-height:38px !important; }
+.available-details-page .filter-search-button { height:38px; border:1px solid #176b91; border-radius:7px; background:#176b91; font-size:13px; font-weight:600; }
+.available-details-page .filter-search-button:hover { background:#125875; }
+.available-details-page .details-table-container { overflow-x:auto; border:1px solid #e2e8f0; border-radius:9px; background:#fff; }
+.available-details-page table { width:100%; border-collapse:separate; border-spacing:0; }
+.available-details-page .available-details-table thead th { background:#eef3f7 !important; color:#344054 !important;
+  font-size:11px !important; font-weight:700 !important; padding:11px 10px !important;
+  border-bottom:1px solid #d9e2ec !important; white-space:nowrap; }
+.available-details-page .available-details-table tbody td { color:#475467; font-size:12px; padding:10px !important;
+  border-bottom:1px solid #edf1f5 !important; vertical-align:middle; }
+.available-details-page .available-details-table tbody tr:nth-child(even) { background:#fafcff; }
+.available-details-page .available-details-table tbody tr:hover { background:#f0f7fb; }
+.flatpickr-calendar { border:1px solid #d8e1e9 !important; border-radius:10px !important;
+  box-shadow:0 8px 24px rgba(16,24,40,.14) !important; font-family:Arial,sans-serif !important; }
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange,
+.flatpickr-day.selected:hover { background:#176b91 !important; border-color:#176b91 !important; }
+@media(max-width:900px) { .available-details-page .census-filter-panel { flex-wrap:wrap; } }
+</style>
 
 </head>
 <!-- ================= HEADER ================= -->
 
 <header class="top-header">
     <nav class="main-nav">
+<!--        <a href="/home"  >Home</a>-->
+         <a href="{{ url_for(
+        'added_details_routes.added_details'
+    ) }}">Patients</a>
         <a href="{{ url_for(
         'available_details_routes.available_details'
-    ) }}" class="selected" >Home</a>
-        <a href="{{ url_for(
-        'added_details_routes.added_details'
-    ) }}">Added Details</a>
+    ) }}" class="selected">Available Patients</a>
         <a href="#">Messages</a>
-        <a href="#">Cases</a>
+        <a href="{{ url_for(
+        'task_routes.tasks_home'
+    ) }}">Tasks</a>
         <a href="#">Work Queues</a>
         <a href="#">Reports</a>
+         <a href="{{ url_for(
+        'provider_routes.prov_details'
+    ) }}">Provider</a>
+        <a href="{{ url_for(
+        'user_master_routes.index'
+    ) }}">User</a>
     </nav>
 
     <div class="header-right">
@@ -113,24 +177,65 @@
              CENSUS SEARCH
              ================================================= -->
 
-        <div class="census-search-panel">
+        <form method="GET" action="{{ url_for('available_details_routes.available_details') }}" class="census-filter-panel">
+            <input type="hidden" name="mode" value="census">
+            <input type="hidden" name="page" value="1">
+            <input type="hidden" name="filters_applied" value="1">
+            <label class="filter-field">
+    From Date
+    <input
+        type="text"
+        name="from_date"
+        id="from_date"
+        class="date-picker"
+        placeholder="MM/DD/YYYY"
+        value="{{ from_date or '' }}"
+        autocomplete="off"
+    >
+</label>
 
-            <input
-                type="text"
-                id="census-search"
-                class="progressive-search-field"
-                placeholder="Search Account #, MRN, patient, facility..."
-                value="{{ search or '' }}"
-                autocomplete="off"
-            >
+<label class="filter-field">
+    To Date
+    <input
+        type="text"
+        name="to_date"
+        id="to_date"
+        class="date-picker"
+        placeholder="MM/DD/YYYY"
+        value="{{ to_date or '' }}"
+        autocomplete="off"
+    >
+</label>
 
-            <span
-                id="search-status"
-                class="search-status"
-            ></span>
+            <div class="filter-field">
+                Facility
+                <div class="facility-inline">
+                    <div class="facility-checkbox-list">
+                        {% for facility in facilities %}
+                        <label class="facility-checkbox-item">
+                            <input type="checkbox" name="facility_ids" value="{{ facility.FId }}" {% if facility.FId|string in selected_facility_ids %}checked{% endif %}>
+                            {{ facility.Faci_name }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
 
-        </div>
+            <label class="filter-field">
+                Account # / MRN/Patient Name
+                <input
+                    type="text"
+                    name="q"
+                    id="census-search"
+                    class="existing-search-field"
+                    placeholder="Search Account #, MRN or Patient Name"
+                    value="{{ search or '' }}"
+                    autocomplete="off"
+                >
+            </label>
 
+            <button type="submit" class="filter-search-button">Search</button>
+        </form>
 
         <!-- =================================================
              SUMMARY
@@ -181,6 +286,8 @@
 
                     <tr>
 
+                        <th>INFO</th>
+
                         <th>ACCOUNT #</th>
 
                         <th>MED REC NBR</th>
@@ -196,7 +303,7 @@
                         <th>ADMIT DATE</th>
 
                         <th>PATIENT TYPE</th>
-
+<th>PCP</th>
                         <th></th>
 
                     </tr>
@@ -209,6 +316,17 @@
                 {% for detail in details %}
 
                     <tr>
+
+                        <td>
+                            <button type="button" class="info-hover" aria-label="View visit information">⋯
+                                <span class="info-tooltip">
+                                    <strong>Chief Complaint</strong>
+                                    <span class="info-value">{{ detail["AdmitReason"] or "Not available" }}</span>
+                                    <strong>Discharge Disposition</strong>
+                                    <span class="info-value">{{ detail["DischargeDisposition"] or "Not available" }}</span>
+                                </span>
+                            </button>
+                        </td>
 
                         <td>
                             {{ detail["Account Number"] or "" }}
@@ -257,14 +375,14 @@
 
 
                         <td>
-                            {{ detail["Admit Date"] or "" }}
+                            {{ detail['Admit Date'].strftime('%d/%m/%Y %I:%M %p').lower().replace('. 0', '. ') if detail['Admit Date'] else '' }}
                         </td>
 
 
                         <td>
                             {{ detail["Patient Type"] or "" }}
                         </td>
-
+<td>{{ detail['PCPName'] or '' }}</td>
 
                         <td class="action-cell">
 
@@ -324,70 +442,72 @@
              PAGINATION
              ================================================= -->
 
-        {% if total_pages > 1 %}
+      {% if total_pages > 1 %}
 
-        <div class="details-pagination">
+<div class="details-pagination">
 
-            {% if page > 1 %}
-
-                <a
-                    href="{{ url_for(
-                        'available_details_routes.available_details',
-                        mode='census',
-                        page=page-1,
-                        q=search
-                    ) }}"
-                >
-                    Previous
-                </a>
-
-            {% endif %}
-
-
-            {% for page_number in page_numbers %}
-
-                {% if page_number == page %}
-
-                    <span class="current-page">
-                        {{ page_number }}
-                    </span>
-
-                {% else %}
-
-                    <a
-                        href="{{ url_for(
-                            'available_details_routes.available_details',
-                            mode='census',
-                            page=page_number,
-                            q=search
-                        ) }}"
-                    >
-                        {{ page_number }}
-                    </a>
-
-                {% endif %}
-
-            {% endfor %}
+    {% if page > 1 %}
+        <a href="{{ url_for(
+            'available_details_routes.available_details',
+            mode='census',
+            page=page-1,
+            q=search,
+            from_date=from_date,
+            to_date=to_date,
+            filters_applied=1,
+            facility_ids=selected_facility_ids
+        ) }}">
+            Previous
+        </a>
+    {% endif %}
 
 
-            {% if page < total_pages %}
+    {% for page_number in page_numbers %}
 
-                <a
-                    href="{{ url_for(
-                        'available_details_routes.available_details',
-                        mode='census',
-                        page=page+1,
-                        q=search
-                    ) }}"
-                >
-                    Next
-                </a>
+        {% if page_number == page %}
 
-            {% endif %}
+            <span class="current-page">
+                {{ page_number }}
+            </span>
 
-        </div>
+        {% else %}
+
+            <a href="{{ url_for(
+                'available_details_routes.available_details',
+                mode='census',
+                page=page_number,
+                q=search,
+                from_date=from_date,
+                to_date=to_date,
+                filters_applied=1,
+                facility_ids=selected_facility_ids
+            ) }}">
+                {{ page_number }}
+            </a>
 
         {% endif %}
+
+    {% endfor %}
+
+
+    {% if page < total_pages %}
+        <a href="{{ url_for(
+            'available_details_routes.available_details',
+            mode='census',
+            page=page+1,
+            q=search,
+            from_date=from_date,
+            to_date=to_date,
+            filters_applied=1,
+            facility_ids=selected_facility_ids
+        ) }}">
+            Next
+        </a>
+    {% endif %}
+
+</div>
+
+{% endif %}
 
     </div>
 
@@ -457,6 +577,8 @@
 
                     <tr>
 
+                        <th>INFO</th>
+
                         <th>ACCOUNT #</th>
 
                         <th>MED REC NBR</th>
@@ -483,6 +605,17 @@
                 <tbody>
 
                     <tr>
+
+                        <td>
+                            <button type="button" class="info-hover" aria-label="View visit information">⋯
+                                <span class="info-tooltip">
+                                    <strong>Chief Complaint</strong>
+                                    <span class="info-value">{{ visit["AdmitReason"] or "Not available" }}</span>
+                                    <strong>Discharge Disposition</strong>
+                                    <span class="info-value">{{ visit["DischargeDisposition"] or "Not available" }}</span>
+                                </span>
+                            </button>
+                        </td>
 
                         <td>
                             {{ visit["Account Number"] or "" }}
@@ -531,7 +664,7 @@
 
 
                         <td>
-                            {{ visit["Admit Date"] or "" }}
+                            {{ visit['Admit Date'].strftime('%d/%m/%Y . %I:%M %p').lower().replace('. 0', '. ') if visit['Admit Date'] else '' }}
                         </td>
 
 
@@ -674,7 +807,13 @@
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-
+        // Date picker: display dates in MM/DD/YYYY format
+        if (typeof flatpickr !== "undefined") {
+            flatpickr(".date-picker", {
+                dateFormat: "m/d/Y",
+                allowInput: true
+            });
+        }
         /*
          * =====================================================
          * RADIO BUTTON MODE SWITCHING
@@ -1133,284 +1272,6 @@ document.addEventListener(
 
         /*
          * =====================================================
-         * PROGRESSIVE CENSUS SEARCH
-         * =====================================================
-         */
-
-        let searchTimer =
-            null;
-
-
-        let searchRequest =
-            null;
-
-
-        function attachCensusSearch() {
-
-            const censusSearch =
-                document.getElementById(
-                    "census-search"
-                );
-
-
-            if (!censusSearch) {
-                return;
-            }
-
-
-            if (
-                censusSearch.dataset.searchBound ===
-                "true"
-            ) {
-                return;
-            }
-
-
-            censusSearch.dataset.searchBound =
-                "true";
-
-
-            censusSearch.addEventListener(
-                "input",
-                function () {
-
-                    const searchValue =
-                        this.value.trim();
-
-
-                    clearTimeout(
-                        searchTimer
-                    );
-
-
-                    searchTimer =
-                        setTimeout(
-                            function () {
-
-                                performCensusSearch(
-                                    searchValue
-                                );
-
-                            },
-                            350
-                        );
-
-                }
-            );
-
-        }
-
-
-        async function performCensusSearch(
-            searchValue
-        ) {
-
-            const censusSection =
-                document.getElementById(
-                    "census-section"
-                );
-
-
-            if (!censusSection) {
-                return;
-            }
-
-
-            const searchStatus =
-                document.getElementById(
-                    "search-status"
-                );
-
-
-            if (searchStatus) {
-
-                searchStatus.textContent =
-                    "Searching...";
-
-            }
-
-
-            try {
-
-                if (searchRequest) {
-
-                    searchRequest.abort();
-
-                }
-
-
-                searchRequest =
-                    new AbortController();
-
-
-                const url =
-                    new URL(
-                        window.location.href
-                    );
-
-
-                url.searchParams.set(
-                    "mode",
-                    "census"
-                );
-
-
-                url.searchParams.set(
-                    "page",
-                    "1"
-                );
-
-
-                url.searchParams.delete(
-                    "visit_id"
-                );
-
-
-                if (searchValue) {
-
-                    url.searchParams.set(
-                        "q",
-                        searchValue
-                    );
-
-                }
-                else {
-
-                    url.searchParams.delete(
-                        "q"
-                    );
-
-                }
-
-
-                const response =
-                    await fetch(
-                        url.toString(),
-                        {
-                            method: "GET",
-                            signal:
-                                searchRequest.signal
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Search request failed."
-                    );
-
-                }
-
-
-                const html =
-                    await response.text();
-
-
-                const parser =
-                    new DOMParser();
-
-
-                const resultDocument =
-                    parser.parseFromString(
-                        html,
-                        "text/html"
-                    );
-
-
-                const newSection =
-                    resultDocument.getElementById(
-                        "census-section"
-                    );
-
-
-                if (!newSection) {
-
-                    throw new Error(
-                        "Search results could not be displayed."
-                    );
-
-                }
-
-
-                censusSection.innerHTML =
-                    newSection.innerHTML;
-
-
-                /*
-                 * Re-attach handlers because
-                 * innerHTML created new elements.
-                 */
-
-                attachCensusSearch();
-
-
-                attachAddForms(
-                    censusSection
-                );
-
-
-                const newSearchStatus =
-                    document.getElementById(
-                        "search-status"
-                    );
-
-
-                if (newSearchStatus) {
-
-                    newSearchStatus.textContent =
-                        "";
-
-                }
-
-
-                window.history.replaceState(
-                    {},
-                    "",
-                    url.toString()
-                );
-
-            }
-            catch (error) {
-
-                if (
-                    error.name ===
-                    "AbortError"
-                ) {
-
-                    return;
-
-                }
-
-
-                console.error(
-                    error
-                );
-
-
-                const currentSearchStatus =
-                    document.getElementById(
-                        "search-status"
-                    );
-
-
-                if (currentSearchStatus) {
-
-                    currentSearchStatus.textContent =
-                        "Search failed.";
-
-                }
-
-            }
-
-        }
-
-
-        attachCensusSearch();
-
-
-        /*
-         * =====================================================
          * ADD BUTTONS
          * =====================================================
          */
@@ -1744,7 +1605,7 @@ document.addEventListener(
                     const targetUrl =
                         redirectUrl ||
                         (
-                            "/Demographics/" +
+                            "/CoordinatorMain/" +
                             String(
                                 pendingUpdateVisitId
                             )
@@ -1940,7 +1801,7 @@ document.addEventListener(
 );
 
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 </body>
 

@@ -1,5 +1,6 @@
 from database.connection import get_connection
-
+from flask import (request)
+from datetime import datetime
 
 def add_detail(detail):
 
@@ -222,39 +223,68 @@ def get_added_Visitdetails(page=1, search=None,
         cursor = connection.cursor()
         search_condition = ""
         parameters = []
+        conditions = []
+        from_date = request.args.get('from_date', '')
+        to_date = request.args.get('to_date', '')
+        facility = request.args.getlist('facility')
 
-        if search:
+        if search2:
             search_condition = """
-                        WHERE (
-                            AccountNumber LIKE ?
-                            OR MedicalRecordNumber LIKE ?
-                            OR FirstName LIKE ?
-                            OR LastName LIKE ?
-                        )
-                    """
+                                 WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
+                               """
 
-            search_value = f"%{search}%"
-
-            parameters.extend([
-                search_value,
-                search_value,
-                search_value,
-                search_value
-            ])
+            parameters.append(
+                search2.strip()
+            )
+            # search_condition = """
+            #             WHERE (
+            #                 AccountNumber LIKE ?
+            #                 OR MedicalRecordNumber LIKE ?
+            #                 OR FirstName LIKE ?
+            #                 OR LastName LIKE ?
+            #             )
+            #         """
+            #
+            # search_value = f"%{search}%"
+            #
+            # parameters.extend([
+            #     search_value,
+            #     search_value,
+            #     search_value,
+            #     search_value
+            # ])
             # ---------------------------------------
             # SECOND SEARCH
             # Account Number only
             # ---------------------------------------
 
-        elif search2:
+        else:
 
-            search_condition = """
-                     WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
-                   """
+            # Date filter
+            if from_date and to_date:
+                from_date = datetime.strptime(
+                    from_date, '%Y-%m-%d'
+                ).date()
 
-            parameters.append(
-                search2.strip()
-            )
+                to_date = datetime.strptime(
+                    to_date, '%Y-%m-%d'
+                ).date()
+
+                conditions.append("""
+                                  TRY_CONVERT(DATE, AdmitDateTime, 110) >= ?
+                                  AND TRY_CONVERT(DATE, AdmitDateTime, 110) <= ?
+                              """)
+                parameters.extend([from_date, to_date])
+            if facility:
+                placeholders = ','.join('?' for _ in facility)
+                conditions.append(
+                    f"Facility IN ({placeholders})"
+                )
+                parameters.extend(facility)
+            search_condition = ""
+
+            if conditions:
+                search_condition = " WHERE " + " AND ".join(conditions)
 
         query = f"""
             SELECT
@@ -265,8 +295,11 @@ def get_added_Visitdetails(page=1, search=None,
 
                 CONVERT(varchar(10), BirthDate, 101) AS BirthDate,
                [Patient Type] as PatientType,
-               CONVERT(varchar(10), AdmitDateTime, 101) as AdmitDateTime,
-                 [Phys Name Attending ] as AttendingPhysician
+             FORMAT(
+    TRY_CONVERT(datetime2, AdmitDateTime, 121),
+    'MM/dd/yyyy hh:mm:ss tt'
+) AS AdmitDateTime,
+                 [Phys Name Attending ] as AttendingPhysician,ISNULL(Facility,'') Facility,ISNULL(PCPName,'') PCPName
                 
             FROM Visits  
             {search_condition}
@@ -312,35 +345,63 @@ def get_available_details_count(search=None,
 
         search_condition = ""
         parameters = []
-
-        if search:
-
+        conditions = []
+        from_date = request.args.get('from_date', '')
+        to_date = request.args.get('to_date', '')
+        facility = request.args.getlist('facility')
+        if search2:
             search_condition = """
-                WHERE (
-                    AccountNumber LIKE ?
-                    OR MedicalRecordNumber LIKE ?
-                    OR FirstName LIKE ?
-                    OR LastName LIKE ?
-                )
-            """
-
-            search_value = f"%{search}%"
-
-            parameters.extend([
-                search_value,
-                search_value,
-                search_value,
-                search_value
-            ])
-        elif search2:
-
-            search_condition = """
-                      WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
-                    """
+                                            WHERE  CAST(AccountNumber AS VARCHAR(50)) = ?
+                                          """
 
             parameters.append(
                 search2.strip()
             )
+
+            # search_condition = """
+            #     WHERE (
+            #         AccountNumber LIKE ?
+            #         OR MedicalRecordNumber LIKE ?
+            #         OR FirstName LIKE ?
+            #         OR LastName LIKE ?
+            #     )
+            # """
+            #
+            # search_value = f"%{search}%"
+            #
+            # parameters.extend([
+            #     search_value,
+            #     search_value,
+            #     search_value,
+            #     search_value
+            # ])
+        else:
+
+            # Date filter
+            if from_date and to_date:
+                from_date = datetime.strptime(
+                    from_date, '%Y-%m-%d'
+                ).date()
+
+                to_date = datetime.strptime(
+                    to_date, '%Y-%m-%d'
+                ).date()
+
+                conditions.append("""
+                                             TRY_CONVERT(DATE, AdmitDateTime, 110) >= ?
+                                             AND TRY_CONVERT(DATE, AdmitDateTime, 110) <= ?
+                                         """)
+                parameters.extend([from_date, to_date])
+            if facility:
+                placeholders = ','.join('?' for _ in facility)
+                conditions.append(
+                    f"Facility IN ({placeholders})"
+                )
+                parameters.extend(facility)
+            search_condition = ""
+
+            if conditions:
+                search_condition = " WHERE " + " AND ".join(conditions)
 
         query = f"""
             SELECT COUNT(*)
