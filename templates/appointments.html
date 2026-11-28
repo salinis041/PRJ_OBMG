@@ -1,6 +1,14 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Appointments</title><link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common-ui.css') }}">
+<style>
+/* Match the main page heading used on User Master. */
+.ap-toolbar h2 {
+    font-size: 17px;
+    font-weight: 600;
+}
+</style>
 </head><body><main class="ap-page">
 <header class="ap-header"><div><h1>Appointments</h1><p>Manage patient appointments.</p></div><a class="ap-btn primary" href="{{ url_for('appointment_routes.create') }}">＋ Add</a></header>
 {% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="ap-alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}

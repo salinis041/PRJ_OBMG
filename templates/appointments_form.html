@@ -1,5 +1,21 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ 'Edit Appointment' if is_edit else 'Add Appointment' }}</title><link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}"></head>
+<title>{{ 'Edit Appointment' if is_edit else 'Add Appointment' }}</title><link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='css/common-ui.css') }}">
+<style>
+/* Shared form-control appearance for this page */
+.ap-page .ap-field input:not([type=radio]):not([type=checkbox]),
+.ap-page .ap-field select,
+.ap-page .ap-field textarea {
+    box-sizing: border-box; width: 100%; min-height: 38px; padding: 8px 11px;
+    border: 1px solid #cbd5dc; border-radius: 6px; border-left: 1px solid #cbd5dc;
+    background: #fff; color: #344054; font: 13px Arial, Helvetica, sans-serif;
+}
+.ap-page .ap-field textarea { min-height: 72px; resize: vertical; }
+.ap-page .ap-field input:focus, .ap-page .ap-field select:focus, .ap-page .ap-field textarea:focus {
+    outline: 0; border-color: #087ea4; box-shadow: 0 0 0 3px rgba(8,126,164,.16);
+}
+.ap-page .ap-radio input, .ap-page .ap-reason input { min-height: auto; }
+</style>
+</head>
 <body><main class="ap-page">
 <header class="ap-form-title"><h1>{{ 'Edit Appointment' if is_edit else 'Add Appointment' }}</h1><a href="{{ url_for('appointment_routes.index') }}">×</a></header>
 {% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="ap-alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}

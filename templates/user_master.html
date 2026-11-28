@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Master</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common-ui.css') }}">
+<style>
+/* User Master page: keep controls and table consistent with the shared UI. */
+.um-page input:not([type=checkbox]):not([type=radio]):not([type=submit]):not([type=button]),
+.um-page select, .um-page textarea {
+    min-height: 36px; padding: 8px 10px; border: 1px solid #cbd5dc;
+    border-radius: 5px; font: 13px Arial, Helvetica, sans-serif;
+    color: #344054; background: #fff; box-sizing: border-box;
+}
+.um-page input:focus, .um-page select:focus, .um-page textarea:focus {
+    outline: 0; border-color: #087ea4;
+    box-shadow: 0 0 0 3px rgba(8,126,164,.16);
+}
+.um-page .um-table { width: 100%; border-collapse: collapse; }
+.um-page .um-table th { background: #eaf0f4; color: #475467;
+    border: 1px solid #dce3e8; padding: 10px 9px; font-size: 11px;
+    font-weight: 700; white-space: nowrap; text-align: left; }
+.um-page .um-table td { border: 1px solid #e5eaf0; padding: 9px;
+    color: #344054; font-size: 12px; vertical-align: middle; }
+.um-page .um-table tbody tr:nth-child(even) { background: #f8fafc; }
+.um-page .um-table tbody tr:hover { background: #eef7fb; }
+.um-page .um-toolbar input { max-width: 320px; width: 100%; }
+</style>
 </head>
 <!-- ================= HEADER ================= -->
 
@@ -39,7 +62,6 @@
 
 </header>
 <body>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
 <section class="um-page">
   <div class="um-heading">
     <div><h1>User Master</h1><p>Manage application users.</p></div>

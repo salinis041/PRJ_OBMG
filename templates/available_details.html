@@ -35,6 +35,43 @@
 
 .info-hover{position:relative;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;border-radius:50%;background:#eaf3f8;color:#176b8a;font-size:19px;font-weight:700;letter-spacing:2px;cursor:help}.info-hover .info-tooltip{display:none;position:absolute;left:34px;top:50%;transform:translateY(-50%);z-index:1000;width:290px;white-space:normal;text-align:left;background:#172b3a;color:#fff;padding:12px 14px;border-radius:9px;box-shadow:0 8px 24px rgba(15,35,50,.22);font-size:12px;line-height:1.5;letter-spacing:normal}.info-hover:hover .info-tooltip,.info-hover:focus .info-tooltip{display:block}.info-tooltip strong{display:block;color:#9bdcf0;margin-bottom:3px}.info-tooltip .info-value{display:block;margin-bottom:9px;overflow-wrap:anywhere}.available-details-table th:first-child,.available-details-table td:first-child{width:54px;text-align:center}
 </style>
+
+<style id="available-details-ui-standard">
+/* Shared visual standard for Available Details page only */
+.available-details-page { color:#344054; font-family:Arial, sans-serif; }
+.available-details-page input:not([type="checkbox"]):not([type="radio"]),
+.available-details-page select,
+.available-details-page textarea {
+  min-height:38px !important; box-sizing:border-box !important; padding:8px 11px !important;
+  border:1px solid #cbd5e1 !important; border-radius:7px !important;
+  background:#fff !important; color:#344054 !important; font:14px Arial,sans-serif !important;
+  box-shadow:none !important; transition:border-color .15s ease, box-shadow .15s ease;
+}
+.available-details-page input:focus, .available-details-page select:focus,
+.available-details-page textarea:focus { outline:none !important; border-color:#2583b8 !important;
+  box-shadow:0 0 0 3px rgba(37,131,184,.14) !important; }
+.available-details-page .census-filter-panel { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; gap:14px; }
+.available-details-page .census-filter-panel .filter-field { font-size:12px; font-weight:600; color:#475467; }
+.available-details-page .census-filter-panel input.date-picker,
+.available-details-page .census-filter-panel .existing-search-field { height:38px !important; min-height:38px !important; }
+.available-details-page .filter-search-button { height:38px; border:1px solid #176b91; border-radius:7px; background:#176b91; font-size:13px; font-weight:600; }
+.available-details-page .filter-search-button:hover { background:#125875; }
+.available-details-page .details-table-container { overflow-x:auto; border:1px solid #e2e8f0; border-radius:9px; background:#fff; }
+.available-details-page table { width:100%; border-collapse:separate; border-spacing:0; }
+.available-details-page .available-details-table thead th { background:#eef3f7 !important; color:#344054 !important;
+  font-size:11px !important; font-weight:700 !important; padding:11px 10px !important;
+  border-bottom:1px solid #d9e2ec !important; white-space:nowrap; }
+.available-details-page .available-details-table tbody td { color:#475467; font-size:12px; padding:10px !important;
+  border-bottom:1px solid #edf1f5 !important; vertical-align:middle; }
+.available-details-page .available-details-table tbody tr:nth-child(even) { background:#fafcff; }
+.available-details-page .available-details-table tbody tr:hover { background:#f0f7fb; }
+.flatpickr-calendar { border:1px solid #d8e1e9 !important; border-radius:10px !important;
+  box-shadow:0 8px 24px rgba(16,24,40,.14) !important; font-family:Arial,sans-serif !important; }
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange,
+.flatpickr-day.selected:hover { background:#176b91 !important; border-color:#176b91 !important; }
+@media(max-width:900px) { .available-details-page .census-filter-panel { flex-wrap:wrap; } }
+</style>
+
 </head>
 <!-- ================= HEADER ================= -->
 

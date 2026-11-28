@@ -34,6 +34,27 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ 'Edit User' if is_edit else 'Create User' }}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user_master.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/common-ui.css') }}">
+<style>
+/* Consistent controls for the User Master create/edit wizard */
+.um-page .um-field input:not([type="checkbox"]),
+.um-page .um-field select,
+.um-page .um-field textarea {
+    width: 100%; min-height: 38px; padding: 8px 11px;
+    border: 1px solid #cbd5dc; border-radius: 6px;
+    background: #fff; color: #344054; font: 14px Arial, Helvetica, sans-serif;
+    box-sizing: border-box; transition: border-color .15s, box-shadow .15s;
+}
+.um-page .um-field input:focus, .um-page .um-field select:focus,
+.um-page .um-field textarea:focus {
+    outline: none; border-color: #087ea4;
+    box-shadow: 0 0 0 3px rgba(8,126,164,.16);
+}
+.um-page .um-field label { color: #344054; font-weight: 600; }
+.um-page .um-btn { border-radius: 6px; font: 600 13px Arial, Helvetica, sans-serif; }
+.um-page .um-btn.um-primary { background: #087ea4; border-color: #087ea4; color: #fff; }
+.um-page .um-field select[multiple] { min-height: 120px; }
+</style>
 </head>
 <body>
 <section class="um-page">

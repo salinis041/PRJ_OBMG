@@ -1082,6 +1082,12 @@
 
         <!-- Appointment modal layout: fixed viewport shell with a scrollable form area -->
 <style>
+    /* Appointment modal typography and controls: compact, consistent sizing */
+    #appointmentModal {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        color: #344054;
+    }
     #appointmentModal .modal-dialog {
         width: min(1200px, calc(100vw - 2rem));
         max-width: calc(100vw - 2rem);
@@ -1108,6 +1114,12 @@
         flex: 0 0 auto;
         background: #fff;
         z-index: 1;
+        padding: .75rem 1rem;
+    }
+    #appointmentModal .modal-title {
+        font-size: 16px;
+        line-height: 1.3;
+        font-weight: 600;
     }
     #appointmentModal .modal-body {
         flex: 1 1 auto;
@@ -1115,33 +1127,52 @@
         overflow-y: auto;
         overflow-x: hidden;
         overscroll-behavior: contain;
-        padding: 1.25rem;
+        padding: 1rem;
+        font-size: 12px;
+        line-height: 1.35;
     }
     #appointmentModal .form-label {
         display: block;
-        margin-bottom: .4rem;
-        font-weight: 500;
+        margin-bottom: .25rem;
+        font-size: 12px;
+        line-height: 1.3;
+        font-weight: 600;
+    }
+    #appointmentModal .form-control,
+    #appointmentModal .form-select,
+    #appointmentModal input:not([type="checkbox"]):not([type="radio"]),
+    #appointmentModal textarea {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 1.35;
+        min-height: 32px;
+        padding: 5px 8px;
     }
     #appointmentModal textarea.form-control {
-        min-height: 2.5rem;
+        min-height: 2.25rem;
         resize: vertical;
     }
     #appointmentModal .appointment-reason {
         display: flex;
         align-items: flex-start;
-        gap: .5rem;
-        min-height: 48px;
-        padding: .65rem;
-        line-height: 1.35;
+        gap: .45rem;
+        min-height: 40px;
+        padding: .5rem;
+        font-size: 12px;
+        line-height: 1.3;
         overflow-wrap: anywhere;
         cursor: pointer;
     }
     #appointmentModal .appointment-reason input {
         flex: 0 0 auto;
-        margin-top: .15rem;
+        margin-top: .1rem;
     }
     #appointmentModal .modal-footer {
         border-top: 1px solid #dee2e6;
+    }
+    #appointmentModal .modal-footer .btn {
+        font-size: 12px;
+        padding: 6px 12px;
     }
     @media (max-width: 767.98px) {
         #appointmentModal .modal-dialog {
@@ -1150,7 +1181,7 @@
             height: calc(100dvh - 1rem);
             margin: .5rem auto;
         }
-        #appointmentModal .modal-body { padding: .85rem; }
+        #appointmentModal .modal-body { padding: .75rem; }
     }
 </style>
 
@@ -1216,8 +1247,8 @@
           </div>
         </div>
 
-        <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
+        <div class="patient-table-wrapper">
+    <table class="patient-table" style="min-width:800px!important">
             <thead class="table-light"><tr><th>WHEN</th><th>PROVIDER</th><th>SPECIALTY</th><th>TYPE</th><th>PHONE</th><th>APPT TYPE</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
             <tbody>
             {% for a in appointments %}
